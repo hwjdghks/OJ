@@ -1,0 +1,61 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "15672:15672"
+    networks:
+      - my_network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./requirements/mysql/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my_network
+
+  frontend:
+    build: ./requirements/frontend
+    container_name: frontend
+    restart: always
+    depends_on:
+      - rabbitmq
+      - mysql
+    environment:
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_CHARSET: utf8mb4
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:5000
+    ports:
+      - "3000:3000" # Express 애플리케이션 포트
+      - "3001:3001"
+    networks:
+      - my_network
+
+  backend:
+    build: ./requirements/backend
+    container_name: backend
+    restart: always
+    ports:
+      - "5000:5000"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
