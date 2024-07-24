@@ -1,5 +1,5 @@
 -- 유저 생성 및 권한 부여
-CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';
+CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT ALL PRIVILEGES ON OJ.* TO 'user'@'%';
 
 -- 데이터베이스 생성
@@ -25,7 +25,7 @@ CREATE TABLE code (
     FOREIGN KEY (problem_id) REFERENCES problem(id)
 );
 
-CREATE TABLE user (
+CREATE TABLE users (
     id VARCHAR(50),
     password VARCHAR(255),
     email VARCHAR(100)
@@ -34,6 +34,11 @@ CREATE TABLE user (
 -- problem 테이블에 샘플 데이터 삽입
 INSERT INTO problem (title, description) VALUES
 ('Two Sum', 'Given an array of integers, return indices of the two numbers such that they add up to a specific target.');
+INSERT INTO problem (title, description) VALUES
+('Two Sum', 'Given an array of integers, return indices of the two numbers such that they add up to a specific target.');
+INSERT INTO problem (title, description) VALUES
+('Two Sum', 'Given an array of integers, return indices of the two numbers such that they add up to a specific target.');
+
 
 -- code 테이블에 샘플 데이터 삽입
 INSERT INTO code (problem_id, language, code, result) VALUES

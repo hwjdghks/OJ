@@ -10,7 +10,7 @@ const Navbar = () => {
                 <h1>문제 목록</h1>
                 <ul className={styles.navList}>
                     <li>
-                        <Link className={styles.navLink} href="/problems">문제 리스트</Link>
+                        <Link className={styles.navLink} href="/problem-set">문제 리스트</Link>
                     </li>
                     <li>
                         <Link className={styles.navLink} href="/results">채점 결과</Link>

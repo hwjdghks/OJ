@@ -1,7 +1,42 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const mysql = require('mysql2');
+
 const port = 5000;
+
+const connection = mysql.createConnection({
+  host: 'mysql',
+  user: 'user',
+  password: 'password',
+  database: 'OJ'
+});
+
+const connectWithRetry = () => {
+  const retryInterval = 1000; // 재시도 간격 (밀리초 단위)
+  let connection;
+
+  while (!connection) {
+    try {
+      connection = mysql.createConnection({
+        host: 'mysql',
+        user: 'user',
+        password: 'password',
+        database: 'OJ'
+      });
+      connection.connect(err => {
+        if (err) throw err;
+        console.log('Connected to database.');
+      });
+    } catch (error) {
+      console.error('Database connection failed:', error.stack);
+      console.log(`Retrying database connection in ${retryInterval / 1000} seconds...`);
+      const start = Date.now();
+      while (Date.now() - start < retryInterval) {} // 재시도 대기
+    }
+  }
+};
+connectWithRetry();
 
 app.use(cors()); // CORS 설정
 
@@ -29,6 +64,14 @@ app.get('/problem', (req, res) => {
 app.get('/problem-set', (req, res) => {
   // 문제 목록 가져오기
   const query = 'SELECT * FROM problem';
+  connection.query(query, (err, results) => {
+    console.log(results);
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Database query error' });
+    }
+    res.json(results);
+  });
 });
 
 app.get('/results', (req, res) => {
