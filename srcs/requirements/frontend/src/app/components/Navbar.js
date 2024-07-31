@@ -15,9 +15,6 @@ const Navbar = () => {
                     <li>
                         <Link className={styles.navLink} href="/results">채점 결과</Link>
                     </li>
-                    <li>
-                        <Link className={styles.navLink} href="/message">메세지 출력</Link>
-                    </li>
                 </ul>
             </div>
         </nav>
