@@ -20,6 +20,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./requirements/mysql/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./requirements/mysql/conf/my.cnf:/etc/mysql/my.cnf
     networks:
       - my_network
 

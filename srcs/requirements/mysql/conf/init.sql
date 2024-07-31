@@ -35,9 +35,9 @@ CREATE TABLE users (
 INSERT INTO problem (title, description) VALUES
 ('Two Sum', 'Given an array of integers, return indices of the two numbers such that they add up to a specific target.');
 INSERT INTO problem (title, description) VALUES
-('Two Sum', 'Given an array of integers, return indices of the two numbers such that they add up to a specific target.');
+('hello world', 'my world');
 INSERT INTO problem (title, description) VALUES
-('Two Sum', 'Given an array of integers, return indices of the two numbers such that they add up to a specific target.');
+('한글 테스트', '뭉탱이');
 
 
 -- code 테이블에 샘플 데이터 삽입

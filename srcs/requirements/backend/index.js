@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
 });
 
 const connectWithRetry = () => {
-  const retryInterval = 1000; // 재시도 간격 (밀리초 단위)
+  const retryInterval = 3000; // 재시도 간격 (밀리초 단위)
   let connection;
 
   while (!connection) {
@@ -58,14 +58,30 @@ app.get('/message', (req, res) => {
 
 app.get('/problem', (req, res) => {
   // 단일 문제 정보 가져오기
+  console.log(req.query);
+  const { id } = req.query;
+  if (!id) {
+    return res.status(400).json({ error: '문제 ID가 필요합니다.' });
+  }
   const query = 'SELECT * FROM problem WHERE id = ?';
+  connection.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).json({ error: 'Database query error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: '문제를 찾을 수 없습니다.' });
+    }
+    console.log(results[0]);
+    res.json(results[0]); // 결과 중 첫 번째 문제 반환
+  });
 });
 
 app.get('/problem-set', (req, res) => {
   // 문제 목록 가져오기
   const query = 'SELECT * FROM problem';
   connection.query(query, (err, results) => {
-    console.log(results);
     if (err) {
       console.error(err);
       return res.status(500).json({ error: 'Database query error' });
@@ -76,12 +92,69 @@ app.get('/problem-set', (req, res) => {
 
 app.get('/results', (req, res) => {
   // 채점 결과 가져오기
-  const query = '';
+  const query = 'SELECT * FROM code';
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Database query error' });
+    }
+    res.json(results);
+  });
 });
 
+app.get('/code', (req, res) => {
+  // 단일 문제 정보 가져오기
+  console.log(req.query);
+  const { id } = req.query;
+  if (!id) {
+    return res.status(400).json({ error: '제출 ID가 필요합니다.' });
+  }
+  const query = 'SELECT * FROM code WHERE id = ?';
+  connection.query(query, [id], (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).json({ error: 'Database query error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: '제출 결과를 찾을 수 없습니다.' });
+    }
+    console.log(results[0]);
+    res.json(results[0]); // 결과 중 첫 번째 문제 반환
+  });
+});
+
+
+// JSON 데이터 파싱
+app.use(express.json());
+
+// URL-encoded 데이터 파싱
+app.use(express.urlencoded({ extended: true }));
+
 app.post('/submit', (req, res) => {
-  // 제출된 코드 저장하기
-  const query = '';
+  const { id, language, code } = req.body;
+
+  // 입력 값 검증
+  if (!id || !language || !code) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // SQL 쿼리문 작성
+  const query = `
+    INSERT INTO code (problem_id, language, code, result)
+    VALUES (?, ?, ?, 0)
+  `;
+
+  // 데이터베이스에 데이터 삽입
+  connection.query(query, [id, language, code], (err, results) => {
+    if (err) {
+      console.error('Error inserting data into MySQL:', err);
+      return res.status(500).json({ error: 'Failed to submit code' });
+    }
+
+    // 성공적으로 저장되었음을 응답
+    res.status(200).json({ message: 'Code submitted successfully!' });
+  });
 });
 
 app.listen(port, () => {
