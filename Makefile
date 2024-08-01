@@ -22,3 +22,12 @@ re:
 
 .PHONY: clean
 clean:
+	make delete_image | make delete_volume
+
+.PHONY: delete_image
+delete_image:
+	docker rmi -f $$(docker images -aq)
+
+.PHONY: delete_volume
+delete_volume:
+	docker volume rm $$(docker volume ls -q)
