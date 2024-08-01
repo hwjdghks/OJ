@@ -107,7 +107,7 @@ const styles = {
   },
   tableRow: {
     backgroundColor: '#fff',
-    '&:nth-child(even)': {
+    '&:nthChild(even)': {
       backgroundColor: '#f9f9f9',
     },
   },
