@@ -1,4 +1,14 @@
 services:
+  core:
+    build: ./requirements/core
+    container_name: core
+    env_file: .env
+    # restart: always
+    depends_on:
+      - rabbitmq
+    networks:
+      - my_network
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
