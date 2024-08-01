@@ -40,7 +40,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3000:3000" # Express 애플리케이션 포트
+      - "3000:3000"
     networks:
       - my_network
 
@@ -48,8 +48,9 @@ services:
     build: ./requirements/backend
     container_name: backend
     restart: always
-    ports:
-      - "5000:5000"
+    depends_on:
+      - rabbitmq
+      - mysql
     networks:
       - my_network
 
