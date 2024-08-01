@@ -144,6 +144,17 @@ app.post('/submit', async (req, res) => {
   `;
   try {
     await mysqlConn.query(query, [id, language, code]);
+
+    const channel = await rabbitMQConn.createChannel();
+
+    const queue = 'my_queue';
+    await channel.assertQueue(queue, { durable: false });
+
+    const message = JSON.stringify({ id, language, code });
+    await channel.sendToQueue(queue, Buffer.from(message));
+
+    channel.close();
+
     res.status(200).json({ message: 'Code submitted successfully!' });
   } catch (err) {
     console.error('Error inserting data into MySQL:', err);
