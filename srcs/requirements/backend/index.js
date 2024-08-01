@@ -1,111 +1,102 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
+const amqp = require('amqplib/callback_api');
 
 const port = 5000;
+const RABBITMQ_URL = 'amqp://rabbitmq';
 
-const connection = mysql.createConnection({
-  host: 'mysql',
-  user: 'user',
-  password: 'password',
-  database: 'OJ'
-});
+let connection;
 
-const connectWithRetry = () => {
+const connectWithRetry = async () => {
   const retryInterval = 3000; // 재시도 간격 (밀리초 단위)
-  let connection;
-
   while (!connection) {
     try {
-      connection = mysql.createConnection({
+      await new Promise(resolve => setTimeout(resolve, retryInterval));
+      connection = await mysql.createConnection({
         host: 'mysql',
         user: 'user',
         password: 'password',
         database: 'OJ'
       });
-      connection.connect(err => {
-        if (err) throw err;
-        console.log('Connected to database.');
-      });
+      console.log('Connected to database.');
     } catch (error) {
       console.error('Database connection failed:', error.stack);
       console.log(`Retrying database connection in ${retryInterval / 1000} seconds...`);
-      const start = Date.now();
-      while (Date.now() - start < retryInterval) {} // 재시도 대기
     }
   }
 };
 connectWithRetry();
 
-app.use(cors()); // CORS 설정
+// app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000/api' // 필요한 도메인만 허용
+}));
 
-app.get('/problem', (req, res) => {
+app.get('/problem', async (req, res) => {
   // 단일 문제 정보 가져오기
-  console.log(req.query);
   const { id } = req.query;
   if (!id) {
     return res.status(400).json({ error: '문제 ID가 필요합니다.' });
   }
   const query = 'SELECT * FROM problem WHERE id = ?';
-  connection.query(query, [id], (err, results) => {
-    if (err) {
-      console.error('Database query error:', err);
-      return res.status(500).json({ error: 'Database query error' });
-    }
-
+  try {
+    // 단일 문제
+    const [results] = await connection.query(query, [id]);
     if (results.length === 0) {
       return res.status(404).json({ error: '문제를 찾을 수 없습니다.' });
     }
-    console.log(results[0]);
-    res.json(results[0]); // 결과 중 첫 번째 문제 반환
-  });
+    res.json(results[0]);
+  } catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database query error' });
+  }
 });
 
-app.get('/problem-set', (req, res) => {
-  // 문제 목록 가져오기
-  const query = 'SELECT * FROM problem';
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Database query error' });
-    }
+app.get('/problem-set', async (req, res) => {
+  try {
+    // 문제 목록 가져오기
+    const query = 'SELECT * FROM problem';
+    const [results] = await connection.query(query);
     res.json(results);
-  });
+  } catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database query error' });
+  }
 });
 
-app.get('/results', (req, res) => {
+app.get('/results', async (req, res) => {
   // 채점 결과 가져오기
   const query = 'SELECT * FROM code';
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Database query error' });
-    }
+  try {
+    // 문제 목록 가져오기
+    const [results] = await connection.query(query);
     res.json(results);
-  });
+  } catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database query error' });
+  }
 });
 
-app.get('/code', (req, res) => {
+app.get('/code', async (req, res) => {
   // 단일 문제 정보 가져오기
-  console.log(req.query);
   const { id } = req.query;
   if (!id) {
     return res.status(400).json({ error: '제출 ID가 필요합니다.' });
   }
   const query = 'SELECT * FROM code WHERE id = ?';
-  connection.query(query, [id], (err, results) => {
-    if (err) {
-      console.error('Database query error:', err);
-      return res.status(500).json({ error: 'Database query error' });
-    }
-
+  try {
+    // 문제 목록 가져오기
+    const [results] = await connection.query(query, [id]);
     if (results.length === 0) {
       return res.status(404).json({ error: '제출 결과를 찾을 수 없습니다.' });
     }
-    console.log(results[0]);
-    res.json(results[0]); // 결과 중 첫 번째 문제 반환
-  });
+    res.json(results[0]);
+  } catch (err) {
+    console.error('Database query error:', err);
+    res.status(500).json({ error: 'Database query error' });
+  }
 });
 
 
@@ -115,30 +106,23 @@ app.use(express.json());
 // URL-encoded 데이터 파싱
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/submit', (req, res) => {
+app.post('/submit', async (req, res) => {
   const { id, language, code } = req.body;
 
-  // 입력 값 검증
   if (!id || !language || !code) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
-
-  // SQL 쿼리문 작성
   const query = `
     INSERT INTO code (problem_id, language, code, result)
     VALUES (?, ?, ?, 0)
   `;
-
-  // 데이터베이스에 데이터 삽입
-  connection.query(query, [id, language, code], (err, results) => {
-    if (err) {
-      console.error('Error inserting data into MySQL:', err);
-      return res.status(500).json({ error: 'Failed to submit code' });
-    }
-
-    // 성공적으로 저장되었음을 응답
+  try {
+    await connection.query(query, [id, language, code]);
     res.status(200).json({ message: 'Code submitted successfully!' });
-  });
+  } catch (err) {
+    console.error('Error inserting data into MySQL:', err);
+    res.status(500).json({ error: 'Failed to submit code' });
+  }
 });
 
 app.listen(port, () => {
