@@ -31,7 +31,7 @@ connectWithRetry();
 
 // app.use(cors());
 app.use(cors({
-  origin: 'http://localhost:3000/api' // 필요한 도메인만 허용
+  origin: 'http://frontend:3000/api' // 필요한 도메인만 허용
 }));
 
 app.get('/problem', async (req, res) => {
