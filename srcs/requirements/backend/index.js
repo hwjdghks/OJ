@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 const mysql = require('mysql2/promise');
 const amqp = require('amqplib/callback_api');
+require('dotenv').config();
 
 const port = 5000;
 const RABBITMQ_URL = 'amqp://rabbitmq';
@@ -15,10 +16,10 @@ const connectWithRetry = async () => {
     try {
       await new Promise(resolve => setTimeout(resolve, retryInterval));
       connection = await mysql.createConnection({
-        host: 'mysql',
-        user: 'user',
-        password: 'password',
-        database: 'OJ'
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE
       });
       console.log('Connected to database.');
     } catch (error) {
