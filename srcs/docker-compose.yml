@@ -3,7 +3,7 @@ services:
     build: ./requirements/core
     container_name: core
     env_file: .env
-    # restart: always
+    restart: always
     depends_on:
       - rabbitmq
     networks:

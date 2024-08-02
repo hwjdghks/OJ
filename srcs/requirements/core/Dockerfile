@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY core.py .
 
 # 애플리케이션 실행
-CMD ["python", "core.py"]
+CMD ["python", "-u", "core.py"]

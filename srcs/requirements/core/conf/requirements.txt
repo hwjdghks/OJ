@@ -1,2 +1,2 @@
-pika
+aio_pika
 docker
