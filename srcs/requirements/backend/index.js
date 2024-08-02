@@ -9,7 +9,7 @@ const port = 5000;
 
 let mysqlConn;
 const mysqlConntWithRetry = async () => {
-  const retryInterval = 3000; // 재시도 간격 (밀리초 단위)
+  const retryInterval = 15000; // 재시도 간격 (밀리초 단위)
   while (!mysqlConn) {
     try {
       await new Promise(resolve => setTimeout(resolve, retryInterval));
@@ -32,7 +32,7 @@ let rabbitMQConn;
 const RABBITMQ_URL = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}`;
 
 const rabbitMQConntWithRetry = async () => {
-  const retryInterval = 3000; // 재시도 간격 (밀리초 단위)
+  const retryInterval = 15000; // 재시도 간격 (밀리초 단위)
   while (!rabbitMQConn) {
     try {
       await new Promise(resolve => setTimeout(resolve, retryInterval));
@@ -151,6 +151,7 @@ app.post('/submit', async (req, res) => {
     await channel.assertQueue(queue, { durable: false });
 
     const message = JSON.stringify({ id, language, code });
+    console.log(message)
     await channel.sendToQueue(queue, Buffer.from(message));
 
     channel.close();
