@@ -5,7 +5,6 @@ export async function GET() {
 
     // 백엔드 서버에 GET 요청을 보냅니다.
     const response = await fetch(backendUrl, { cache: 'no-store' });
-    console.log(response);
     // 응답 상태 코드 확인
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
