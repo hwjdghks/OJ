@@ -3,6 +3,7 @@ import os
 import json
 import multiprocessing
 import time
+import psutil
 
 rabbit_host = os.getenv('RABBITMQ_HOST')
 rabbit_user = os.getenv('RABBITMQ_USER')
@@ -43,7 +44,9 @@ def worker(worker_id):
     channel.start_consuming()
 
 def main():
-    num_workers = 4  # 원하는 워커 수를 지정하세요
+    cpu_cores = psutil.cpu_count()
+    print(f"cpu_cores: {cpu_cores}")
+    num_workers = cpu_cores  # 원하는 워커 수를 지정하세요
     workers = []
 
     for i in range(num_workers):
