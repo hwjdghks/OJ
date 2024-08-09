@@ -1,47 +1,59 @@
-import asyncio
-import aio_pika
+import pika
 import os
+import json
+import multiprocessing
 import time
 
-rabbit_host = os.getenv('RABBITMQ_HOST', 'localhost')
-rabbit_user = os.getenv('RABBITMQ_USER', 'guest')
-rabbit_password = os.getenv('RABBITMQ_PASSWORD', 'guest')
+rabbit_host = os.getenv('RABBITMQ_HOST')
+rabbit_user = os.getenv('RABBITMQ_USER')
+rabbit_password = os.getenv('RABBITMQ_PASSWORD')
 
-async def process_message(message_body):
-    print(f"Processing message: {message_body}")
-    if "error" in message_body:
-        raise ValueError("Simulated processing error")
-    await asyncio.sleep(1)  # Simulate a long-running task
+def process_message(message):
+    # 10초 걸리는 작업 시뮬레이션
+    time.sleep(10)
+    data = json.loads(message)
+    id = data.get('submit_id')
+    return str(id)
 
-async def main():
-    connection = None
-    try:
-        print(f"Attempting to connect to RabbitMQ at amqp://{rabbit_user}:{rabbit_password}@{rabbit_host}...")
-        connection = await aio_pika.connect_robust(f"amqp://{rabbit_user}:{rabbit_password}@{rabbit_host}")
-        print("Message Queue connected.")
-        async with connection:
-            async with connection.channel() as channel:  # Create a new channel
-                print("Channel created.")
-                queue = await channel.declare_queue("my_queue")  # Declare the queue
-                print("Queue declared.")
-                async for message in queue:
-                    try:
-                        async with message.process():  # Start processing the message
-                            await process_message(message.body.decode())  # Process the message content
-                            # If processing is successful, the message is acknowledged (ack) automatically
-                    except Exception as e:
-                        print(f"Error processing message: {e}")
-                        # If an error occurs, nack the message to requeue it for processing
-                        await message.nack(requeue=True)  # The message will be moved to the end of the queue
-    except aio_pika.exceptions.AMQPConnectionError as e:
-        print(f"AMQP Connection Error: {e}")
-    except Exception as e:
-        print(f"Unexpected Error: {e}")
-    finally:
-        if connection:
-            await connection.close()  # Ensure the connection is closed
+def callback(ch, method, properties, body):
+    print(f" [{ch.channel_number}] Received {body}")
+    result = process_message(body.decode())
 
-if __name__ == "__main__":
-    print("Sleeping before start...")
-    time.sleep(15.0)
-    asyncio.run(main())
+    # 결과를 message 큐로 전송
+    ch.basic_publish(exchange='',
+                     routing_key='message',
+                     body=result)
+    print(f" [{ch.channel_number}] Sent {result}")
+
+    # 메시지 처리 완료 확인
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
+def worker(worker_id):
+    credentials = pika.PlainCredentials(rabbit_user, rabbit_password)
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, credentials=credentials))
+    channel = connection.channel()
+
+    channel.queue_declare(queue='my_queue')
+    channel.queue_declare(queue='message')
+
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue='my_queue', on_message_callback=callback)
+
+    print(f' [*] Worker {worker_id} waiting for messages. To exit press CTRL+C')
+    channel.start_consuming()
+
+def main():
+    num_workers = 4  # 원하는 워커 수를 지정하세요
+    workers = []
+
+    for i in range(num_workers):
+        p = multiprocessing.Process(target=worker, args=(i,))
+        workers.append(p)
+        p.start()
+
+    for p in workers:
+        p.join()
+
+if __name__ == '__main__':
+    time.sleep(15)
+    main()

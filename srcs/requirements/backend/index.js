@@ -1,10 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const app = express();
-const mysql = require('mysql2/promise');
-const amqp = require('amqplib');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import mysql from 'mysql2/promise';
+import amqp from 'amqplib';
+import dotenv from 'dotenv';
 
+const app = express();
+dotenv.config();
 const port = 5000;
 
 let mysqlConn;
@@ -37,7 +38,7 @@ const rabbitMQConntWithRetry = async () => {
     try {
       await new Promise(resolve => setTimeout(resolve, retryInterval));
       rabbitMQConn = await amqp.connect(RABBITMQ_URL);
-      console.log('connect success: ' + rabbitMQConn);
+      console.log('Connected to RabbitMQ.');
 
       process.once('SIGINT', async () => {
         if (rabbitMQConn) {
@@ -46,29 +47,40 @@ const rabbitMQConntWithRetry = async () => {
         }
         process.exit(0); // 정상 종료를 위해 exit 호출
       });
+
+      // 초기화가 완료된 후에 채널 생성
+      const mainChannel = await rabbitMQConn.createChannel();
+      const mainQueue = 'message';
+      await mainChannel.assertQueue(mainQueue, { durable: false });
+
+      mainChannel.consume(mainQueue, async (msg) => {
+        console.log("UPDATE REQUEST RECEIVED");
+        const id = JSON.parse(msg.content.toString());
+        console.log("id = " + id);
+        const sql = 'UPDATE code SET result = ? WHERE id = ?';
+        await mysqlConn.query(sql, [100 + id, id]);
+      });
+
     } catch (error) {
-      console.error('Connection error:', error);
-      console.log(`Retrying Message Queue connection in ${retryInterval / 1000} seconds...`);
+      console.error('RabbitMQ connection error:', error);
+      console.log(`Retrying RabbitMQ connection in ${retryInterval / 1000} seconds...`);
     }
   }
   console.log('Connected to Message Queue.');
 };
 rabbitMQConntWithRetry();
 
-// app.use(cors());
 app.use(cors({
   origin: 'http://frontend:3000/api' // 필요한 도메인만 허용
 }));
 
 app.get('/problem', async (req, res) => {
-  // 단일 문제 정보 가져오기
   const { id } = req.query;
   if (!id) {
     return res.status(400).json({ error: '문제 ID가 필요합니다.' });
   }
   const query = 'SELECT * FROM problem WHERE id = ?';
   try {
-    // 단일 문제
     const [results] = await mysqlConn.query(query, [id]);
     if (results.length === 0) {
       return res.status(404).json({ error: '문제를 찾을 수 없습니다.' });
@@ -82,7 +94,6 @@ app.get('/problem', async (req, res) => {
 
 app.get('/problem-set', async (req, res) => {
   try {
-    // 문제 목록 가져오기
     const query = 'SELECT * FROM problem';
     const [results] = await mysqlConn.query(query);
     res.json(results);
@@ -106,14 +117,12 @@ app.get('/results', async (req, res) => {
 });
 
 app.get('/code', async (req, res) => {
-  // 단일 문제 정보 가져오기
   const { id } = req.query;
   if (!id) {
     return res.status(400).json({ error: '제출 ID가 필요합니다.' });
   }
   const query = 'SELECT * FROM code WHERE id = ?';
   try {
-    // 문제 목록 가져오기
     const [results] = await mysqlConn.query(query, [id]);
     if (results.length === 0) {
       return res.status(404).json({ error: '제출 결과를 찾을 수 없습니다.' });
@@ -143,14 +152,13 @@ app.post('/submit', async (req, res) => {
     VALUES (?, ?, ?, 0)
   `;
   try {
-    await mysqlConn.query(query, [id, language, code]);
+    const [result] = await mysqlConn.query(query, [id, language, code]);
+    const submit_id = result.insertId;
 
     const channel = await rabbitMQConn.createChannel();
-
     const queue = 'my_queue';
     await channel.assertQueue(queue, { durable: false });
-
-    const message = JSON.stringify({ id, language, code });
+    const message = JSON.stringify({ submit_id, language, code });
     console.log(message)
     await channel.sendToQueue(queue, Buffer.from(message));
 
