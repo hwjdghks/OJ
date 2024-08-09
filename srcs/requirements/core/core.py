@@ -4,6 +4,7 @@ import json
 import multiprocessing
 import time
 import psutil
+import docker
 
 rabbit_host = os.getenv('RABBITMQ_HOST')
 rabbit_user = os.getenv('RABBITMQ_USER')
