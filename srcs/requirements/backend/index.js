@@ -58,7 +58,7 @@ const rabbitMQConntWithRetry = async () => {
         const id = JSON.parse(msg.content.toString());
         console.log("id = " + id);
         const sql = 'UPDATE code SET result = ? WHERE id = ?';
-        await mysqlConn.query(sql, [100 + id, id]);
+        await mysqlConn.query(sql, [100 + id, 2]);
       });
 
     } catch (error) {
