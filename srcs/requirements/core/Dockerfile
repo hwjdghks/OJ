@@ -12,6 +12,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 애플리케이션 코드 복사
 COPY core.py .
+COPY C.Dockerfile .
+COPY C.sh .
 
 # 애플리케이션 실행
 CMD ["python", "-u", "core.py"]
