@@ -6,6 +6,8 @@ services:
     restart: always
     depends_on:
       - rabbitmq
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - my_network
 

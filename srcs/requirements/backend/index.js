@@ -158,7 +158,7 @@ app.post('/submit', async (req, res) => {
     const channel = await rabbitMQConn.createChannel();
     const queue = 'my_queue';
     await channel.assertQueue(queue, { durable: false });
-    const message = JSON.stringify({ submit_id, language, code });
+    const message = JSON.stringify({ id, submit_id, language, code });
     console.log(message)
     await channel.sendToQueue(queue, Buffer.from(message));
 

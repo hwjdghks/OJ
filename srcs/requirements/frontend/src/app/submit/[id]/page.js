@@ -7,7 +7,7 @@ const SubmitPage = ({ params }) => {
   const router = useRouter();
   const { id } = params; // URL의 [id]를 가져옵니다.
   
-  const [language, setLanguage] = useState('Python');
+  const [language, setLanguage] = useState('C');
   const [code, setCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -42,12 +42,6 @@ const SubmitPage = ({ params }) => {
       router.push(`/results`);
     }
   };
-  
-  const handleResultsClick = () => {
-    if (id) {
-      router.push(`/results`); // 버튼 클릭 시 페이지 이동
-    }
-  };
 
   return (
     <div>
@@ -65,9 +59,9 @@ const SubmitPage = ({ params }) => {
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
           >
-            <option value="Python">Python</option>
             <option value="C">C</option>
             <option value="C++">C++</option>
+            <option value="Python">Python</option>
             {/* 추가적인 언어 옵션을 여기에 추가할 수 있습니다 */}
           </select>
         </div>
