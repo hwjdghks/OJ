@@ -117,7 +117,14 @@ def callback(ch: Channel, method: Basic.Deliver, properties: BasicProperties, bo
 
 def worker(worker_id):
     credentials = pika.PlainCredentials(rabbit_user, rabbit_password)
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbit_host, credentials=credentials))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(
+            host=rabbit_host,
+            credentials=credentials,
+            connection_attempts=10,
+            retry_delay=2
+        )
+    )
     channel = connection.channel()
 
     channel.queue_declare(queue='my_queue')
@@ -144,7 +151,6 @@ def main():
         p.join()
 
 if __name__ == '__main__':
-    time.sleep(15)
     current_path = os.getcwd()
     print("현재 경로 위치:", current_path)
     main()
