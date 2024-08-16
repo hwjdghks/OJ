@@ -13,7 +13,6 @@ const mysqlConntWithRetry = async () => {
   const retryInterval = 15000; // 재시도 간격 (밀리초 단위)
   while (!mysqlConn) {
     try {
-      await new Promise(resolve => setTimeout(resolve, retryInterval));
       mysqlConn = await mysql.createConnection({
         host: process.env.MYSQL_HOST,
         user: process.env.MYSQL_USER,
@@ -36,7 +35,6 @@ const rabbitMQConntWithRetry = async () => {
   const retryInterval = 15000; // 재시도 간격 (밀리초 단위)
   while (!rabbitMQConn) {
     try {
-      await new Promise(resolve => setTimeout(resolve, retryInterval));
       rabbitMQConn = await amqp.connect(RABBITMQ_URL);
       console.log('Connected to RabbitMQ.');
 
