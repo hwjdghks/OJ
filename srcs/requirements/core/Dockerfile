@@ -9,11 +9,12 @@ COPY ./conf/requirements.txt .
 
 # 의존성 설치
 RUN pip install --no-cache-dir -r requirements.txt
+RUN rm requirements.txt
 
 # 애플리케이션 코드 복사
 COPY core.py .
-COPY c.Dockerfile .
-COPY c.sh .
-COPY data ./data
+COPY callback.py .
+COPY grade_info.py .
+COPY tools tools
 # 애플리케이션 실행
 CMD ["python", "-u", "core.py"]

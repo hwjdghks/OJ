@@ -55,10 +55,10 @@ const rabbitMQConntWithRetry = async () => {
 
       mainChannel.consume(mainQueue, async (msg) => {
         console.log("UPDATE REQUEST RECEIVED");
-        const id = JSON.parse(msg.content.toString());
-        console.log("id = " + id);
+        const response = JSON.parse(msg.content.toString());
+        const { submit_id, result } = response;
         const sql = 'UPDATE code SET result = ? WHERE id = ?';
-        await mysqlConn.query(sql, [100 + id, 2]);
+        await mysqlConn.query(sql, [result, submit_id]);
       });
 
     } catch (error) {
@@ -158,7 +158,11 @@ app.post('/submit', async (req, res) => {
     const channel = await rabbitMQConn.createChannel();
     const queue = 'my_queue';
     await channel.assertQueue(queue, { durable: false });
-    const message = JSON.stringify({ id, submit_id, language, code });
+    // json 채점 데이터 전송
+    const problem_id = id;
+    const time = 1;
+    const memory = 1;
+    const message = JSON.stringify({ problem_id, submit_id, language, code, time, memory });
     console.log(message)
     await channel.sendToQueue(queue, Buffer.from(message));
 
