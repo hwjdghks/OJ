@@ -35,55 +35,100 @@ ENTRYPOINT ["bash", "run.sh"]
     with open(new_docker_file, 'w') as file:
         file.write(grade_server_docker)
 
-    # 도커 파일 빌드
-    # 컴파일 실패시 빌드 에러 발생
     client = docker.from_env()
-    image, _ = client.images.build(
-        path=grade_dir_path,                        # 빌드 컨텍스트 경로 설정
-        tag=f'{info.submit_id}:{info.util_file}',   # 이미지 태그 설정
-        rm=True                                     # 임시 컨테이너 삭제
+
+    image_id = None
+    exit_code = 1  # Default to 1 (failure) unless set otherwise
+
+    last_stream_log = None
+    try:
+        # 도커 파일 빌드
+        build_stream = client.api.build(
+            path=grade_dir_path,
+            tag=f'{info.submit_id}:{info.util_file}',
+            decode=True,
+            rm=True
         )
 
-    # 이미지 실행
-    container = client.containers.run(
-        image=image.id,
-        name=f'grade-{info.submit_id}',
-        detach=True,
-        security_opt=["no-new-privileges"],
-        read_only=True,
-        user='score',
-        init=True
-    )
-    print(f'컨테이너 시작됨: {container.id}')
+        for chunk in build_stream:
+            if 'stream' in chunk:
+                print(chunk['stream'], end='')
+                last_stream_log = chunk['stream']  # 저장하여 마지막 stream 추적
+            elif 'error' in chunk:
+                print(f"Build error: {chunk['error']}", end='')
+            elif 'status' in chunk:
+                print(f"Status: {chunk['status']}", end='')
+            elif 'aux' in chunk:
+                aux = chunk['aux']
+                if 'ID' in aux:
+                    image_id = aux['ID']
+                    print(f"Image ID: {image_id}")
 
-    # 결과 취합
-    exit_code = container.wait()
-    logs = container.logs(stdout=True, stderr=True)
-    print(f'컨테이너 로그: {logs.decode("utf-8")}')
+        if not image_id:
+            raise RuntimeError("Failed to get image ID from build stream")
 
-    pprint(exit_code)
-    exit_code = exit_code['StatusCode']
-    print(f'컨테이너 종료 코드: {exit_code}')
+        # 이미지 실행
+        container = client.containers.run(
+            image=image_id,
+            name=f'grade-{info.submit_id}',
+            detach=True,
+            security_opt=["no-new-privileges"],
+            read_only=True,
+            user='score',
+            init=True
+        )
+        print(f'컨테이너 시작됨: {container.id}')
 
-    # 정리
-    container.stop()
-    container.remove()
-    client.images.remove(image=image.id)
-    if os.path.exists(grade_dir_path):
-        shutil.rmtree(grade_dir_path)
+        # 결과 취합
+        exit_code = container.wait()
+        logs = container.logs(stdout=True, stderr=True)
+        print(f'컨테이너 로그: {logs.decode("utf-8")}')
+
+        exit_code = exit_code['StatusCode']
+        print(f'컨테이너 종료 코드: {exit_code}')
+
+    except docker.errors.BuildError as e:
+        print(f"Build error: {str(e)}")
+    except docker.errors.ContainerError as e:
+        print(f"Container error: {str(e)}")
+    except docker.errors.APIError as e:
+        print(f"API error: {str(e)}")
+    finally:
+        # 정리
+        if image_id:
+            try:
+                client.images.remove(image=image_id, force=True)
+            except docker.errors.ImageNotFound:
+                print(f"Image {image_id} not found for removal.")
+            except docker.errors.APIError as e:
+                print(f"Error removing image: {str(e)}")
+
+        if 'container' in locals():
+            try:
+                container.stop()
+                container.remove()
+            except docker.errors.APIError as e:
+                print(f"Error removing container: {str(e)}")
+
+        if os.path.exists(grade_dir_path):
+            shutil.rmtree(grade_dir_path)
+
+        # 마지막 빌드 에러 로그 출력
+        if last_stream_log:
+            print(f"마지막 빌드 로그: {last_stream_log}")
     
-    # 결과 메세지로 발송
-    _dict_response = {
-        'submit_id' : info.submit_id,
-        'result' : exit_code
-    }
-    response = json.dumps(_dict_response)
-    ch.basic_publish(
-        exchange='',
-        routing_key='message',
-        body=response
-    )
+        # 결과 메세지로 발송
+        _dict_response = {
+            'submit_id': info.submit_id,
+            'result': exit_code
+        }
+        response = json.dumps(_dict_response)
+        ch.basic_publish(
+            exchange='',
+            routing_key='message',
+            body=response
+        )
 
-    # 메시지 처리 완료 확인
-    ch.basic_ack(delivery_tag=method.delivery_tag)
-    print(f" [{ch.channel_number}] Sent {exit_code}")
+        # 메시지 처리 완료 확인
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+        print(f" [{ch.channel_number}] Sent {exit_code}")
