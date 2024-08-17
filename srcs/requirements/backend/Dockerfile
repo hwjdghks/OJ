@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # 애플리케이션 포트 노출
-EXPOSE 5000
+# EXPOSE 5000
 
 # 서버 실행
 CMD ["npm", "start"]
