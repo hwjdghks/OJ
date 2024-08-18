@@ -16,5 +16,7 @@ COPY core.py .
 COPY callback.py .
 COPY grade_info.py .
 COPY tools tools
+RUN sed -i 's/\r$//' ./tools/scripts/c.sh
+
 # 애플리케이션 실행
 CMD ["python", "-u", "core.py"]
