@@ -10,7 +10,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - my_network
+      - main_services
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -27,7 +27,7 @@ services:
     ports:
       - "15672:15672"
     networks:
-      - my_network
+      - main_services
 
   mysql:
     image: mysql:8.0
@@ -45,7 +45,7 @@ services:
       interval: 1s
       retries: 60
     networks:
-      - my_network
+      - main_services
 
   frontend:
     build: ./requirements/frontend
@@ -64,7 +64,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - my_network
+      - main_services
 
   backend:
     build: ./requirements/backend
@@ -77,8 +77,8 @@ services:
       rabbitmq:
         condition: service_healthy
     networks:
-      - my_network
+      - main_services
 
 networks:
-  my_network:
+  main_services:
     driver: bridge
