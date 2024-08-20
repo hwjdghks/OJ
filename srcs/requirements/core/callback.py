@@ -52,7 +52,8 @@ ENTRYPOINT ["bash", "run.sh"]
         security_opt=["no-new-privileges"],
         read_only=True,
         user='score',
-        init=True
+        init=True,
+        network_disabled=True,
     )
     print(f'컨테이너 시작됨: {container.id}')
 
