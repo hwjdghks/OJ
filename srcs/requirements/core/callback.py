@@ -28,7 +28,6 @@ def grade_code(ch: Channel, method: Basic.Deliver, properties: BasicProperties, 
     grade_server_docker = f'''
 FROM {info.util_file}:base
 COPY . .
-RUN {info.compile}
 ENTRYPOINT ["bash", "run.sh"]
 '''
     new_docker_file = f'{grade_dir_path}/Dockerfile'
@@ -36,7 +35,6 @@ ENTRYPOINT ["bash", "run.sh"]
         file.write(grade_server_docker)
 
     # 도커 파일 빌드
-    # 컴파일 실패시 빌드 에러 발생
     client = docker.from_env()
     image, _ = client.images.build(
         path=grade_dir_path,                        # 빌드 컨텍스트 경로 설정
@@ -50,7 +48,7 @@ ENTRYPOINT ["bash", "run.sh"]
         name=f'grade-{info.submit_id}',
         detach=True,
         security_opt=["no-new-privileges"],
-        read_only=True,
+        # read_only=True,
         user='score',
         init=True,
         network_disabled=True,
