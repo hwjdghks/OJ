@@ -47,12 +47,12 @@ export default function ProblemsPage() {
             </thead>
             <tbody>
               {problems.map((problem) => (
-                <tr key={problem.id} style={styles.tableRow}>
+                <tr key={problem.problem_id} style={styles.tableRow}>
                   <td style={{ ...styles.tableCell, ...styles.tableCellId, ...styles.tableCellSeparator }}>
-                    {problem.id}
+                    {problem.problem_id}
                   </td>
                   <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
-                    <Link href={`/problem/${problem.id}`}>
+                    <Link href={`/problem/${problem.problem_id}`}>
                       {problem.title}
                     </Link>
                   </td>

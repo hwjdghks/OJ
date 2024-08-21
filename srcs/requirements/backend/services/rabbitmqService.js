@@ -15,7 +15,7 @@ async function startConsume() {
     const response = JSON.parse(msg.content.toString());
     console.log(response);
     const { submit_id, result } = response;
-    const sql = 'UPDATE code SET result = ? WHERE id = ?';
+    const sql = 'UPDATE code SET submit_result = ? WHERE code_id = ?';
     await pool.query(sql, [result, submit_id]);
     channel.ack(msg);
   });

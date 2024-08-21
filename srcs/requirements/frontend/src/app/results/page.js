@@ -48,10 +48,10 @@ export default function ResultsPage() {
             </thead>
             <tbody>
               {results.map((result) => (
-                <tr key={result.id} style={styles.tableRow}>
+                <tr key={result.code_id} style={styles.tableRow}>
                   <td style={{ ...styles.tableCell, ...styles.tableCellId, ...styles.tableCellSeparator }}>
-                  <Link href={`/code/${result.id}`}>
-                    {result.id}
+                  <Link href={`/code/${result.code_id}`}>
+                    {result.code_id}
                     </Link>
                   </td>
                   <td style={{ ...styles.tableCell, ...styles.tableCellId, ...styles.tableCellSeparator }}>
@@ -60,7 +60,7 @@ export default function ResultsPage() {
                     </Link>
                   </td>
                   <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
-                  {result.result}
+                  {result.submit_result}
                   </td>
                   <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
                   {result.language}

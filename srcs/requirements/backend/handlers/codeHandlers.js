@@ -8,13 +8,14 @@ async function submitCodeHandler(req, res) {
   if (!id || !language || !code) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
-  const query = `
-    INSERT INTO code (problem_id, language, code, result)
+  const insert_query = `
+    INSERT INTO code (problem_id, language, code_content, submit_result)
     VALUES (?, ?, ?, 0)
   `;
+  const code_query ='SELECT time_limit, memory_limit FROM problem WHERE problem_id = ?';
   try {
     const pool = await mysqlConnect();
-    const [result] = await pool.query(query, [id, language, code]);
+    const [result] = await pool.query(insert_query, [id, language, code]);
     const submit_id = result.insertId;
 
     const rabbitMQConn = await rabbitConnect();
@@ -22,10 +23,9 @@ async function submitCodeHandler(req, res) {
     const queue = config.send_queue;
     await channel.assertQueue(queue, { durable: false });
 
-    const problem_id = id;
-    const time = 1;
-    const memory = 1;
-    const message = JSON.stringify({ problem_id, submit_id, language, code, time, memory });
+    const [problemResults] = await pool.query(code_query, [id]);
+    const { time_limit: time, memory_limit: memory } = problemResults[0];
+    const message = JSON.stringify({ problem_id: id, submit_id, language, code, time, memory });
     console.log(message);
     await channel.sendToQueue(queue, Buffer.from(message));
 
@@ -43,7 +43,7 @@ async function getCodeHandler(req, res) {
   if (!id) {
     return res.status(400).json({ error: '제출 ID가 필요합니다.' });
   }
-  const query = 'SELECT * FROM code WHERE id = ?';
+  const query = 'SELECT * FROM code WHERE code_id = ?';
   try {
     const pool = await mysqlConnect();
     const [results] = await pool.query(query, [id]);

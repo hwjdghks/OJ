@@ -5,7 +5,7 @@ async function getProblemHandler(req, res) {
   if (!id) {
     return res.status(400).json({ error: '문제 ID가 필요합니다.' });
   }
-  const query = 'SELECT * FROM problem WHERE id = ?';
+  const query = 'SELECT * FROM problem WHERE problem_id = ?';
   try {
     const pool = await mysqlConnect();
     const [results] = await pool.query(query, [id]);

@@ -2,7 +2,7 @@
 
 gcc -o Main Main.c
 if [ $? -ne 0 ]; then
-    exit 40 # runtime error
+    exit 30 # compile error
 fi
 # 'in' 폴더 내부의 파일 개수 계산
 file_count=$(ls ./in | wc -l)
