@@ -41,7 +41,7 @@ services:
       - ./requirements/mysql/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./requirements/mysql/conf/my.cnf:/etc/mysql/my.cnf
     healthcheck:
-      test: "mysql -uroot -p${MYSQL_ROOT_PASSWORD} OJ -e 'select 1'"
+      test: "mysql -uroot -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} -e 'select 1'"
       interval: 1s
       retries: 60
     networks:
