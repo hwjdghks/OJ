@@ -21,4 +21,4 @@ for i in $(seq 1 $file_count); do
         exit 20 # wrong answer
     fi
 done
-exit 0 # correct
+exit 10 # correct
