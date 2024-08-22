@@ -38,7 +38,7 @@ def main():
     print(f"cpu_cores: {cpu_cores}")
 
     docker_client = docker.from_env()
-    language_list = ('c', 'cpp')
+    language_list = ('c', 'cpp', 'python', 'java')
     for language in language_list:
         print("build docker image:", language)
         image, logs = docker_client.images.build(path='./tools', # 빌드 컨텍스트 경로 설정

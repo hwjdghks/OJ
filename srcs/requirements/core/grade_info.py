@@ -40,5 +40,12 @@ class grade_info:
             self.run = f'python3 {self.grade_file}.{self.file_ext}'
             self.time_limit = [3, 2]
             self.memory_limit = [2, 32]
+        elif language == 'Java':
+            self.util_file = 'java'
+            self.file_ext = 'java'
+            self.compile = ''
+            self.run = ''
+            self.time_limit = [3, 2]
+            self.memory_limit = [2, 32]
         else:
             pass

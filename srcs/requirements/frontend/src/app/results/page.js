@@ -60,7 +60,12 @@ export default function ResultsPage() {
                     </Link>
                   </td>
                   <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
-                  {result.submit_result}
+                    {result.submit_result === 0 && <span style={{ color: 'gray' }}>채점 진행 전</span>}
+                    {result.submit_result === 10 && <span style={{ color: 'green' }}>정답</span>}
+                    {result.submit_result === 20 && <span style={{ color: 'red' }}>틀렸습니다</span>}
+                    {result.submit_result === 30 && <span style={{ color: 'purple' }}>컴파일 에러</span>}
+                    {result.submit_result === 40 && <span style={{ color: 'orange' }}>런타임 에러</span>}
+                    {![0, 10, 20, 30, 40].includes(result.submit_result) && <span>{result.submit_result}</span>}
                   </td>
                   <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
                   {result.language}

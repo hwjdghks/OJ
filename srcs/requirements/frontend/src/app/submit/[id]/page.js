@@ -61,7 +61,8 @@ const SubmitPage = ({ params }) => {
           >
             <option value="C">C</option>
             <option value="C++">C++</option>
-            {/* <option value="Python">Python</option> */}
+            <option value="Python">Python3</option>
+            <option value="Java">Java11</option>
             {/* 추가적인 언어 옵션을 여기에 추가할 수 있습니다 */}
           </select>
         </div>
