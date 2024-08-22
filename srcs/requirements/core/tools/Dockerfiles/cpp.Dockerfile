@@ -8,7 +8,7 @@ RUN apt-get update -y && \
 # 작업 디렉터리 지정
 WORKDIR /tmp
 # 채점 스크립트 복사
-COPY scripts/c.sh run.sh
+COPY scripts/cpp.sh run.sh
 # non-root 유저 추가
 RUN useradd -m score
 # 계정 변경
