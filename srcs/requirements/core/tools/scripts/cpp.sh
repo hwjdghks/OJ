@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gcc -o Main Main.c
+g++ -o Main Main.cpp
 if [ $? -ne 0 ]; then
     exit 30 # compile error
 fi
