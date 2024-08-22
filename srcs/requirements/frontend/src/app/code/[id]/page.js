@@ -41,7 +41,7 @@ export default function CodePage()  {
       {problem ? (
         <div>
           <h1>{problem.language}</h1>
-          <code style={{ whiteSpace: 'pre' }}>{problem.code}</code>
+          <code style={{ whiteSpace: 'pre' }}>{problem.code_content}</code>
         </div>
         
       ) : (
