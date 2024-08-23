@@ -1,5 +1,5 @@
-// app/problems/page.js
-'use client'
+'use client';
+
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -28,14 +28,14 @@ export default function ProblemsPage() {
     fetchProblems();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <p style={styles.loading}>로딩 중...</p>;
+  if (error) return <p style={styles.error}>문제를 가져오는 데 실패했습니다: {error}</p>;
 
   return (
     <div style={styles.container}>
-      <h2>문제 목록</h2>
+      <h2 style={styles.heading}>문제 목록</h2>
       {problems.length === 0 ? (
-        <p>등록된 문제가 없습니다.</p>
+        <p style={styles.noProblems}>등록된 문제가 없습니다.</p>
       ) : (
         <div style={styles.scrollContainer}>
           <table style={styles.table}>
@@ -52,7 +52,7 @@ export default function ProblemsPage() {
                     {problem.problem_id}
                   </td>
                   <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
-                    <Link href={`/problem/${problem.problem_id}`}>
+                    <Link href={`/problem/${problem.problem_id}`} style={styles.link}>
                       {problem.title}
                     </Link>
                   </td>
@@ -70,14 +70,19 @@ const styles = {
   container: {
     padding: '20px',
     fontFamily: 'Arial, sans-serif',
-    maxWidth: '800px', // 최대 너비 설정
-    margin: '0 auto', // 중앙 정렬
+    maxWidth: '800px',
+    margin: '0 auto',
+  },
+  heading: {
+    fontSize: '2rem',
+    fontWeight: 'bold',
+    marginBottom: '20px',
   },
   table: {
     width: '100%',
     borderCollapse: 'collapse',
     marginTop: '20px',
-    tableLayout: 'fixed', // 열 너비 고정
+    tableLayout: 'fixed',
   },
   tableHeader: {
     backgroundColor: '#f4f4f4',
@@ -85,33 +90,46 @@ const styles = {
     borderBottom: '2px solid #ddd',
   },
   tableHeaderCellId: {
-    textAlign: 'center', // ID 헤더의 텍스트 중앙 정렬
-    width: '50px',
+    textAlign: 'center',
+    width: '10%', // Width for the ID column
   },
   tableCell: {
     border: '1px solid #ddd',
     padding: '8px',
-    textOverflow: 'ellipsis', // 긴 내용 생략
-    overflow: 'hidden', // 넘치는 내용 숨김
-    whiteSpace: 'nowrap', // 줄 바꿈 방지
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
   tableCellId: {
-    textAlign: 'right', // ID 열의 값 우측 정렬
+    textAlign: 'right',
   },
   tableCellTitle: {
-    textAlign: 'center', // 제목 열의 텍스트 좌측 정렬
-    width: 'calc(100% - 50px)', // 제목 열의 너비를 계산하여 ID 열을 제외합니다.
+    textAlign: 'center',
   },
   tableCellSeparator: {
     borderRight: '1px solid #ddd',
   },
   tableRow: {
-    backgroundColor: '#fff',
-    '&:nthChild(even)': {
-      backgroundColor: '#f9f9f9',
-    },
+    backgroundColor: '#ffffff',
   },
   scrollContainer: {
-    overflowX: 'auto', // 가로 스크롤 허용
+    overflowX: 'auto',
+  },
+  loading: {
+    fontSize: '1rem',
+    color: '#007bff',
+  },
+  error: {
+    fontSize: '1rem',
+    color: '#dc3545',
+  },
+  noProblems: {
+    fontSize: '1rem',
+    color: '#333',
+  },
+  link: {
+    textDecoration: 'none',
+    color: '#0056b3', // Slightly muted blue
+    fontWeight: 'bold',
   },
 };

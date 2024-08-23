@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -6,17 +7,23 @@ export default function ResultsPage() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const resultsPerPage = 20;
 
   useEffect(() => {
-    // Fetch problems data from the API
     async function fetchResults() {
+      setLoading(true);
+      setError(null);
+
       try {
-        const response = await fetch('/api/results'); // Ensure this matches the endpoint provided in your route.js
+        const response = await fetch(`/api/results?page=${currentPage}&limit=${resultsPerPage}`); // Adjust your API endpoint if needed
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        setResults(data);
+        setResults(data.results);
+        setTotalPages(Math.ceil(data.totalResults / resultsPerPage)); // Assuming totalResults is the total number of results
       } catch (error) {
         setError(error.message);
       } finally {
@@ -25,56 +32,86 @@ export default function ResultsPage() {
     }
 
     fetchResults();
-  }, []);
+  }, [currentPage]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  const handlePreviousPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  if (loading) return <p style={styles.loading}>로딩 중...</p>;
+  if (error) return <p style={styles.error}>오류 발생: {error}</p>;
 
   return (
     <div style={styles.container}>
-      <h2>문제 목록</h2>
+      <h2 style={styles.heading}>채점 결과</h2>
       {results.length === 0 ? (
-        <p>등록된 문제가 없습니다.</p>
+        <p style={styles.noResults}>등록된 코드가 없습니다.</p>
       ) : (
-        <div style={styles.scrollContainer}>
-          <table style={styles.table}>
-            <thead>
-              <tr style={styles.tableHeader}>
-                <th style={{ ...styles.tableCell, ...styles.tableHeaderCellId }}>제출 번호</th>
-                <th style={{ ...styles.tableCell, ...styles.tableHeaderCellId }}>문제 번호</th>
-                <th style={styles.tableCell}>체점 결과</th>
-                <th style={styles.tableCell}>언어</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.map((result) => (
-                <tr key={result.code_id} style={styles.tableRow}>
-                  <td style={{ ...styles.tableCell, ...styles.tableCellId, ...styles.tableCellSeparator }}>
-                  <Link href={`/code/${result.code_id}`}>
-                    {result.code_id}
-                    </Link>
-                  </td>
-                  <td style={{ ...styles.tableCell, ...styles.tableCellId, ...styles.tableCellSeparator }}>
-                    <Link href={`/problem/${result.problem_id}`}>
-                    {result.problem_id}
-                    </Link>
-                  </td>
-                  <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
-                    {result.submit_result === 0 && <span style={{ color: 'gray' }}>채점 진행 전</span>}
-                    {result.submit_result === 10 && <span style={{ color: 'green' }}>정답</span>}
-                    {result.submit_result === 20 && <span style={{ color: 'red' }}>틀렸습니다</span>}
-                    {result.submit_result === 30 && <span style={{ color: 'purple' }}>컴파일 에러</span>}
-                    {result.submit_result === 40 && <span style={{ color: 'orange' }}>런타임 에러</span>}
-                    {![0, 10, 20, 30, 40].includes(result.submit_result) && <span>{result.submit_result}</span>}
-                  </td>
-                  <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
-                  {result.language}
-                  </td>
+        <>
+          <div style={styles.scrollContainer}>
+            <table style={styles.table}>
+              <thead>
+                <tr style={styles.tableHeader}>
+                  <th style={{ ...styles.tableCell, ...styles.tableHeaderCellId, ...styles.tableHeaderCellSubmitId }}>제출 번호</th>
+                  <th style={{ ...styles.tableCell, ...styles.tableHeaderCellId, ...styles.tableHeaderCellProblemId }}>문제 번호</th>
+                  <th style={{ ...styles.tableCell, ...styles.tableHeaderCellResult }}>체점 결과</th>
+                  <th style={{ ...styles.tableCell, ...styles.tableHeaderCellLanguage }}>언어</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {results.map((result) => (
+                  <tr key={result.code_id} style={styles.tableRow}>
+                    <td style={{ ...styles.tableCell, ...styles.tableCellId, ...styles.tableCellSeparator }}>
+                      <Link href={`/code/${result.code_id}`} style={styles.link}>
+                        {result.code_id}
+                      </Link>
+                    </td>
+                    <td style={{ ...styles.tableCell, ...styles.tableCellId, ...styles.tableCellSeparator }}>
+                      <Link href={`/problem/${result.problem_id}`} style={styles.link}>
+                        {result.problem_id}
+                      </Link>
+                    </td>
+                    <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
+                      {result.submit_result === 0 && <span style={styles.statusPending}>채점 진행 전</span>}
+                      {result.submit_result === 10 && <span style={styles.statusAccepted}>정답</span>}
+                      {result.submit_result === 20 && <span style={styles.statusWrong}>틀렸습니다</span>}
+                      {result.submit_result === 30 && <span style={styles.statusCompileError}>컴파일 에러</span>}
+                      {result.submit_result === 40 && <span style={styles.statusRuntimeError}>런타임 에러</span>}
+                      {![0, 10, 20, 30, 40].includes(result.submit_result) && <span>{result.submit_result}</span>}
+                    </td>
+                    <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
+                      {result.language}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div style={styles.pagination}>
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              style={currentPage === 1 ? { ...styles.paginationButton, ...styles.hiddenButton } : styles.paginationButton}
+            >
+              이전
+            </button>
+            <span style={styles.pageInfo}>
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              style={currentPage === totalPages ? { ...styles.paginationButton, ...styles.hiddenButton } : styles.paginationButton}
+            >
+              다음
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
@@ -84,14 +121,19 @@ const styles = {
   container: {
     padding: '20px',
     fontFamily: 'Arial, sans-serif',
-    maxWidth: '800px', // 최대 너비 설정
-    margin: '0 auto', // 중앙 정렬
+    maxWidth: '800px',
+    margin: '0 auto',
+  },
+  heading: {
+    fontSize: '2rem',
+    fontWeight: 'bold',
+    marginBottom: '20px',
   },
   table: {
     width: '100%',
     borderCollapse: 'collapse',
     marginTop: '20px',
-    tableLayout: 'fixed', // 열 너비 고정
+    tableLayout: 'fixed',
   },
   tableHeader: {
     backgroundColor: '#f4f4f4',
@@ -99,33 +141,95 @@ const styles = {
     borderBottom: '2px solid #ddd',
   },
   tableHeaderCellId: {
-    textAlign: 'center', // ID 헤더의 텍스트 중앙 정렬
-    width: '100px',
+    textAlign: 'center',
+  },
+  tableHeaderCellSubmitId: {
+    width: '10%',
+  },
+  tableHeaderCellProblemId: {
+    width: '10%',
+  },
+  tableHeaderCellResult: {
+    width: '35%',
+  },
+  tableHeaderCellLanguage: {
+    width: '35%',
   },
   tableCell: {
     border: '1px solid #ddd',
     padding: '8px',
-    textOverflow: 'ellipsis', // 긴 내용 생략
-    overflow: 'hidden', // 넘치는 내용 숨김
-    whiteSpace: 'nowrap', // 줄 바꿈 방지
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
   tableCellId: {
-    textAlign: 'right', // ID 열의 값 우측 정렬
+    textAlign: 'right',
   },
   tableCellTitle: {
-    textAlign: 'center', // 제목 열의 텍스트 좌측 정렬
-    width: 'calc(100% - 200px)', // 제목 열의 너비를 계산하여 ID 열을 제외합니다.
+    textAlign: 'center',
   },
   tableCellSeparator: {
     borderRight: '1px solid #ddd',
   },
   tableRow: {
     backgroundColor: '#fff',
-    '&:nthChild(even)': {
+    '&:nth-child(even)': {
       backgroundColor: '#f9f9f9',
     },
   },
   scrollContainer: {
-    overflowX: 'auto', // 가로 스크롤 허용
+    overflowX: 'auto',
+  },
+  loading: {
+    fontSize: '1rem',
+    color: '#007bff',
+  },
+  error: {
+    fontSize: '1rem',
+    color: '#dc3545',
+  },
+  noResults: {
+    fontSize: '1rem',
+    color: '#333',
+  },
+  link: {
+    textDecoration: 'none',
+    color: '#0056b3',
+    fontWeight: 'bold',
+  },
+  statusPending: {
+    color: 'gray',
+  },
+  statusAccepted: {
+    color: 'green',
+  },
+  statusWrong: {
+    color: 'red',
+  },
+  statusCompileError: {
+    color: 'purple',
+  },
+  statusRuntimeError: {
+    color: 'orange',
+  },
+  pagination: {
+    marginTop: '20px',
+    textAlign: 'center',
+  },
+  paginationButton: {
+    padding: '10px 20px',
+    backgroundColor: '#0056b3',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    margin: '0 10px',
+  },
+  hiddenButton: {
+    visibility: 'hidden', // Hides the button but maintains its space
+  },
+  pageInfo: {
+    fontSize: '1rem',
+    margin: '0 10px',
   },
 };

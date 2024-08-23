@@ -1,2 +1,4 @@
 .DS_Store
 .env
+srcs/requirements/mysql/data
+srcs/requirements/core/sample_code

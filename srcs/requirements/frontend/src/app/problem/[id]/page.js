@@ -11,9 +11,7 @@ export default function ProblemPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id) { 
-      return;
-    }
+    if (!id) return;
 
     const fetchProblem = async () => {
       try {
@@ -23,7 +21,6 @@ export default function ProblemPage() {
         }
         const data = await response.json();
         setProblem(data);
-        console.log(problem);
       } catch (err) {
         setError(err);
       } finally {
@@ -36,56 +33,52 @@ export default function ProblemPage() {
 
   const handleSubmitClick = () => {
     if (id) {
-      router.push(`/submit/${id}`); // 버튼 클릭 시 페이지 이동
+      router.push(`/submit/${id}`);
     }
   };
 
-  if (loading) return <p>로딩 중...</p>;
-  if (error) return <p>문제를 가져오는 데 실패했습니다: {error.message}</p>;
+  if (loading) return <p style={styles.loading}>로딩 중...</p>;
+  if (error) return <p style={styles.error}>문제를 가져오는 데 실패했습니다: {error.message}</p>;
 
   return (
-    <div className="container mx-auto p-6">
+    <div style={styles.container}>
       {problem ? (
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-            <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
-            <table className="w-full border-collapse border border-gray-200">
-              <tbody>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2 text-right">메모리 제한 </th>
-                  <td className="border border-gray-300 px-4 py-2">{problem.memory_limit} MB</td>
-                </tr>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2 text-right">  시간 제한 </th>
-                  <td className="border border-gray-300 px-4 py-2">{problem.time_limit} 초</td>
-                </tr>
-              </tbody>
-            </table>
-            {/* 표 스타일로 메모리와 시간 제한 표시 */}
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">문제</h2>
-            </div>
+        <div style={styles.problemContainer}>
+          <h1 style={styles.title}>{problem.title}</h1>
+          <table style={styles.table}>
+            <tbody>
+              <tr style={styles.tableRow}>
+                <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>메모리 제한</th>
+                <td style={styles.tableCell}>{problem.memory_limit} MB</td>
+              </tr>
+              <tr style={styles.tableRow}>
+                <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>시간 제한</th>
+                <td style={styles.tableCell}>{problem.time_limit} 초</td>
+              </tr>
+            </tbody>
+          </table>
 
-            {/* 문제 설명 표시 */}
-            <p className="text-gray-700 mb-Z">{problem.description}</p>
-            
-            {/* 입력 및 출력 섹션 */}
-            <div className="bg-gray-100 p-4 rounded-md mb-6">
-              <h2 className="text-xl font-semibold mb-2">입력</h2>
-              <pre className="whitespace-pre-wrap text-l">{problem.input}</pre>
-            </div>
-            <div className="bg-gray-100 p-4 rounded-md mb-6">
-              <h2 className="text-xl font-semibold mb-2">출력</h2>
-              <pre className="whitespace-pre-wrap text-l">{problem.output}</pre>
-            </div>
-
-            <button
-              onClick={handleSubmitClick}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              제출하기
-            </button>
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>문제</h2>
+            <p style={styles.description}>{problem.description}</p>
           </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>입력</h2>
+            <pre style={styles.pre}>{problem.input}</pre>
+          </div>
+
+          <div style={styles.section}>
+            <h2 style={styles.sectionTitle}>출력</h2>
+            <pre style={styles.pre}>{problem.output}</pre>
+          </div>
+
+          <button
+            onClick={handleSubmitClick}
+            style={styles.button}
+          >
+            제출하기
+          </button>
         </div>
       ) : (
         <p>문제를 찾을 수 없습니다.</p>
@@ -93,3 +86,80 @@ export default function ProblemPage() {
     </div>
   );
 }
+
+const styles = {
+  container: {
+    padding: '20px',
+    fontFamily: 'Arial, sans-serif',
+    maxWidth: '800px',
+    margin: '0 auto',
+  },
+  problemContainer: {
+    backgroundColor: '#ffffff',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    borderRadius: '8px',
+    padding: '20px',
+  },
+  title: {
+    fontSize: '2rem',
+    fontWeight: '600',
+    marginBottom: '16px',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    marginBottom: '20px',
+  },
+  tableRow: {
+    borderBottom: '1px solid #ddd',
+  },
+  tableCell: {
+    border: '1px solid #ddd',
+    padding: '8px',
+    textAlign: 'left',
+  },
+  tableHeaderCell: {
+    fontWeight: '700',
+    backgroundColor: '#f4f4f4',
+  },
+  section: {
+    marginBottom: '20px',
+  },
+  sectionTitle: {
+    fontSize: '1.25rem',
+    fontWeight: '600',
+    marginBottom: '8px',
+  },
+  description: {
+    color: '#333',
+    lineHeight: '1.6',
+  },
+  pre: {
+    backgroundColor: '#f5f5f5',
+    padding: '12px',
+    borderRadius: '4px',
+    whiteSpace: 'pre-wrap',
+    overflowX: 'auto',
+    fontSize: '1rem', // Default font size
+  },
+  button: {
+    padding: '10px 20px', // Adjusted padding for a smaller button width
+    backgroundColor: '#0056b3',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    marginTop: '10px',
+    width: 'fit-content', // Adjust width to fit content
+  },
+  loading: {
+    fontSize: '1rem',
+    color: '#007bff',
+  },
+  error: {
+    fontSize: '1rem',
+    color: '#dc3545',
+  },
+};
