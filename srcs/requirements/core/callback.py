@@ -27,6 +27,8 @@ def grade_code(ch: Channel, method: Basic.Deliver, properties: BasicProperties, 
     # 채점 서버용 도커 파일 만들기
     grade_server_docker = f'''
 FROM {info.util_file}:base
+ENV TIMEOUT={info.time * info.time_limit[0] + info.time_limit[1]}
+ENV MEMOUT={1024 * (info.memory * info.memory_limit[0] + info.memory_limit[1])}
 COPY . .
 ENTRYPOINT ["bash", "run.sh"]
 '''

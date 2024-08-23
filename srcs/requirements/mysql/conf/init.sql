@@ -48,7 +48,7 @@ CREATE TABLE users (
 INSERT INTO problem (title, description, input, output, memory_limit, time_limit) VALUES
 ('A+B', '두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.', '첫째 줄에 A와 B가 주어진다. (0 < A, B < 10)', '첫째 줄에 A+B를 출력한다.', 128, 1),
 ('별 찍기', '첫째 줄에는 별 N개, 둘째 줄에는 별 N-1개, ..., N번째 줄에는 별 1개를 찍는 문제', '첫째 줄에 N(1 ≤ N ≤ 100)이 주어진다.', '첫째 줄부터 N번째 줄까지 차례대로 별을 출력한다.', 128, 1),
-('제목', '문제 설명', '입력 설명', '출력 설명', 1234, 1234);
+('제목', '문제 설명', '입력 설명', '출력 설명', 100, 10);
 
 INSERT INTO example (problem_id, input_example, output_example) VALUES
 (1, '1 2', '3'),

@@ -81,7 +81,8 @@ export default function ResultsPage() {
                       {result.submit_result === 20 && <span style={styles.statusWrong}>틀렸습니다</span>}
                       {result.submit_result === 30 && <span style={styles.statusCompileError}>컴파일 에러</span>}
                       {result.submit_result === 40 && <span style={styles.statusRuntimeError}>런타임 에러</span>}
-                      {![0, 10, 20, 30, 40].includes(result.submit_result) && <span>{result.submit_result}</span>}
+                      {result.submit_result === 50 && <span style={styles.statusWrong}>시간 초과</span>}
+                      {![0, 10, 20, 30, 40, 50].includes(result.submit_result) && <span>{result.submit_result}</span>}
                     </td>
                     <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
                       {result.language}
