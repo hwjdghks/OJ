@@ -10,6 +10,6 @@ WORKDIR /tmp
 # 채점 스크립트 복사
 COPY scripts/python.sh run.sh
 # non-root 유저 추가
-RUN useradd -m score
+RUN useradd -m grade
 # 계정 변경
-USER score
+USER grade

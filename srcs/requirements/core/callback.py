@@ -51,7 +51,7 @@ ENTRYPOINT ["bash", "run.sh"]
         detach=True,
         security_opt=["no-new-privileges"],
         # read_only=True,
-        user='score',
+        user='grade',
         init=True,
         network_disabled=True,
     )
