@@ -1,16 +1,19 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 const SubmitPage = ({ params }) => {
   const router = useRouter();
+  const searchParams = useSearchParams(); // 추가된 부분
   const { id } = params; // URL의 [id]를 가져옵니다.
 
   const [language, setLanguage] = useState('C');
   const [code, setCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  const title = searchParams.get('title'); // 쿼리 매개변수에서 제목을 가져옵니다.
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -45,6 +48,7 @@ const SubmitPage = ({ params }) => {
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>코드 제출</h1>
+      {title && <h2 style={styles.title}>{title}</h2>} {/* 문제 제목을 출력 */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -100,6 +104,11 @@ const styles = {
     fontSize: '2rem',
     fontWeight: 'bold',
     marginBottom: '20px',
+  },
+  title: {
+    fontSize: '1.5rem',
+    fontWeight: '600',
+    marginBottom: '16px',
   },
   form: {
     display: 'flex',

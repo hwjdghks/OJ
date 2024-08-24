@@ -32,13 +32,15 @@ export default function ProblemPage() {
   }, [id]);
 
   const handleSubmitClick = () => {
-    if (id) {
-      router.push(`/submit/${id}`);
+    if (id && problem) {
+      router.push(`/submit/${id}?title=${encodeURIComponent(problem.title)}`);
     }
   };
 
   if (loading) return <p style={styles.loading}>로딩 중...</p>;
   if (error) return <p style={styles.error}>문제를 가져오는 데 실패했습니다: {error.message}</p>;
+
+  const hasExamples = problem.examples.length > 0;
 
   return (
     <div style={styles.container}>
@@ -65,12 +67,49 @@ export default function ProblemPage() {
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>입력</h2>
-            <pre style={styles.pre}>{problem.input}</pre>
+            <pre style={styles.pre}>{problem.input || '입력이 주어지지 않습니다.'}</pre>
           </div>
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>출력</h2>
-            <pre style={styles.pre}>{problem.output}</pre>
+            <pre style={styles.pre}>{problem.output || '출력이 주어지지 않습니다.'}</pre>
+          </div>
+
+          <div style={styles.section}>
+            {hasExamples ? (
+              problem.examples.map((example, index) => (
+                <div key={index} style={styles.exampleContainer}>
+                  <div style={styles.exampleRow}>
+                    <div style={styles.exampleColumn}>
+                      <div style={styles.exampleLabel}>입력 예제 {index + 1}</div>
+                      <div style={styles.exampleContent}>
+                        {example.input_example || '입력이 주어지지 않습니다.'}
+                      </div>
+                    </div>
+                    <div style={styles.exampleColumn}>
+                      <div style={styles.exampleLabel}>출력 예제 {index + 1}</div>
+                      <div style={styles.exampleContent}>
+                        {example.output_example || '출력이 주어지지 않습니다.'}
+                      </div>
+                    </div>
+                  </div>
+                  {/* {index < problem.examples.length - 1 && <div style={styles.separator} />} */}
+                </div>
+              ))
+            ) : (
+              <div style={styles.exampleContainer}>
+                <div style={styles.exampleRow}>
+                  <div style={styles.exampleColumn}>
+                    <div style={styles.exampleLabel}>입력 예제 1</div>
+                    <div style={styles.exampleContent}>입력이 주어지지 않습니다.</div>
+                  </div>
+                  <div style={styles.exampleColumn}>
+                    <div style={styles.exampleLabel}>출력 예제 1</div>
+                    <div style={styles.exampleContent}>출력이 주어지지 않습니다.</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <button
@@ -140,10 +179,10 @@ const styles = {
     borderRadius: '4px',
     whiteSpace: 'pre-wrap',
     overflowX: 'auto',
-    fontSize: '1rem', // Default font size
+    fontSize: '1rem',
   },
   button: {
-    padding: '10px 20px', // Adjusted padding for a smaller button width
+    padding: '10px 20px',
     backgroundColor: '#0056b3',
     color: '#fff',
     border: 'none',
@@ -152,7 +191,7 @@ const styles = {
     fontSize: '1rem',
     fontWeight: 'bold',
     marginTop: '10px',
-    width: 'fit-content', // Adjust width to fit content
+    width: 'fit-content',
   },
   loading: {
     fontSize: '1rem',
@@ -161,5 +200,37 @@ const styles = {
   error: {
     fontSize: '1rem',
     color: '#dc3545',
+  },
+  exampleContainer: {
+    marginBottom: '20px',
+  },
+  exampleRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    borderBottom: '1px solid #ddd',
+    paddingBottom: '10px',
+    paddingTop: '10px',
+  },
+  exampleColumn: {
+    flex: '1',
+    marginRight: '20px',
+  },
+  exampleLabel: {
+    fontSize: '1.25rem',
+    fontWeight: 'bold',
+    marginBottom: '4px',
+  },
+  exampleContent: {
+    backgroundColor: '#f5f5f5',
+    padding: '10px',
+    borderRadius: '4px',
+    whiteSpace: 'pre-wrap',
+    overflowX: 'auto',
+  },
+  separator: {
+    border: '0',
+    borderTop: '1px solid #ddd',
+    margin: '10px 0',
   },
 };
