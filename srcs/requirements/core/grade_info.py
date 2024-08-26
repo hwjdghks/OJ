@@ -9,6 +9,7 @@ class grade_info:
         self.time = data['time']                # problem time limit
         self.memory = data['memory']            # problem memory limit
         self.grade_file = 'Main'                # excutive file name
+        self.keyword = data['keyword']
 
         self.util_file = ''                     # utility fime name
         self.file_ext = ''                      # source file extension

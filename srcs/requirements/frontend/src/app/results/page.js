@@ -59,6 +59,7 @@ export default function ResultsPage() {
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCellId, ...styles.tableHeaderCellSubmitId }}>제출 번호</th>
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCellId, ...styles.tableHeaderCellProblemId }}>문제 번호</th>
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCellResult }}>체점 결과</th>
+                  <th style={{ ...styles.tableCell, ...styles.tableHeaderCellResult }}>분석 결과</th>
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCellLanguage }}>언어</th>
                 </tr>
               </thead>
@@ -83,6 +84,9 @@ export default function ResultsPage() {
                       {result.submit_result === 40 && <span style={styles.statusRuntimeError}>런타임 에러</span>}
                       {result.submit_result === 50 && <span style={styles.statusWrong}>시간 초과</span>}
                       {![0, 10, 20, 30, 40, 50].includes(result.submit_result) && <span>{result.submit_result}</span>}
+                    </td>
+                    <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
+                      {result.ai_result}
                     </td>
                     <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
                       {result.language}
@@ -151,10 +155,10 @@ const styles = {
     width: '10%',
   },
   tableHeaderCellResult: {
-    width: '35%',
+    width: '30%',
   },
   tableHeaderCellLanguage: {
-    width: '35%',
+    width: '20%',
   },
   tableCell: {
     border: '1px solid #ddd',
@@ -174,7 +178,7 @@ const styles = {
   },
   tableRow: {
     backgroundColor: '#fff',
-    '&:nth-child(even)': {
+    '&:nthChild(even)': {
       backgroundColor: '#f9f9f9',
     },
   },

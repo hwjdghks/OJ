@@ -12,7 +12,7 @@ async function submitCodeHandler(req, res) {
     INSERT INTO code (problem_id, language, code_content, submit_result)
     VALUES (?, ?, ?, 0)
   `;
-  const code_query ='SELECT time_limit, memory_limit FROM problem WHERE problem_id = ?';
+  const code_query ='SELECT keyword, time_limit, memory_limit FROM problem WHERE problem_id = ?';
   try {
     const pool = await mysqlConnect();
     const [result] = await pool.query(insert_query, [id, language, code]);
@@ -24,8 +24,8 @@ async function submitCodeHandler(req, res) {
     await channel.assertQueue(queue, { durable: false });
 
     const [problemResults] = await pool.query(code_query, [id]);
-    const { time_limit: time, memory_limit: memory } = problemResults[0];
-    const message = JSON.stringify({ problem_id: id, submit_id, language, code, time, memory });
+    const { keyword, time_limit: time, memory_limit: memory } = problemResults[0];
+    const message = JSON.stringify({ problem_id: id, submit_id, language, code, keyword, time, memory });
     console.log(message);
     await channel.sendToQueue(queue, Buffer.from(message));
 

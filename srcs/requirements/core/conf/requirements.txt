@@ -1,3 +1,4 @@
 pika
 docker
 psutil
+openai
