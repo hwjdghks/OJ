@@ -1,5 +1,5 @@
 import './globals.css';
-import Navbar from './components/Navbar';
+import ClientWrapper from './components/ClientWrapper';
 
 export const metadata = {
   title: '첫 삽',
@@ -9,15 +9,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">
-      <body>
-        <Navbar />
-        <main style={styles.main}>{children}</main>
+      <body style={styles.body}>
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );
 }
 
 const styles = {
+  body: {
+    margin: '0px'
+  },
   main: {
     padding: '20px', /* 본문 패딩 */
     fontFamily: 'Arial, sans-serif', /* 기본 폰트 설정 */

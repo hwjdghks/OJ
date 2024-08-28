@@ -1,6 +1,29 @@
+// components/Navbar.js
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 const Navbar = () => {
+  const { data: session } = useSession();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!session);
+  }, [session]);
+
+  const handleSignIn = async (e) => {
+    e.preventDefault(); // 기본 링크 동작 방지
+    await signIn(); // 기본 로그인 처리
+  };
+
+  const handleSignOut = async (e) => {
+    e.preventDefault(); // 기본 링크 동작 방지
+    await signOut({ redirect: false });
+    setIsLoggedIn(false);
+  };
+
   return (
     <nav style={styles.navbar}>
       <div style={styles.container}>
@@ -14,6 +37,25 @@ const Navbar = () => {
           <li style={styles.navListItem}>
             <Link style={styles.navLink} href="/results">채점 결과</Link>
           </li>
+          <li style={styles.navListItem}>
+            {isLoggedIn ? (
+              <Link
+                href="/api/auth/signout"
+                style={styles.navLink}
+                onClick={handleSignOut} // 클릭 시 로그아웃 처리
+              >
+                로그아웃
+              </Link>
+            ) : (
+              <Link
+                href="/api/auth/signin"
+                style={styles.navLink}
+                onClick={handleSignIn} // 클릭 시 로그아웃 처리
+              >
+                로그인
+              </Link>
+            )}
+          </li>
         </ul>
       </div>
     </nav>
@@ -22,39 +64,41 @@ const Navbar = () => {
 
 const styles = {
   navbar: {
-    backgroundColor: '#2c3e50', /* Dark blue-gray background */
-    color: 'white', /* White text color */
-    padding: '1rem', /* Padding for the navbar */
+    backgroundColor: '#2c3e50',
+    color: 'white',
+    padding: '1rem',
   },
   container: {
     display: 'flex',
-    justifyContent: 'space-between', /* Align items at the ends */
-    alignItems: 'center', /* Vertically center items */
-    maxWidth: '1200px', /* Maximum width for the container */
-    margin: '0 auto', /* Center the container */
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    maxWidth: '1200px',
+    margin: '0 auto',
   },
   title: {
-    fontSize: '1.5rem', /* Font size for the title */
-    margin: '0', /* Remove default margin */
+    fontSize: '1.5rem',
+    margin: '0',
   },
   navList: {
-    listStyle: 'none', /* Remove default list styling */
-    margin: '0', /* Remove default margin */
-    padding: '0', /* Remove default padding */
-    display: 'flex', /* Display list items in a row */
-    gap: '1rem', /* Space between list items */
+    listStyle: 'none',
+    margin: '0',
+    padding: '0',
+    display: 'flex',
+    gap: '1rem',
   },
-  navListItem: {
-    /* Additional styles for list items can be added here */
-  },
+  navListItem: {},
   navLink: {
-    color: 'white', /* White text color for links */
-    textDecoration: 'none', /* Remove underline from links */
-    fontWeight: 'bold', /* Bold text for links */
-    transition: 'text-decoration 0.3s ease', /* Smooth underline transition */
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    transition: 'text-decoration 0.3s ease',
   },
-  navLinkHover: {
-    textDecoration: 'underline', /* Underline on hover */
+  navButton: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: 'white',
+    fontWeight: 'bold',
+    cursor: 'pointer',
   },
 };
 
