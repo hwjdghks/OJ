@@ -1,14 +1,14 @@
 // app/api/submit/route.js
 export async function POST(request) {
   try {
-    const { id, language, code } = await request.json();
+    const { id, language, code, user_id } = await request.json(); // user_id를 추출
 
     const response = await fetch('http://backend:5000/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id, language, code }),
+      body: JSON.stringify({ id, language, code, user_id }), // user_id 포함
     });
 
     if (!response.ok) {

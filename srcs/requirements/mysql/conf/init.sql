@@ -32,6 +32,7 @@ CREATE TABLE example (
 CREATE TABLE code (
     code_id INT AUTO_INCREMENT PRIMARY KEY,
     problem_id INT,
+    user_id VARCHAR(255),
     language VARCHAR(20),
     code_content TEXT NOT NULL,
     submit_result INT,
@@ -41,9 +42,8 @@ CREATE TABLE code (
 );
 
 CREATE TABLE users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_password VARCHAR(255) NOT NULL UNIQUE,
-    user_email VARCHAR(255) NOT NULL
+    user_email VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL UNIQUE
 );
 
 -- problem 테이블에 샘플 데이터 삽입

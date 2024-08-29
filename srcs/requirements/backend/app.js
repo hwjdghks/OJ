@@ -6,6 +6,7 @@ const startConsume = require('./services/rabbitmqService');
 const { getProblemHandler, getProblemSetHandler } = require('./handlers/problemHandlers');
 const { submitCodeHandler, getCodeHandler } = require('./handlers/codeHandlers');
 const { getResultsHandler } = require('./handlers/resultHandlers');
+const { addUserHandler, getUserHandler } = require('./handlers/usersHandlers');
 const { server: serverConfig } = require('./config/config');
 
 const app = express();
@@ -22,7 +23,9 @@ app.get('/problem/:id', getProblemHandler);
 app.get('/problem-set', getProblemSetHandler);
 app.get('/results', getResultsHandler);
 app.get('/code/:id', getCodeHandler);
+app.get('/users/:email', getUserHandler);
 app.post('/submit', submitCodeHandler);
+app.post('/users', addUserHandler);
 
 (async () => {
   try {

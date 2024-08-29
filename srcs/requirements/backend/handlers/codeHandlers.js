@@ -3,19 +3,27 @@ const rabbitConnect = require('../config/rabbitmq');
 const { rabbitmq: config } = require('../config/config');
 
 async function submitCodeHandler(req, res) {
-  const { id, language, code } = req.body;
+  const { id, language, code, user_id } = req.body;
 
   if (!id || !language || !code) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
-  const insert_query = `
-    INSERT INTO code (problem_id, language, code_content, submit_result)
-    VALUES (?, ?, ?, 0)
-  `;
-  const code_query ='SELECT keyword, time_limit, memory_limit FROM problem WHERE problem_id = ?';
+  // 기본 쿼리와 추가할 쿼리
+  let insert_query = `INSERT INTO code (problem_id, language, code_content, submit_result`;
+  let insert_values = [id, language, code];
+
+  if (user_id) {
+    insert_query += `, user_id) VALUES (?, ?, ?, 0, ?);`;
+    insert_values.push(user_id);
+  } else {
+    insert_query += `) VALUES (?, ?, ?, 0);`;
+  }
+
+  const code_query = 'SELECT keyword, time_limit, memory_limit FROM problem WHERE problem_id = ?';
+
   try {
     const pool = await mysqlConnect();
-    const [result] = await pool.query(insert_query, [id, language, code]);
+    const [result] = await pool.query(insert_query, insert_values);
     const submit_id = result.insertId;
 
     const rabbitMQConn = await rabbitConnect();

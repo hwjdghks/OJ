@@ -2,11 +2,14 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 const SubmitPage = ({ params }) => {
   const router = useRouter();
   const searchParams = useSearchParams(); // 추가된 부분
   const { id } = params; // URL의 [id]를 가져옵니다.
+
+  const { data: session } = useSession(); // NextAuth 세션을 가져옵니다
 
   const [language, setLanguage] = useState('C');
   const [code, setCode] = useState('');
@@ -29,6 +32,7 @@ const SubmitPage = ({ params }) => {
           id,
           language,
           code,
+          user_id: session?.user?.user_id // 세션에서 user_id를 가져와서 추가
         }),
       });
 

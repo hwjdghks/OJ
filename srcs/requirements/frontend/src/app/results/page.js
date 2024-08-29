@@ -61,6 +61,7 @@ export default function ResultsPage() {
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCellId, ...styles.tableHeaderCellProblemId }}>문제 번호</th>
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCellResult }}>체점 결과</th>
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCellResult }}>분석 결과</th>
+                  <th style={{ ...styles.tableCell, ...styles.tableHeaderCellLanguage }}>ID</th>
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCellLanguage }}>언어</th>
                 </tr>
               </thead>
@@ -88,6 +89,9 @@ export default function ResultsPage() {
                     </td>
                     <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
                       {result.ai_result}
+                    </td>
+                    <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
+                      {result.user_id}
                     </td>
                     <td style={{ ...styles.tableCell, ...styles.tableCellTitle }}>
                       {result.language}
