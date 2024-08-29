@@ -19,7 +19,8 @@ export default function ResultsPage() {
       try {
         const response = await fetch(`/api/results?page=${currentPage}&limit=${resultsPerPage}`); // Adjust your API endpoint if needed
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          const errorData = await response.json(); // 서버의 에러 메시지를 받아옵니다.
+          throw new Error(errorData.message || '채점 결과를 가져오는 데 실패했습니다.');
         }
         const data = await response.json();
         setResults(data.results);
@@ -49,7 +50,7 @@ export default function ResultsPage() {
     <div style={styles.container}>
       <h2 style={styles.heading}>채점 결과</h2>
       {results.length === 0 ? (
-        <p style={styles.noResults}>등록된 코드가 없습니다.</p>
+        <p style={styles.noResults}>등록된 채점 결과가 없습니다.</p>
       ) : (
         <>
           <div style={styles.scrollContainer}>

@@ -14,7 +14,8 @@ export default function ProblemsPage() {
       try {
         const response = await fetch('/api/problem-set'); // Ensure this matches the endpoint provided in your route.js
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          const errorData = await response.json(); // 서버의 에러 메시지를 받아옵니다.
+          throw new Error(errorData.message || '제출한 문제 목록을 가져오는 데 실패했습니다.');
         }
         const data = await response.json();
         setProblems(data);
@@ -29,7 +30,7 @@ export default function ProblemsPage() {
   }, []);
 
   if (loading) return <p style={styles.loading}>로딩 중...</p>;
-  if (error) return <p style={styles.error}>문제를 가져오는 데 실패했습니다: {error}</p>;
+  if (error) return <p style={styles.error}>문제 목록을 가져오는 데 실패했습니다: {error}</p>;
 
   return (
     <div style={styles.container}>

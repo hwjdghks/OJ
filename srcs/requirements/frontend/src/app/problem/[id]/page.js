@@ -17,7 +17,8 @@ export default function ProblemPage() {
       try {
         const response = await fetch(`/api/problem/${id}`);
         if (!response.ok) {
-          throw new Error('문제를 가져오는 데 실패했습니다.');
+          const errorData = await response.json(); // 서버의 에러 메시지를 받아옵니다.
+          throw new Error(errorData.message || '문제를 가져오는 데 실패했습니다.');
         }
         const data = await response.json();
         setProblem(data);

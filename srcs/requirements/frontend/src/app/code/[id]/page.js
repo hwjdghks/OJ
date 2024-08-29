@@ -16,7 +16,8 @@ export default function CodePage() {
       try {
         const response = await fetch(`/api/code/${id}`);
         if (!response.ok) {
-          throw new Error('문제를 가져오는 데 실패했습니다.');
+          const errorData = await response.json(); // 서버의 에러 메시지를 받아옵니다.
+          throw new Error(errorData.message || '제출한 소스 코드를 가져오는 데 실패했습니다.');
         }
         const data = await response.json();
         setProblem(data);
@@ -31,7 +32,7 @@ export default function CodePage() {
   }, [id]);
 
   if (loading) return <p style={styles.loading}>로딩 중...</p>;
-  if (error) return <p style={styles.error}>문제를 가져오는 데 실패했습니다: {error.message}</p>;
+  if (error) return <p style={styles.error}>제출한 소스 코드를 가져오는 데 실패했습니다: {error.message}</p>;
 
   return (
     <div style={styles.container}>
@@ -41,7 +42,7 @@ export default function CodePage() {
           <pre style={styles.code}>{problem.code_content}</pre>
         </div>
       ) : (
-        <p style={styles.noProblem}>문제를 찾을 수 없습니다.</p>
+        <p style={styles.noProblem}>소스 코드를 찾을 수 없습니다.</p>
       )}
     </div>
   );
