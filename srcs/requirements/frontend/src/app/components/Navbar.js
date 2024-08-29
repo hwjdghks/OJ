@@ -1,17 +1,11 @@
 // components/Navbar.js
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 
 const Navbar = () => {
-  const { data: session } = useSession();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setIsLoggedIn(!!session);
-  }, [session]);
+  const { data: session, status } = useSession();
 
   const handleSignIn = async (e) => {
     e.preventDefault(); // 기본 링크 동작 방지
@@ -20,8 +14,7 @@ const Navbar = () => {
 
   const handleSignOut = async (e) => {
     e.preventDefault(); // 기본 링크 동작 방지
-    await signOut({ redirect: false });
-    setIsLoggedIn(false);
+    await signOut();
   };
 
   return (
@@ -37,10 +30,17 @@ const Navbar = () => {
           <li style={styles.navListItem}>
             <Link style={styles.navLink} href="/results">채점 결과</Link>
           </li>
+          {session ? (
+            <li style={styles.navListItem}>
+              <Link style={styles.navLink} href="/signin">{session.user.user_id}</Link>
+            </li>
+          ) : (
+            <></>
+          )}
           <li style={styles.navListItem}>
-            {isLoggedIn ? (
+            {status === 'authenticated' ? (
               <Link
-                href="/api/auth/signout"
+                href="/"
                 style={styles.navLink}
                 onClick={handleSignOut} // 클릭 시 로그아웃 처리
               >
@@ -48,7 +48,7 @@ const Navbar = () => {
               </Link>
             ) : (
               <Link
-                href="/api/auth/signin"
+                href="/"
                 style={styles.navLink}
                 onClick={handleSignIn} // 클릭 시 로그아웃 처리
               >
