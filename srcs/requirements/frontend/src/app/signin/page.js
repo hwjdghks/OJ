@@ -1,23 +1,12 @@
 'use client';
 
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { SessionProvider } from 'next-auth/react';
-import Link from 'next/link';
 
 export default function LoginPage() {
-  return (
-    <SessionProvider>
-      <PageContent />
-    </SessionProvider>
-  );
-}
-
-function PageContent() {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
 
   if (loading) return <p style={styles.loading}>로딩 중...</p>;
-
   return (
     <div style={styles.container}>
       <h1 style={styles.heading}>로그인 페이지</h1>
@@ -30,7 +19,7 @@ function PageContent() {
         </div>
       ) : (
         <div style={styles.loginContainer}>
-          <button onClick={() => signIn('google')} style={styles.button}>
+          <button onClick={() => signIn()} style={styles.button}>
             Google로 로그인
           </button>
         </div>
