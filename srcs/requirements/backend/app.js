@@ -18,10 +18,10 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/problem', getProblemHandler);
+app.get('/problem/:id', getProblemHandler);
 app.get('/problem-set', getProblemSetHandler);
 app.get('/results', getResultsHandler);
-app.get('/code', getCodeHandler);
+app.get('/code/:id', getCodeHandler);
 app.post('/submit', submitCodeHandler);
 
 (async () => {

@@ -1,7 +1,7 @@
 const mysqlConnect = require('../config/db');
 
 async function getProblemHandler(req, res) {
-  const { id } = req.query;
+  const { id } = req.params;
   if (!id) {
     return res.status(400).json({ error: '문제 ID가 필요합니다.' });
   }
