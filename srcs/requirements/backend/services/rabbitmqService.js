@@ -14,11 +14,12 @@ async function startConsume() {
     console.log("UPDATE REQUEST RECEIVED");
     const response = JSON.parse(msg.content.toString());
     console.log(response);
-    const { submit_id, result } = response;
-    const sql = 'UPDATE code SET submit_result = ? WHERE code_id = ?';
-    await pool.query(sql, [result, submit_id]);
+    const { submit_id, result, ai } = response;
+    const sql = 'UPDATE code SET submit_result = ?, ai_result = ? WHERE code_id = ?';
+    await pool.query(sql, [result, ai, submit_id]);
     channel.ack(msg);
   });
 }
 
 module.exports = startConsume;
+
