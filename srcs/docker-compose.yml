@@ -1,6 +1,6 @@
 services:
   npm:
-    image: jc21/nginx-proxy-manager:latest
+    build: ./requirements/npm
     container_name: npm
     restart: always
     depends_on:
@@ -16,8 +16,8 @@ services:
       DB_MYSQL_PASSWORD: ${NGINX_PASSWORD}
       DB_MYSQL_NAME: ${NGINX_USER}
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - ./requirements/npm/data:/data
+      - ./requirements/npm/letsencrypt:/etc/letsencrypt
 
   core:
     build: ./requirements/core
