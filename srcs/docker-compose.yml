@@ -15,6 +15,7 @@ services:
       DB_MYSQL_USER: ${NGINX_USER}
       DB_MYSQL_PASSWORD: ${NGINX_PASSWORD}
       DB_MYSQL_NAME: ${NGINX_USER}
+    volumes:
       - ./requirements/npm/letsencrypt:/etc/letsencrypt
     networks:
       - main_services
