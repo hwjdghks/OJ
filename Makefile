@@ -9,7 +9,7 @@ $(NAME): up
 
 .PHONY: up
 up:
-	docker compose -f $(COMPOSE_FILE_PATH) up --build
+	docker compose -f $(COMPOSE_FILE_PATH) up --build -d
 
 .PHONY: down
 down:
