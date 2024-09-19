@@ -4,7 +4,7 @@ services:
     container_name: npm
     restart: always
     depends_on:
-      - mysql
+      - frontend
     ports:
       - "80:80"     # HTTP 포트
       - "443:443"   # HTTPS 포트
@@ -15,9 +15,9 @@ services:
       DB_MYSQL_USER: ${NGINX_USER}
       DB_MYSQL_PASSWORD: ${NGINX_PASSWORD}
       DB_MYSQL_NAME: ${NGINX_USER}
-    volumes:
-      - ./requirements/npm/data:/data
       - ./requirements/npm/letsencrypt:/etc/letsencrypt
+    networks:
+      - main_services
 
   core:
     build: ./requirements/core
@@ -84,8 +84,6 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - "3000:3000"
     networks:
       - main_services
 
