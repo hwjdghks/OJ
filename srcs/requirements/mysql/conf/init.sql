@@ -1,14 +1,16 @@
--- 유저 생성 및 권한 부여
+-- 데이터베이스 생성
+CREATE DATABASE IF NOT EXISTS npm;
+CREATE DATABASE IF NOT EXISTS oj_db;
 
-CREATE USER IF NOT EXISTS 'npm'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+-- 사용자 생성 및 권한 부여
+CREATE USER IF NOT EXISTS 'npm_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT ALL PRIVILEGES ON npm.* TO 'npm_user'@'%';
 
 CREATE USER IF NOT EXISTS 'oj_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT ALL PRIVILEGES ON oj_db.* TO 'oj_user'@'%';
 
--- 데이터베이스 생성
-CREATE DATABASE IF NOT EXISTS npm;
-CREATE DATABASE IF NOT EXISTS oj_db;
+-- 권한 적용
+FLUSH PRIVILEGES;
 
 -- 데이터베이스 사용
 USE oj_db;

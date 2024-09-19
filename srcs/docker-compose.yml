@@ -14,8 +14,9 @@ services:
       DB_MYSQL_PORT: 3306
       DB_MYSQL_USER: ${NGINX_USER}
       DB_MYSQL_PASSWORD: ${NGINX_PASSWORD}
-      DB_MYSQL_NAME: ${NGINX_USER}
+      DB_MYSQL_NAME: ${NGINX_DATABASE}
     volumes:
+      - ./requirements/npm/data:/data
       - ./requirements/npm/letsencrypt:/etc/letsencrypt
     networks:
       - main_services
