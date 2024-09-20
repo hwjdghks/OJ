@@ -1,6 +1,6 @@
 services:
   npm:
-    build: ./requirements/npm
+    image: jc21/nginx-proxy-manager
     container_name: npm
     restart: always
     depends_on:
