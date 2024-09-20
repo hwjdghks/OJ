@@ -6,9 +6,8 @@ services:
     depends_on:
       - frontend
     ports:
-      - "80:80"     # HTTP 포트
-      - "443:443"   # HTTPS 포트
-      - "81:81"     # NPM 관리 UI 포트
+      - "80:80"
+      - "443:443"
     environment:
       DB_MYSQL_HOST: ${MYSQL_HOST}
       DB_MYSQL_PORT: 3306
@@ -45,10 +44,8 @@ services:
       test: >
             rabbitmq-diagnostics -q check_running &&
             rabbitmq-diagnostics -q check_local_alarms
-      interval: 5s
+      interval: 10s
       retries: 60
-    ports:
-      - "15672:15672"
     networks:
       - main_services
 
@@ -67,7 +64,7 @@ services:
       - ./requirements/mysql/data:/var/lib/mysql
     healthcheck:
       test: "mysql -uroot -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} -e 'select 1'"
-      interval: 5s
+      interval: 10s
       retries: 60
     networks:
       - main_services
