@@ -1,4 +1,6 @@
 .DS_Store
 .env
 srcs/requirements/mysql/data
+srcs/requirements/npm/data
+srcs/requirements/npm/letsencrypt
 srcs/requirements/core/sample_code
