@@ -14,7 +14,7 @@ for i in $(seq 1 $file_count); do
     user=$(timeout -s SIGKILL ${TIMEOUT}s python3 -W ignore Main.py < ./in/$i.in)
     exit_code=$?
     if [ $exit_code -ne 0 ]; then
-        if [ $exit_code -eq 124 ]; then
+        if [ $exit_code -eq 137 ]; then
             exit 50 # time limit exceeded
         else
             exit 40 # runtime error
