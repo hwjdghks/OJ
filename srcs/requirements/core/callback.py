@@ -47,20 +47,24 @@ ENTRYPOINT ["bash", "run.sh"]
         )
 
     # 이미지 실행
-    container = client.containers.run(
-        image=image.id,
-        name=f'grade-{info.submit_id}',
-        detach=True,
-        security_opt=["no-new-privileges"],
-        # read_only=True,
-        user='grade',
-        init=True,
-        network_disabled=True,
-    )
-    print(f'컨테이너 시작됨: {container.id}')
+    try:
+        container = client.containers.run(
+            image=image.id,
+            name=f'grade-{info.submit_id}',
+            detach=True,
+            security_opt=["no-new-privileges"],
+            # read_only=True,
+            user='grade',
+            init=True,
+            network_disabled=True,
+            timwout=60000,
+        )
+        print(f'컨테이너 시작됨: {container.id}')
 
-    # 결과 취합
-    exit_code = container.wait()
+        # 결과 취합
+        exit_code = container.wait(timeout=30)
+    except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError):
+        exit_code = 50
     logs = container.logs(stdout=True, stderr=True)
     print(f'컨테이너 로그: {logs.decode("utf-8")}')
 
@@ -74,7 +78,6 @@ ENTRYPOINT ["bash", "run.sh"]
     client.images.remove(image=image.id)
     if os.path.exists(grade_dir_path):
         shutil.rmtree(grade_dir_path)
-
     ai_res = None
     api_key = os.getenv('USER_API')
     org_ID = os.getenv('OPENAI_ORG_ID')
