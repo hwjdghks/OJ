@@ -11,7 +11,7 @@ file_count=$(ls ./in | wc -l)
 # 파일 쌍 반복 비교
 for i in $(seq 1 $file_count); do
     # 프로그램 실행
-    user=$(timeout ${TIMEOUT}s java -Xms1024m -Xmx1920m -Xss512m -Dfile.encoding=UTF-8 Main < ./in/$i.in)
+    user=$(timeout -s SIGKILL ${TIMEOUT}s java -Xms1024m -Xmx1920m -Xss512m -Dfile.encoding=UTF-8 Main < ./in/$i.in)
     exit_code=$?
     if [ $exit_code -ne 0 ]; then
         if [ $exit_code -eq 124 ]; then
