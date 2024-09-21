@@ -57,19 +57,19 @@ ENTRYPOINT ["bash", "run.sh"]
             user='grade',
             init=True,
             network_disabled=True,
-            timwout=60000,
         )
         print(f'컨테이너 시작됨: {container.id}')
 
         # 결과 취합
         exit_code = container.wait(timeout=30)
-    except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError):
+        pprint(exit_code)
+        exit_code = exit_code['StatusCode']
+    except Exception as e:
+        print("OJ error:", e)
         exit_code = 50
     logs = container.logs(stdout=True, stderr=True)
     print(f'컨테이너 로그: {logs.decode("utf-8")}')
 
-    pprint(exit_code)
-    exit_code = exit_code['StatusCode']
     print(f'컨테이너 종료 코드: {exit_code}')
 
     # 정리
