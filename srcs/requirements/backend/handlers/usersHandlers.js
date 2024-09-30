@@ -1,6 +1,6 @@
 const mysqlConnect = require('../config/db');
 
-async function addUserHandler(req, res) {  
+async function addUserHandler(req, res) {
   try {
     const { email } = req.body;
     if (!email) {
@@ -9,7 +9,7 @@ async function addUserHandler(req, res) {
     const pool = await mysqlConnect();
 
     // Extract the ID part from the email (before '@')
-    const userIdBase = email.split('@')[0];    
+    const userIdBase = email.split('@')[0];
     // Check if the user ID already exists
     let userId = userIdBase;
     let userExists = true;
@@ -23,10 +23,10 @@ async function addUserHandler(req, res) {
         suffix++;
       }
     }
-    
+
     // Insert the new user
     await pool.query('INSERT INTO users (user_email, user_id) VALUES (?, ?)', [email, userId]);
-    
+
     res.status(201).json({ message: '사용자를 성공적으로 추가했습니다.', user_id: userId });
   } catch (error) {
     console.error('사용자 추가 오류:', error);
@@ -46,7 +46,7 @@ async function getUserHandler(req, res) {
     if (rows.length === 0) {
       return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
     }
-    
+
     // 사용자 ID 반환
     const userId = rows[0].user_id;
     res.status(200).json({ user_id: userId });
