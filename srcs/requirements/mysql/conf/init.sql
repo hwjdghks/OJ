@@ -23,8 +23,17 @@ CREATE TABLE problem (
     input TEXT,
     output TEXT,
     keyword TEXT,
+    grade_guide TEXT,
     memory_limit INT NOT NULL,  -- MB
     time_limit INT NOT NULL     -- ms
+
+    -- memory_balance BOOLEAN NOT NULL DEFAULT TRUE,
+    -- time_balance BOOLEAN NOT NULL DEFAULT TRUE,
+    -- is_basic_format NOT NULL DEFAULT TRUE,
+    -- is_delete_white_space BOOLEAN NOT NULL DEFAULT FALSE,
+    -- is_delete_blank_line BOOLEAN NOT NULL DEFAULT FALSE,
+    -- allow_language TEXT NOT NULL DEFAULT 'ALL',
+    -- is_partial_grade BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE example (
@@ -44,8 +53,11 @@ CREATE TABLE code (
     code_content TEXT NOT NULL,
     submit_result INT,
     ai_result VARCHAR(10),
+    used_memory INT,
+    used_time INT,
     error_log TEXT,
-    FOREIGN KEY (problem_id) REFERENCES problem(problem_id)
+    FOREIGN KEY (problem_id) REFERENCES problem(problem_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE users (
@@ -54,16 +66,51 @@ CREATE TABLE users (
 );
 
 -- problem 테이블에 샘플 데이터 삽입
-INSERT INTO problem (title, description, input, output, keyword, memory_limit, time_limit) VALUES
-('A+B', '두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.', '첫째 줄에 A와 B가 주어진다. (0 < A, B < 10)', '첫째 줄에 A+B를 출력한다.', '덧셈', 128, 1),
-('별 찍기', '첫째 줄에는 별 N개, 둘째 줄에는 별 N-1개, ..., N번째 줄에는 별 1개를 찍는 문제', '첫째 줄에 N(1 ≤ N ≤ 100)이 주어진다.', '첫째 줄부터 N번째 줄까지 차례대로 별을 출력한다.', '반복문', 128, 1),
-('제목', '문제 설명', '입력 설명', '출력 설명', '모든 출력 허용', 100, 10);
+INSERT INTO problem (title, description, input, output, keyword, grade_guide, memory_limit, time_limit)
+VALUES
+    ('A+B', 
+     '두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.', 
+     '첫째 줄에 A와 B가 주어진다. (0 < A, B < 10)', 
+     '첫째 줄에 A+B를 출력한다.', 
+     '덧셈', 
+     '덧셈 연산자 또는 덧셈 기능을 사용했는지 검증한다. 이 문제는 하드코딩을 탐지하지 않는다.', 
+     128, 1),
 
-INSERT INTO example (problem_id, input_example, output_example) VALUES
-(1, '1 2', '3'),
-(1, '2 2', '4'),
-(2, '3', '***\n**\n*');
+    ('별 찍기', 
+     '첫째 줄에는 별 N개, 둘째 줄에는 별 N-1개, ..., N번째 줄에는 별 1개를 찍는 문제', 
+     '첫째 줄에 N(1 ≤ N ≤ 100)이 주어진다.', 
+     '첫째 줄부터 N번째 줄까지 차례대로 별을 출력한다.', 
+     '반복문', 
+     '코드에 반목문을 사용했는지 검증한다. 재귀로 구현된 코드는 허용하지 않는다.', 
+     128, 1),
+
+    ('제목', 
+     '문제 설명', 
+     '입력 설명', 
+     '출력 설명', 
+     '모든 출력 허용', 
+     '채점 가이드를 입력하세요', 
+     100, 10);
+
+INSERT INTO example (problem_id, input_example, output_example)
+VALUES
+    (1, 
+    '1 2', 
+    '3'),
+
+    (1, 
+    '2 2', 
+    '4'),
+
+    (2, 
+    '3', 
+    '***\n**\n*');
 
 -- code 테이블에 샘플 데이터 삽입
-INSERT INTO code (problem_id, language, code_content, submit_result, error_log) VALUES
-(1, 'Python', 'def two_sum(nums, target):\n    num_map = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in num_map:\n            return [num_map[complement], i]\n        num_map[num] = i\n    return []', 0, '');
+INSERT INTO code (problem_id, language, code_content, submit_result, error_log)
+VALUES
+    (1, 
+    'Python', 
+    'sql test', 
+    0, 
+    '');
