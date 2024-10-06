@@ -5,17 +5,17 @@ import { useEffect, useState } from 'react';
 
 export default function ProblemPage() {
   const router = useRouter();
-  const { id } = useParams();
+  const { problem_id } = useParams();
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id) return;
+    if (!problem_id) return;
 
     const fetchProblem = async () => {
       try {
-        const response = await fetch(`/api/problem/${id}`);
+        const response = await fetch(`/api/problem/${problem_id}`);
         if (!response.ok) {
           const errorData = await response.json(); // 서버의 에러 메시지를 받아옵니다.
           throw new Error(errorData.message || '문제를 가져오는 데 실패했습니다.');
@@ -30,11 +30,11 @@ export default function ProblemPage() {
     };
 
     fetchProblem();
-  }, [id]);
+  }, [problem_id]);
 
   const handleSubmitClick = () => {
-    if (id && problem) {
-      router.push(`/submit/${id}?title=${encodeURIComponent(problem.title)}`);
+    if (problem_id && problem) {
+      router.push(`/submit/${problem_id}?title=${encodeURIComponent(problem.title)}`);
     }
   };
 

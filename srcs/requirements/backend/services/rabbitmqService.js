@@ -14,9 +14,9 @@ async function startConsume() {
     console.log("UPDATE REQUEST RECEIVED");
     const response = JSON.parse(msg.content.toString());
     console.log(response);
-    const { submit_id, result, ai } = response;
-    const sql = 'UPDATE code SET submit_result = ?, ai_result = ? WHERE code_id = ?';
-    await pool.query(sql, [result, ai, submit_id]);
+    const { code_id, submit_result, ai_result } = response;
+    const query = 'UPDATE code SET submit_result = ?, ai_result = ? WHERE code_id = ?';
+    await pool.query(query, [submit_result, ai_result, code_id]);
     channel.ack(msg);
   });
 }

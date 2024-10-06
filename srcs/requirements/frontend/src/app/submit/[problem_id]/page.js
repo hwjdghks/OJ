@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 const SubmitPage = ({ params }) => {
   const router = useRouter();
   const searchParams = useSearchParams(); // 추가된 부분
-  const { id } = params; // URL의 [id]를 가져옵니다.
+  const { problem_id } = params; // URL의 [id]를 가져옵니다.
 
   const { data: session } = useSession(); // NextAuth 세션을 가져옵니다
 
@@ -29,7 +29,7 @@ const SubmitPage = ({ params }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id,
+          problem_id,
           language,
           code,
           user_id: session?.user?.user_id // 세션에서 user_id를 가져와서 추가

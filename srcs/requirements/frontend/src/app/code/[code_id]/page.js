@@ -4,17 +4,17 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function CodePage() {
-  const { id } = useParams();
+  const { code_id } = useParams();
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id) return;
+    if (!code_id) return;
 
     const fetchProblem = async () => {
       try {
-        const response = await fetch(`/api/code/${id}`);
+        const response = await fetch(`/api/code/${code_id}`);
         if (!response.ok) {
           const errorData = await response.json(); // 서버의 에러 메시지를 받아옵니다.
           throw new Error(errorData.message || '제출한 소스 코드를 가져오는 데 실패했습니다.');
@@ -29,7 +29,7 @@ export default function CodePage() {
     };
 
     fetchProblem();
-  }, [id]);
+  }, [code_id]);
 
   if (loading) return <p style={styles.loading}>로딩 중...</p>;
   if (error) return <p style={styles.error}>제출한 소스 코드를 가져오는 데 실패했습니다: {error.message}</p>;

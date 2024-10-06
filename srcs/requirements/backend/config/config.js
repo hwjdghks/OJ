@@ -13,8 +13,8 @@ module.exports = {
     host: process.env.RABBITMQ_HOST,
     user: process.env.RABBITMQ_USER,
     password: process.env.RABBITMQ_PASSWORD,
-    recv_queue: 'message',
-    send_queue: 'my_queue',
+    recv_queue: process.env.RABBITMQ_CORE_TO_BACKEND,
+    send_queue: process.env.RABBITMQ_BACKEND_TO_CORE,
   },
   server: {
     port: process.env.PORT || 5000,

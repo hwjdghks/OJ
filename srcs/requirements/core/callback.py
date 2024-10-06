@@ -8,6 +8,12 @@ from pprint import pprint
 from grade_info import grade_info
 from openai import OpenAI
 
+# 채점 서버용 파일 세팅 따로 만들기
+# 채점 서버용 도커 이미지 파일 따로 만들기
+# 채점 서버용 도커 이미지 파일 빌드, 실행 따로 만들기
+# AI 부분 따로 만들기
+# 뒷정리 및 결과 전송 등 따로 만들기
+# 각 파트 예외처리 넣기
 
 def grade_code(ch: Channel, method: Basic.Deliver, properties: BasicProperties, body: bytes):
     # 채점 정보 세팅
@@ -109,14 +115,14 @@ ENTRYPOINT ["bash", "run.sh"]
         )
     # 결과 메세지로 발송
     _dict_response = {
-        'submit_id': info.submit_id,
-        'result': exit_code,
-        'ai': ai_res.choices[0].message.content if ai_res else 'no start'
+        'code_id': info.submit_id,
+        'submit_result': exit_code,
+        'ai_result': ai_res.choices[0].message.content if ai_res else 'no start'
     }
     response = json.dumps(_dict_response)
     ch.basic_publish(
         exchange='',
-        routing_key='message',
+        routing_key=rabbit_send_queue,
         body=response
     )
 

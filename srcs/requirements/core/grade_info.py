@@ -1,5 +1,6 @@
 import json
 
+# 언어별 특징 DB로 관리할지 고려하기
 class grade_info:
     def __init__(self, data: dict):
         self.problem_id = data['problem_id']    # problem id
@@ -18,7 +19,7 @@ class grade_info:
         self.time_limit = []                    # time limit [multiplier, addition] (input * [0] + [1])
         self.memory_limit = []                  # memory limit [multiplier, addition] (input * [0] + [1])
         self.extract_info_from_language(self.language)
-    
+
     def extract_info_from_language(self, language: str):
         if language == 'C':
             self.util_file = 'c'

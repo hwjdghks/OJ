@@ -11,7 +11,8 @@ from callback import grade_code
 rabbit_host = os.getenv('RABBITMQ_HOST')
 rabbit_user = os.getenv('RABBITMQ_USER')
 rabbit_password = os.getenv('RABBITMQ_PASSWORD')
-
+rabbit_send_queue = os.getenv('RABBITMQ_CORE_TO_BACKEND')
+rabbit_recv_queue = os.getenv('RABBITMQ_BACKEND_TO_CORE')
 def worker(worker_id):
     credentials = pika.PlainCredentials(rabbit_user, rabbit_password)
     connection = pika.BlockingConnection(
@@ -24,11 +25,11 @@ def worker(worker_id):
     )
     channel = connection.channel(worker_id)
 
-    channel.queue_declare(queue='my_queue')
-    channel.queue_declare(queue='message')
+    channel.queue_declare(queue=rabbit_send_queue)
+    channel.queue_declare(queue=rabbit_recv_queue)
 
     channel.basic_qos(prefetch_count=1)
-    channel.basic_consume(queue='my_queue', on_message_callback=grade_code)
+    channel.basic_consume(queue=rabbit_recv_queue, on_message_callback=grade_code)
 
     print(f' [*] Worker {worker_id} waiting for messages. To exit press CTRL+C')
     channel.start_consuming()

@@ -13,11 +13,10 @@ async function getResultsHandler(req, res) {
 
   try {
     const pool = await mysqlConnect();
-    const [results] = await pool.query(query, [limit, offset]);
-
+    const [results] = await pool.query(query, [limit, offset]); // need exception
     // 전체 결과 수를 가져오기 위한 쿼리 (선택 사항)
     const totalQuery = 'SELECT COUNT(*) AS totalResults FROM code';
-    const [[{ totalResults }]] = await pool.query(totalQuery);
+    const [[{ totalResults }]] = await pool.query(totalQuery); // need exception
 
     res.json({
       results,

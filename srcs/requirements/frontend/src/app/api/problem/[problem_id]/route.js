@@ -1,15 +1,15 @@
 // app/api/problem/route.js
 
 export async function GET(request, { params }) {
-  const { id } = params;
+  const { problem_id } = params;
 
-  if (!id) {
+  if (!problem_id) {
     return new Response(JSON.stringify({ message: '문제 ID가 필요합니다.' }), { status: 400 });
   }
 
   try {
    // 백엔드 서버의 주소와 포트 번호를 설정합니다.
-   const backendUrl = `http://backend:5000/problem/${id}`; // Docker Compose 서비스 이름과 포트 번호에 맞게 설정합니다.
+   const backendUrl = `http://backend:5000/problem/${problem_id}`; // Docker Compose 서비스 이름과 포트 번호에 맞게 설정합니다.
 
    // 백엔드 서버에 GET 요청을 보냅니다.
    const response = await fetch(backendUrl, { cache: 'no-store' });
