@@ -6,9 +6,9 @@ class grade_info:
         self.problem_id = data['problem_id']    # problem id
         self.submit_id = data['submit_id']      # submit id
         self.language = data['language']        # source code language
-        self.source = data['code']              # source code
-        self.time = data['time']                # problem time limit
-        self.memory = data['memory']            # problem memory limit
+        self.source = data['code_content']      # source code
+        self.time = data['time_limit']          # problem time limit
+        self.memory = data['memory_limit']      # problem memory limit
         self.grade_file = 'Main'                # excutive file name
         self.keyword = data['keyword']
 
