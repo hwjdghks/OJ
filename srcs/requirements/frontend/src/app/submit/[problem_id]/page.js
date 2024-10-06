@@ -80,7 +80,7 @@ const SubmitPage = ({ params }) => {
           <textarea
             id="code"
             rows="10"
-            value={code}
+            value={code_content}
             onChange={(e) => setCode(e.target.value)}
             required
             style={styles.textarea}
