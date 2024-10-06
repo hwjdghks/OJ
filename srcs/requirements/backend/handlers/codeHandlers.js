@@ -31,7 +31,7 @@ async function submitCodeHandler(req, res) {
     const queue = config.send_queue;
     await channel.assertQueue(queue, { durable: false }); // need exception
 
-    const [problemResults] = await pool.query(code_query, [id]); // need exception
+    const [problemResults] = await pool.query(code_query, [problem_id]); // need exception
     const { keyword, time_limit, memory_limit } = problemResults[0];
     const message = JSON.stringify({ problem_id, submit_id, language, code_content, keyword, time_limit, memory_limit });
     console.log(message);
