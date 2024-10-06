@@ -31,7 +31,7 @@ const SubmitPage = ({ params }) => {
         body: JSON.stringify({
           problem_id,
           language,
-          code,
+          code_content,
           user_id: session?.user?.user_id // 세션에서 user_id를 가져와서 추가
         }),
       });

@@ -40,7 +40,7 @@ const authOptions = {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                email: user.email,
+                user_email: user.email,
               }),
             });
 
