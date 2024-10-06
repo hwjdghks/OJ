@@ -12,7 +12,7 @@ const SubmitPage = ({ params }) => {
   const { data: session } = useSession(); // NextAuth 세션을 가져옵니다
 
   const [language, setLanguage] = useState('C');
-  const [code, setCode] = useState('');
+  const [code_content, setCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
