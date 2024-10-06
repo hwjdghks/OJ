@@ -5,7 +5,7 @@ const { rabbitmq: config } = require('../config/config');
 async function submitCodeHandler(req, res) {
   const { problem_id, language, code_content, user_id } = req.body;
 
-  if (!problem_id || !language || !code) {
+  if (!problem_id || !language || !code_content) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
   // 기본 쿼리와 추가할 쿼리

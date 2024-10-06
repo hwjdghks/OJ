@@ -44,6 +44,11 @@ CREATE TABLE example (
     FOREIGN KEY (problem_id) REFERENCES problem(problem_id)
 );
 
+CREATE TABLE users (
+    user_email VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL UNIQUE
+);
+
 -- code 테이블 생성
 CREATE TABLE code (
     code_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,11 +63,6 @@ CREATE TABLE code (
     error_log TEXT,
     FOREIGN KEY (problem_id) REFERENCES problem(problem_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-
-CREATE TABLE users (
-    user_email VARCHAR(255) PRIMARY KEY,
-    user_id VARCHAR(255) NOT NULL UNIQUE
 );
 
 -- problem 테이블에 샘플 데이터 삽입
