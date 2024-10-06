@@ -15,6 +15,8 @@ from openai import OpenAI
 # 뒷정리 및 결과 전송 등 따로 만들기
 # 각 파트 예외처리 넣기
 
+rabbit_send_queue = os.getenv('RABBITMQ_CORE_TO_BACKEND')
+
 def grade_code(ch: Channel, method: Basic.Deliver, properties: BasicProperties, body: bytes):
     # 채점 정보 세팅
     info = grade_info(json.loads(body))
