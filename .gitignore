@@ -1,5 +1,5 @@
 .DS_Store
-.env
+*.env
 srcs/requirements/mysql/data
 srcs/requirements/npm/data
 srcs/requirements/npm/letsencrypt
