@@ -55,7 +55,7 @@ services:
       - ./.env/db_host.env
       - ./.env/mysql.env
     healthcheck:
-      test: "mysql -uroot -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} -e 'select 1'"
+      test: "mysql -uroot -p$${MYSQL_ROOT_PASSWORD} $${MYSQL_DATABASE} -e 'select 1'"
       interval: 10s
       retries: 60
     volumes:
