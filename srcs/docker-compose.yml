@@ -43,7 +43,7 @@ services:
       interval: 10s
       retries: 60
     env_file:
-      - ./.env/rabbitmq.env
+      - ./compose.env
     networks:
       - main_services
 
@@ -51,13 +51,13 @@ services:
     image: mysql:8.0
     container_name: mysql
     restart: always
-    env_file:
-      - ./.env/db_host.env
-      - ./.env/mysql.env
     healthcheck:
       test: "mysql -uroot -p$${MYSQL_ROOT_PASSWORD} $${MYSQL_DATABASE} -e 'select 1'"
       interval: 10s
       retries: 60
+    env_file:
+      - ./.env/db_host.env
+      - ./.env/mysql.env
     volumes:
       - ./requirements/mysql/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./requirements/mysql/conf/my.cnf:/etc/mysql/my.cnf
