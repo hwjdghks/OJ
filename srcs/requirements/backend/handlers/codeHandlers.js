@@ -54,8 +54,6 @@ async function submitCodeHandler(req, res) {
     console.error('MySQL에 데이터 삽입 중 오류 발생:', err);
     await pool.query('ROLLBACK'); // 오류 발생 시 트랜잭션 롤백
     res.status(500).json({ error: '코드 제출에 실패했습니다.' });
-  } finally {
-    await rabbitMQConn.close(); // RabbitMQ 연결 종료
   }
 }
 
