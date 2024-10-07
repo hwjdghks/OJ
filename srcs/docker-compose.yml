@@ -42,8 +42,9 @@ services:
             rabbitmq-diagnostics -q check_local_alarms
       interval: 10s
       retries: 60
-    env_file:
-      - ./compose.env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_ADMIN_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_ADMIN_PASSWORD}
     networks:
       - main_services
 
