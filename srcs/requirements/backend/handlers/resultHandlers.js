@@ -1,4 +1,5 @@
 const mysqlConnect = require('../config/db');
+const { decrypt } = require('../utils/crypto');
 
 async function getResultsHandler(req, res) {
   // 쿼리 파라미터에서 page와 limit 추출, 기본값 설정
@@ -19,12 +20,21 @@ async function getResultsHandler(req, res) {
   try {
     const pool = await mysqlConnect();
     const [results] = await pool.query(query, [limit, offset]); // need exception
+
+    // user_id 복호화
+    const decryptedResults = results.map(result => {
+      return {
+        ...result,
+        user_id: decrypt(result.user_id) // user_id 복호화
+      };
+    });
+
     // 전체 결과 수를 가져오기 위한 쿼리 (선택 사항)
     const totalQuery = 'SELECT COUNT(*) AS totalResults FROM code';
     const [[{ totalResults }]] = await pool.query(totalQuery); // need exception
 
     res.status(200).json({
-      results,
+      results: decryptedResults, // 복호화된 결과를 응답에 포함
       totalResults
     });
   } catch (err) {

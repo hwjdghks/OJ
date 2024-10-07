@@ -1,7 +1,7 @@
 const mysqlConnect = require('../config/db');
 const rabbitConnect = require('../config/rabbitmq');
 const { rabbitmq: config } = require('../config/config');
-const { encrypt, decrypt } = require('../utils/crypto');
+const { encrypt } = require('../utils/crypto');
 
 async function submitCodeHandler(req, res) {
   const { problem_id, language, code_content, user_id } = req.body;

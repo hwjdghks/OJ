@@ -9,7 +9,7 @@ async function startConsume() {
   const queue = config.recv_queue;
 
   await channel.assertQueue(queue, { durable: false });
-
+  console.log("Consume start");
   channel.consume(queue, async (msg) => {
     console.log("UPDATE REQUEST RECEIVED");
     const response = JSON.parse(msg.content.toString());
