@@ -9,8 +9,8 @@ services:
       - "80:80"
       - "443:443"
     env_file:
-      - ./.env/db_host.env
-      - ./.env/npm.env
+      - ./srcs/.env/db_host.env
+      - ./srcs/.env/npm.env
     volumes:
       - ./requirements/npm/data:/data
       - ./requirements/npm/letsencrypt:/etc/letsencrypt
@@ -25,8 +25,8 @@ services:
       rabbitmq:
         condition: service_healthy
     env_file:
-      - ./.env/rabbitmq.env
-      - ./.env/openai.env
+      - ./srcs/.env/rabbitmq.env
+      - ./srcs/.env/openai.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -43,7 +43,7 @@ services:
       interval: 10s
       retries: 60
     env_file:
-      - ./.env/rabbitmq.env
+      - ./srcs/.env/rabbitmq.env
     networks:
       - main_services
 
@@ -56,8 +56,8 @@ services:
       interval: 10s
       retries: 60
     env_file:
-      - ./.env/db_host.env
-      - ./.env/mysql.env
+      - ./srcs/.env/db_host.env
+      - ./srcs/.env/mysql.env
     volumes:
       - ./requirements/mysql/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./requirements/mysql/conf/my.cnf:/etc/mysql/my.cnf
@@ -84,9 +84,9 @@ services:
       rabbitmq:
         condition: service_healthy
     env_file:
-      - ./.env/db_host.env
-      - ./.env/mysql.env
-      - ./.env/rabbitmq.env
+      - ./srcs/.env/db_host.env
+      - ./srcs/.env/mysql.env
+      - ./srcs/.env/rabbitmq.env
     networks:
       - main_services
 
