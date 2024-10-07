@@ -25,7 +25,7 @@ async function getResultsHandler(req, res) {
     const decryptedResults = results.map(result => {
       return {
         ...result,
-        user_id: decrypt(result.user_id) // user_id 복호화
+        user_id: result.user_id !== null ? decrypt(result.user_id) : null // user_id 복호화
       };
     });
 
