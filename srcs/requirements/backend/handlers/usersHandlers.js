@@ -32,11 +32,18 @@ async function addUserHandler(req, res) {
 
     // 사용자 ID를 암호화하여 삽입
     const encryptedUserId = encrypt(user_id);
+
+    // 트랜잭션을 통해 여러 쿼리 실행의 무결성 보장 (추가된 부분)
+    await pool.query('START TRANSACTION');
     await pool.query('INSERT INTO users (user_email, user_id) VALUES (?, ?)', [encryptedEmail, encryptedUserId]);
+    await pool.query('COMMIT');
 
     res.status(201).json({ message: '사용자를 성공적으로 추가했습니다.', user_id });
   } catch (error) {
     console.error('사용자 추가 오류:', error);
+
+    // 트랜잭션 오류 시 롤백 추가 (추가된 부분)
+    await pool.query('ROLLBACK');
     res.status(500).json({ message: '서버 내부 오류' });
   }
 }
@@ -45,12 +52,21 @@ async function addUserHandler(req, res) {
 async function getUserHandler(req, res) {
   try {
     const { user_email } = req.params;
+
+    // 입력값 검증
     if (!user_email) {
       return res.status(400).json({ message: '이메일이 필요합니다.' });
     }
 
-    // 이메일을 암호화하여 조회
+    // 이메일 형식 검증 (추가된 부분)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(user_email)) {
+      return res.status(400).json({ message: '유효한 이메일 형식이 아닙니다.' });
+    }
+
     const pool = await mysqlConnect();
+
+    // 이메일을 암호화하여 조회
     const encryptedEmail = encrypt(user_email);
     const [rows] = await pool.query('SELECT user_id FROM users WHERE user_email = ?', [encryptedEmail]);
 

@@ -5,6 +5,11 @@ async function getResultsHandler(req, res) {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 20;
 
+  // 페이지와 제한 값 검증 (추가된 부분)
+  if (page < 1 || limit < 1) {
+    return res.status(400).json({ error: '페이지 번호와 제한 값은 1 이상의 값이어야 합니다.' });
+  }
+
   // 오프셋 계산
   const offset = (page - 1) * limit;
 
@@ -18,7 +23,7 @@ async function getResultsHandler(req, res) {
     const totalQuery = 'SELECT COUNT(*) AS totalResults FROM code';
     const [[{ totalResults }]] = await pool.query(totalQuery); // need exception
 
-    res.json({
+    res.status(200).json({
       results,
       totalResults
     });

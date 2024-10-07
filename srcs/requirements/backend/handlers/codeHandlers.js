@@ -6,7 +6,7 @@ async function submitCodeHandler(req, res) {
   const { problem_id, language, code_content, user_id } = req.body;
 
   if (!problem_id || !language || !code_content) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    return res.status(400).json({ error: '필수 필드가 누락되었습니다.' });
   }
   // 기본 쿼리와 추가할 쿼리
   let insert_query = `INSERT INTO code (problem_id, language, code_content, submit_result`;
@@ -21,28 +21,40 @@ async function submitCodeHandler(req, res) {
 
   const code_query = 'SELECT keyword, time_limit, memory_limit FROM problem WHERE problem_id = ?';
 
-  try { // need transaction
-    const pool = await mysqlConnect();
-    const [result] = await pool.query(insert_query, insert_values); // need exception
+  const pool = await mysqlConnect();
+  const rabbitMQConn = await rabbitConnect();
+
+  try {
+    await pool.query('START TRANSACTION'); // 트랜잭션 시작
+
+    // 코드 제출 정보 삽입
+    const [result] = await pool.query(insert_query, insert_values);
     const submit_id = result.insertId;
 
-    const rabbitMQConn = await rabbitConnect(); // 큐 생성 부분 별도 실행 필요
-    const channel = await rabbitMQConn.createChannel(); // need exception
+    // 큐 생성 부분 별도로 실행 필요
+    const channel = await rabbitMQConn.createChannel(); // RabbitMQ 채널 생성
     const queue = config.send_queue;
-    await channel.assertQueue(queue, { durable: false }); // need exception
+    await channel.assertQueue(queue, { durable: false });
 
-    const [problemResults] = await pool.query(code_query, [problem_id]); // need exception
+    const [problemResults] = await pool.query(code_query, [problem_id]);
+    if (problemResults.length === 0) {
+      throw new Error('문제를 찾을 수 없습니다.'); // 문제 데이터가 없을 경우 처리
+    }
     const { keyword, time_limit, memory_limit } = problemResults[0];
     const message = JSON.stringify({ problem_id, submit_id, language, code_content, keyword, time_limit, memory_limit });
     console.log(message);
     await channel.sendToQueue(queue, Buffer.from(message));
-
     channel.close();
 
-    res.status(200).json({ message: 'Code submitted successfully!' });
+    await pool.query('COMMIT'); // 트랜잭션 커밋
+
+    res.status(200).json({ message: '코드가 성공적으로 제출되었습니다!' });
   } catch (err) {
-    console.error('Error inserting data into MySQL:', err);
-    res.status(500).json({ error: 'Failed to submit code' });
+    console.error('MySQL에 데이터 삽입 중 오류 발생:', err);
+    await pool.query('ROLLBACK'); // 오류 발생 시 트랜잭션 롤백
+    res.status(500).json({ error: '코드 제출에 실패했습니다.' });
+  } finally {
+    await rabbitMQConn.close(); // RabbitMQ 연결 종료
   }
 }
 
@@ -58,10 +70,10 @@ async function getCodeHandler(req, res) {
     if (results.length === 0) {
       return res.status(404).json({ error: '제출 결과를 찾을 수 없습니다.' });
     }
-    res.json(results[0]);
+    res.status(200).json(results[0]);
   } catch (err) {
-    console.error('Database query error:', err);
-    res.status(500).json({ error: 'Database query error' });
+    console.error('데이터베이스 쿼리 오류:', err);
+    res.status(500).json({ error: '데이터베이스 쿼리 오류' });
   }
 }
 
