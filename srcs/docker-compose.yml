@@ -88,6 +88,7 @@ services:
       - ./.envfiles/db_host.env
       - ./.envfiles/mysql.env
       - ./.envfiles/rabbitmq.env
+      - ./.envfiles/crypto.env
     networks:
       - main_services
 
