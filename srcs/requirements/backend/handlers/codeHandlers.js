@@ -1,6 +1,7 @@
 const mysqlConnect = require('../config/db');
 const rabbitConnect = require('../config/rabbitmq');
 const { rabbitmq: config } = require('../config/config');
+const { encrypt, decrypt } = require('../utils/crypto');
 
 async function submitCodeHandler(req, res) {
   const { problem_id, language, code_content, user_id } = req.body;
@@ -14,7 +15,7 @@ async function submitCodeHandler(req, res) {
 
   if (user_id) {
     insert_query += `, user_id) VALUES (?, ?, ?, 0, ?);`;
-    insert_values.push(user_id);
+    insert_values.push(encrypt(user_id));
   } else {
     insert_query += `) VALUES (?, ?, ?, 0);`;
   }
