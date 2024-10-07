@@ -8,12 +8,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    environment:
-      DB_MYSQL_HOST: ${MYSQL_HOST}
-      DB_MYSQL_PORT: 3306
-      DB_MYSQL_USER: ${NGINX_USER}
-      DB_MYSQL_PASSWORD: ${NGINX_PASSWORD}
-      DB_MYSQL_NAME: ${NGINX_DATABASE}
+    env_file:
+      - ./.env/db_host.env
+      - ./.env/npm.env
     volumes:
       - ./requirements/npm/data:/data
       - ./requirements/npm/letsencrypt:/etc/letsencrypt
@@ -23,11 +20,13 @@ services:
   core:
     build: ./requirements/core
     container_name: core
-    env_file: .env
     restart: always
     depends_on:
       rabbitmq:
         condition: service_healthy
+    env_file:
+      - ./.env/rabbitmq.env
+      - ./.env/openai.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -37,15 +36,14 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     restart: always
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     healthcheck:
       test: >
             rabbitmq-diagnostics -q check_running &&
             rabbitmq-diagnostics -q check_local_alarms
       interval: 10s
       retries: 60
+    env_file:
+      - ./.env/rabbitmq.env
     networks:
       - main_services
 
@@ -53,19 +51,17 @@ services:
     image: mysql:8.0
     container_name: mysql
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    volumes:
-      - ./requirements/mysql/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./requirements/mysql/conf/my.cnf:/etc/mysql/my.cnf
-      - ./requirements/mysql/data:/var/lib/mysql
     healthcheck:
       test: "mysql -uroot -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} -e 'select 1'"
       interval: 10s
       retries: 60
+    env_file:
+      - ./.env/db_host.env
+      - ./.env/mysql.env
+    volumes:
+      - ./requirements/mysql/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./requirements/mysql/conf/my.cnf:/etc/mysql/my.cnf
+      - ./requirements/mysql/data:/var/lib/mysql
     networks:
       - main_services
 
@@ -75,14 +71,6 @@ services:
     restart: always
     depends_on:
       - backend
-    environment:
-      RABBITMQ_HOST: ${RABBITMQ_HOST}
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     networks:
       - main_services
 
@@ -90,12 +78,15 @@ services:
     build: ./requirements/backend
     container_name: backend
     restart: always
-    env_file: .env
     depends_on:
       mysql:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    env_file:
+      - ./.env/db_host.env
+      - ./.env/mysql.env
+      - ./.env/rabbitmq.env
     networks:
       - main_services
 
