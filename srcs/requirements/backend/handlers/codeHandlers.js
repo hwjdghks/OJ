@@ -20,7 +20,7 @@ async function submitCodeHandler(req, res) {
     insert_query += `) VALUES (?, ?, ?, 0);`;
   }
 
-  const code_query = 'SELECT keyword, time_limit, memory_limit FROM problem WHERE problem_id = ?';
+  const code_query = 'SELECT keyword, grade_guide, time_limit, memory_limit FROM problem WHERE problem_id = ?';
 
   const pool = await mysqlConnect();
   const rabbitMQConn = await rabbitConnect();
@@ -41,8 +41,8 @@ async function submitCodeHandler(req, res) {
     if (problemResults.length === 0) {
       throw new Error('문제를 찾을 수 없습니다.'); // 문제 데이터가 없을 경우 처리
     }
-    const { keyword, time_limit, memory_limit } = problemResults[0];
-    const message = JSON.stringify({ problem_id, submit_id, language, code_content, keyword, time_limit, memory_limit });
+    const { keyword, grade_guide, time_limit, memory_limit } = problemResults[0];
+    const message = JSON.stringify({ problem_id, submit_id, language, code_content, keyword, grade_guide, time_limit, memory_limit });
     console.log(message);
     await channel.sendToQueue(queue, Buffer.from(message));
     channel.close();
