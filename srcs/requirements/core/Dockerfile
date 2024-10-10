@@ -10,13 +10,12 @@ COPY ./conf/requirements.txt .
 # 의존성 설치
 RUN pip install --no-cache-dir -r requirements.txt
 RUN rm requirements.txt
-
+RUN pip install --upgrade openai
 # 애플리케이션 코드 복사
 COPY core.py .
 COPY callback.py .
 COPY grade_info.py .
 COPY tools tools
-RUN sed -i 's/\r$//' ./tools/scripts/c.sh
 
 # 애플리케이션 실행
 CMD ["python", "-u", "core.py"]

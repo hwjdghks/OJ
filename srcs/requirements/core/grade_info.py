@@ -12,6 +12,7 @@ class grade_info:
         self.grade_file = 'Main'                # excutive file name
         self.keyword = data['keyword']
         self.grade_guide = data['grade_guide']
+        self.description = data['description']
 
         self.util_file = ''                     # utility fime name
         self.file_ext = ''                      # source file extension
