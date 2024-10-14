@@ -1,5 +1,5 @@
 # 베이스 이미지로 Python 3.9을 사용합니다.
-FROM python:3.9-slim
+FROM python:3.13-slim
 
 # 작업 디렉토리 생성
 WORKDIR /app
