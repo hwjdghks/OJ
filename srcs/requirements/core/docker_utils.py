@@ -48,7 +48,6 @@ def _build_grade_image(path: str, tag: str) -> Image | None:
             tag=tag,
             rm=True
         )
-        print(type(image))
         client.close()
     except docker.errors.BuildError as e:
         print('Docker build Error in build_grade_image():', e)
@@ -78,7 +77,6 @@ def _run_grade_server(image: Image, container_name: str) -> Container | None:
             init=True,
             network_disabled=True,
         )
-        print(type(container))
         print(f'컨테이너 시작됨: {container.id}')
     except docker.errors.ImageNotFound as e: # error in manual when timeout occurs
         print('Docker container timeout error in run_grade_server():', e)
@@ -138,5 +136,5 @@ def major_grade_process(dir_path: str, info: grade_info):
     image = _build_grade_image(dir_path, tag)
     container = _run_grade_server(image, name)
     result = _process_container(container)
-    _clean_container(container)
+    _clean_container(container, image, dir_path)
     return result
