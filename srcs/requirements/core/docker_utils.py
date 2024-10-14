@@ -128,7 +128,7 @@ def init_base_images() -> None:
     build_path = './tools'
     docker_file_path = 'Dockerfiles'
     for key in config:
-        _build_base_image(build_path, docker_file_path, key['file_name'])
+        _build_base_image(build_path, docker_file_path, config[key]['file_name'])
     print('Base images build complete.\n')
 
 
