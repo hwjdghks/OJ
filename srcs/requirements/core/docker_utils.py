@@ -125,8 +125,10 @@ def _clean_container(container: Container, image: Image, dir_path: str):
 
 
 def init_base_images() -> None:
+    build_path = './tools'
+    docker_file_path = 'Dockerfiles'
     for key in config:
-        _build_base_image(key)
+        _build_base_image(build_path, docker_file_path, key)
     print('Base images build complete.\n')
 
 
