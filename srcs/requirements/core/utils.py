@@ -17,7 +17,7 @@ def _get_origin_data_path(problem_id) -> str:
 
 def _set_grade_data(src_path: str, dst_path: str) -> None:
     os.makedirs(dst_path, exist_ok=True)
-    shutil.copytree(dst_path, src_path, dirs_exist_ok=True)
+    shutil.copytree(src_path, dst_path, dirs_exist_ok=True)
 
 
 def _set_submit_file(file_path: str, src: str) -> None:
