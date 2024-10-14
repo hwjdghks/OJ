@@ -15,6 +15,12 @@ RUN pip install --upgrade openai
 COPY core.py .
 COPY callback.py .
 COPY grade_info.py .
+COPY main.py .
+COPY config.py .
+COPY worker.py .
+COPY grade.py .
+COPY utils.py .
+COPY docker_utils.py .
 COPY tools tools
 
 # 애플리케이션 실행
