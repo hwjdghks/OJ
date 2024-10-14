@@ -17,7 +17,7 @@ def _build_base_image(build_path: str, dockerfile_path: str, language: str) -> N
     print('{0:s} build start. file path: {1:s}'.format(tag, dockerfile))
     try:
         client = docker.from_env()
-        image = client.images.build(
+        image, logs = client.images.build(
             path=build_path, # 빌드 컨텍스트 경로 설정
             dockerfile=dockerfile, # 빌드할 도커 파일 설정
             tag=tag, # 이미지 태그 설정
@@ -137,6 +137,6 @@ def major_grade_process(dir_path: str, info: grade_info):
     name = f'grade-{info.submit_id}'
     image = _build_grade_image(dir_path, tag)
     container = _run_grade_server(image, name)
-    result = _process_container(image, container)
+    result = _process_container(container)
     _clean_container(container)
     return result
