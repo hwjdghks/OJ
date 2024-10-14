@@ -40,7 +40,7 @@ def _build_base_image(build_path: str, dockerfile_path: str, language: str) -> N
 
 
 def _build_grade_image(path: str, tag: str) -> Image | None:
-    print('{0} grade image build start.'.format(tag))
+    print(f'{tag} grade image build start.')
     try:
         client = docker.from_env()
         image, _ = client.images.build(
@@ -65,6 +65,7 @@ def _build_grade_image(path: str, tag: str) -> Image | None:
 
 
 def _run_grade_server(image: Image, container_name: str) -> Container | None:
+    print(f'{image.tags} container run start.')
     try:
         client = docker.from_env()
         container = client.containers.run(
@@ -77,7 +78,7 @@ def _run_grade_server(image: Image, container_name: str) -> Container | None:
             init=True,
             network_disabled=True,
         )
-        print(f'컨테이너 시작됨: {container.id}')
+        print(f'{image.tags} Container ID: {container.id}')
     except docker.errors.ImageNotFound as e: # error in manual when timeout occurs
         print('Docker container timeout error in run_grade_server():', e)
     except docker.errors.APIError as e:
@@ -95,9 +96,8 @@ def _process_container(container: Container):
         print(exit_code)
         exit_code = exit_code['StatusCode']
         logs = container.logs(stdout=True, stderr=True)
-        print(f'컨테이너 로그: {logs.decode("utf-8")}')
-
-        print(f'컨테이너 종료 코드: {exit_code}')
+        print(f'{container.name} logs: {logs.decode("utf-8")}')
+        print(f'{container.name} exit_code: {exit_code}')
     except requests.exceptions.ReadTimeout as e: # error in manual when timeout occurs
         print('Docker container timeout error in process_container():', e)
     except requests.exceptions.ConnectionError as e: # real error when timeout occurs
@@ -113,10 +113,13 @@ def _process_container(container: Container):
 
 
 def _clean_container(container: Container, image: Image, dir_path: str):
+    print(f'remove {container.name}')
     container.stop()
     container.remove()
     client = docker.from_env()
+    print(f'remove {image.tags}')
     client.images.remove(image=image.id)
+    print(f'remove {dir_path}')
     if os.path.exists(dir_path):
         shutil.rmtree(dir_path)
     client.close()
