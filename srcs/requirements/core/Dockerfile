@@ -18,4 +18,4 @@ COPY grade_info.py .
 COPY tools tools
 
 # 애플리케이션 실행
-CMD ["python", "-u", "core.py"]
+CMD ["python", "-u", "main.py"]
