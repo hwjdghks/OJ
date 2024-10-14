@@ -26,14 +26,14 @@ def _build_base_image(build_path: str, dockerfile_path: str, language: str) -> N
         print('Image ID  :', image.id)
         print('Image tags:', image.tags, '\n')
     except docker.errors.BuildError as e:
-        print('Docker build Error in {0}:base :', e)
+        print(f'Docker build Error in {language}:base :', e)
     except docker.errors.APIError as e:
-        print('Docker API Error in {0}:base :', e)
+        print(f'Docker API Error in {language}:base :', e)
     except TypeError as e:
-        print('Type Error in {0}:base. Check path or fileobj.')
+        print(f'Type Error in {language}:base. Check path or fileobj.')
         print('Error log:', e)
     except Exception as e:
-        print('Unknown Exception in {0}:base :', e)
+        print(f'Unknown Exception in {language}:base :', e)
     finally:
         if client:
             client.close()
