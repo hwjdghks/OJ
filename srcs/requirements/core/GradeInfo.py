@@ -21,7 +21,7 @@ class GradeInfo:
     client: docker.DockerClient = docker.from_env()
     image: Image = field(init=False, default=None)
     container: Container = field(init=False, default=None)
-    response: dict = field(init=False, default_factory=dict)
+    response: dict = field(init=False, default=None)
 
     def __post_init__(self):
         self._get_language_config()
