@@ -53,6 +53,7 @@ def _build_grade_image(info: GradeInfo):
         print('Docker API Error in build_grade_image():', e)
     except TypeError as e:
         print('Type Error in build_grade_image(). Check path or fileobj.')
+        print('filename:', info.server_file, '\n', 'tagname:', info.tag_name)
         print('Error log:', e)
     except Exception as e:
         print('Unknown Exception in run_grade_server():', e)
