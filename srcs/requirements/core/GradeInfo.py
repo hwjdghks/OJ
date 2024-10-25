@@ -66,7 +66,7 @@ class GradeInfo:
         _dict_response = {
             'code_id': self.submit_id,
             'submit_result': standard_result,
-            'ai_sresult': ai_result
+            'ai_result': ai_result
         }
         self.response = json.dumps(_dict_response)
 
