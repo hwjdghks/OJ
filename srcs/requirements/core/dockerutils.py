@@ -1,13 +1,12 @@
 import docker
 import os
 import shutil
-from grade_info import grade_info
-from config import language_config as config
+from config import LANGUAGE_CONFIG
+from GradeInfo import GradeInfo
 
 # error
 import requests
 import docker.errors
-from docker.models.images import Image
 from docker.models.containers import Container
 
 
@@ -39,16 +38,15 @@ def _build_base_image(build_path: str, dockerfile_path: str, language: str) -> N
             client.close()
 
 
-def _build_grade_image(path: str, tag: str) -> Image | None:
-    print(f'{tag} grade image build start.')
+def _build_grade_image(info: GradeInfo):
+    print(f'{info.tag_name} grade image build start.')
     try:
-        client = docker.from_env()
-        image, _ = client.images.build(
-            path=path,
-            tag=tag,
+        client = info.client
+        info.image, _ = client.images.build(
+            path=info.server_file,
+            tag=info.tag_name,
             rm=True
         )
-        client.close()
     except docker.errors.BuildError as e:
         print('Docker build Error in build_grade_image():', e)
     except docker.errors.APIError as e:
@@ -58,19 +56,15 @@ def _build_grade_image(path: str, tag: str) -> Image | None:
         print('Error log:', e)
     except Exception as e:
         print('Unknown Exception in run_grade_server():', e)
-    finally:
-        if client:
-            client.close()
-        return image if image else None
 
 
-def _run_grade_server(image: Image, container_name: str) -> Container | None:
-    print(f'{image.tags} container run start.')
+def _run_grade_server(info: GradeInfo):
+    print(f'{info.image.tags} container run start.')
     try:
-        client = docker.from_env()
-        container = client.containers.run(
-            image=image.id,
-            name=container_name,
+        client = info.client
+        info.container = client.containers.run(
+            image=info.image.id,
+            name=info.server_name,
             detach=True,
             security_opt=["no-new-privileges"],
             # read_only=True,
@@ -78,19 +72,16 @@ def _run_grade_server(image: Image, container_name: str) -> Container | None:
             init=True,
             network_disabled=True,
         )
-        print(f'{image.tags} Container ID: {container.id}')
+        print(f'{info.image.tags} Container ID: {info.container.id}')
     except docker.errors.ImageNotFound as e: # error in manual when timeout occurs
         print('Docker container timeout error in run_grade_server():', e)
     except docker.errors.APIError as e:
         print('Docker container API error in run_grade_server():', e)
     except Exception as e:
         print('Unknown Exception in run_grade_server():', e)
-    finally:
-        client.close()
-        return container if container else None
 
 
-def _process_container(container: Container):
+def _process_container(container: Container) -> int:
     try:
         exit_code = container.wait()
         print(exit_code)
@@ -112,32 +103,30 @@ def _process_container(container: Container):
         return exit_code
 
 
-def _clean_container(container: Container, image: Image, dir_path: str):
-    print(f'remove {container.name}')
-    container.stop()
-    container.remove()
-    client = docker.from_env()
-    print(f'remove {image.tags}')
-    client.images.remove(image=image.id)
-    print(f'remove {dir_path}')
-    if os.path.exists(dir_path):
-        shutil.rmtree(dir_path)
-    client.close()
+def _clean_container(info: GradeInfo):
+    print(f'remove {info.container.name}')
+    info.container.stop()
+    info.container.remove()
+    client = info.client
+    print(f'remove {info.image.tags}')
+    client.images.remove(image=info.image.id)
+    print(f'remove {info.work_dir}')
+    if os.path.exists(info.work_dir):
+        shutil.rmtree(info.work_dir)
 
 
 def init_base_images() -> None:
     build_path = './tools'
     docker_file_path = 'Dockerfiles'
-    for key in config:
-        _build_base_image(build_path, docker_file_path, config[key]['file_name'])
+    for key in LANGUAGE_CONFIG:
+        config = LANGUAGE_CONFIG.get(key)
+        _build_base_image(build_path, docker_file_path, config['file_name'])
     print('Base images build complete.\n')
 
 
-def major_grade_process(dir_path: str, info: grade_info):
-    tag = f'{info.submit_id}:{info.util_file}'
-    name = f'grade-{info.submit_id}'
-    image = _build_grade_image(dir_path, tag)
-    container = _run_grade_server(image, name)
-    result = _process_container(container)
-    _clean_container(container, image, dir_path)
+def major_grade_process(info: GradeInfo):
+    _build_grade_image(info)
+    _run_grade_server(info)
+    result = _process_container(info.container)
+    _clean_container(info)
     return result

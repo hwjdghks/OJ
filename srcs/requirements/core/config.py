@@ -1,7 +1,7 @@
 # config.py
 import os
 
-environ = {
+ENVIRON = {
     'rabbitmq': {
         'host': os.getenv('RABBITMQ_HOST'),
         'user': os.getenv('RABBITMQ_USER'),
@@ -16,7 +16,7 @@ environ = {
     }
 }
 
-language_config = {
+LANGUAGE_CONFIG = {
     'C': {
         'file_name': 'c',
         'file_ext': 'c',

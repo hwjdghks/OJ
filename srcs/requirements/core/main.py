@@ -1,6 +1,6 @@
 import psutil
 import multiprocessing
-from docker_utils import init_base_images
+from dockerutils import init_base_images
 from worker import worker
 
 def main():

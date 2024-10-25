@@ -20,7 +20,8 @@ COPY config.py .
 COPY worker.py .
 COPY grade.py .
 COPY utils.py .
-COPY docker_utils.py .
+COPY dockerutils.py .
+COPY GradeInfo.py .
 COPY tools tools
 
 # 애플리케이션 실행
