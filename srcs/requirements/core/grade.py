@@ -30,7 +30,7 @@ def standard_grade(info: GradeInfo):
 
 
 def ai_grade(info: GradeInfo):
-    config = ENVIRON.get['openai']
+    config = ENVIRON.get('openai')
     api_key = config['api_key']
     org_ID = config['org_id']
     project_ID = config['proj_id']
