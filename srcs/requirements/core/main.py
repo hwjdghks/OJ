@@ -7,7 +7,7 @@ def main():
     init_base_images()
 
     workers = []
-    num_workers = psutil.cpu_count() + 1
+    num_workers = psutil.cpu_count()
     for idx in range(num_workers):
         process = multiprocessing.Process(target=worker, args=(idx + 1,))
         workers.append(process)
