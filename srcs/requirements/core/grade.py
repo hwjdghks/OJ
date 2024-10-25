@@ -9,7 +9,7 @@ from pika.spec import Basic
 
 def grade(ch: BlockingChannel, method: Basic.Deliver, properties, body):
     config = ENVIRON.get('rabbitmq')
-    info = GradeInfo(json.loads(body))
+    info = GradeInfo(**json.loads(body))
     standard_result = standard_grade(info)
     if standard_result == 10:
         ai_result = ai_grade(info)
