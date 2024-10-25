@@ -43,7 +43,7 @@ def _build_grade_image(info: GradeInfo):
     try:
         client = info.client
         info.image, _ = client.images.build(
-            path=info.server_file,
+            path=info.work_dir,
             tag=info.tag_name,
             rm=True
         )
