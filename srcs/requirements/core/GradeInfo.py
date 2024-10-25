@@ -19,8 +19,8 @@ class GradeInfo:
     keyword: str = ''
     grade_guide: str = ''
     client: docker.DockerClient = docker.from_env()
-    image: Image = field(default_factory=Image)
-    container: Container = field(default_factory=Container)
+    image: Image = None
+    container: Container = None
     response: dict = field(default_factory=dict)
 
     def __post_init__(self):
