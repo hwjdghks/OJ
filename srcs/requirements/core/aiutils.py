@@ -34,6 +34,7 @@ def _chat(client: OpenAI, system_role: str, user_role: str):
     )
     return result.choices[0].message.content
 
+
 def _judge_hardcode(client: OpenAI, info: GradeInfo):
     pass
 
