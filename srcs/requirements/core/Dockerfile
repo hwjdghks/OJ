@@ -12,15 +12,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN rm requirements.txt
 RUN pip install --upgrade openai
 # 애플리케이션 코드 복사
-COPY core.py .
-COPY callback.py .
-COPY grade_info.py .
 COPY main.py .
 COPY config.py .
 COPY worker.py .
 COPY grade.py .
 COPY utils.py .
 COPY dockerutils.py .
+COPY aiutils.py .
 COPY GradeInfo.py .
 COPY tools tools
 

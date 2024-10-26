@@ -1,7 +1,5 @@
 import os
 import shutil
-import json
-from grade_info import grade_info
 from GradeInfo import GradeInfo
 
 def _set_grade_data(info: GradeInfo) -> None:
