@@ -41,13 +41,13 @@ def _judge_hardcode(client: OpenAI, info: GradeInfo):
 
 
 def _judge_algorithm(client: OpenAI, info: GradeInfo):
-    content = {
-        'description': info.description,
-        'language' : info.language,
-        'source code': info.code_content,
-        'keyword': info.keyword,
-        'grade guide': info.grade_guide
-    }
+    content = f'''
+소스코드:
+{info.code_content}
+
+채점 규칙:
+{info.grade_guide}
+'''
     return _chat(client, ROLES.get('system_role'), json.dumps(content))
 
 
