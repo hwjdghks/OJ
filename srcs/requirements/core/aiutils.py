@@ -46,7 +46,7 @@ def _judge_algorithm(client: OpenAI, info: GradeInfo):
         'keyword': info.keyword,
         'grade guide': info.grade_guide
     }
-    return _chat(client, ROLES.get('system_role'), content)
+    return _chat(client, ROLES.get('system_role'), json.dumps(content))
 
 
 def judge_ai(info: GradeInfo):
