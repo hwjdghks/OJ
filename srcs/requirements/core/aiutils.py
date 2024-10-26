@@ -2,6 +2,7 @@ from openai import OpenAI
 from config import ENVIRON
 from config import ROLES
 from GradeInfo import GradeInfo
+import json
 
 def _init_client():
     config = ENVIRON.get('openai')
