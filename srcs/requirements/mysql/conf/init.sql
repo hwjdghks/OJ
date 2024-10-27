@@ -83,7 +83,7 @@ VALUES
      '첫째 줄에 N(1 ≤ N ≤ 100)이 주어진다.', 
      '첫째 줄부터 N번째 줄까지 차례대로 별을 출력한다.', 
      '반복문', 
-     '1. 재귀함수를 사용했으면 무조건 오답으로 처리',
+     'If implemented with a loop, it will be marked as correct; if implemented with recursion, it will be marked as incorrect.',
      128, 1),
 
     ('제목', 
