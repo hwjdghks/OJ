@@ -27,7 +27,7 @@ CREATE TABLE problem (
     keyword TEXT,
     grade_guide TEXT,
     memory_limit INT NOT NULL,  -- MB
-    time_limit INT NOT NULL     -- ms\
+    time_limit INT NOT NULL,     -- ms
     memory_balance BOOLEAN NOT NULL DEFAULT TRUE,
     time_balance BOOLEAN NOT NULL DEFAULT TRUE,
     is_basic_format BOOLEAN NOT NULL DEFAULT TRUE,
