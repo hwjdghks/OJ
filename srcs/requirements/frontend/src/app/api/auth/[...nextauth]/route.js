@@ -19,7 +19,9 @@ const authOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
-
+  session: {
+    maxAge: 60 * 60
+  },
   callbacks: {
     // JWT 콜백에서 user_id를 받아와 JWT 토큰에 저장
     async jwt({ token, user }) {
