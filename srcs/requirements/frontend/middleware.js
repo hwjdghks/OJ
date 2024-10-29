@@ -2,12 +2,12 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
 export async function middleware(req) {
-  const token = await getToken({ req });
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  // 토큰이 없거나 관리자가 아닌 경우 리다이렉트
   if (!token || !token.is_admin) {
-    return NextResponse.redirect('/403');
+    return NextResponse.redirect(new URL("/403", req.url));
   }
+
   return NextResponse.next();
 }
 
