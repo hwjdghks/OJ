@@ -76,7 +76,7 @@ async function getUserHandler(req, res) {
 
     // 사용자 ID 복호화 후 반환
     const decryptedUserId = decrypt(rows[0].user_id);
-    res.status(200).json({ user_id: decryptedUserId, is_admin: rows[0].is_admin });
+    res.status(200).json({ user_id: decryptedUserId, is_admin: Boolean(rows[0].is_admin) });
   } catch (error) {
     console.error('사용자 조회 오류:', error);
     res.status(500).json({ message: '서버 내부 오류' });
