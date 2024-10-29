@@ -68,7 +68,7 @@ async function getUserHandler(req, res) {
 
     // 이메일을 암호화하여 조회
     const encryptedEmail = encrypt(user_email);
-    const [rows] = await pool.query('SELECT user_id FROM users WHERE user_email = ?', [encryptedEmail]);
+    const [rows] = await pool.query('SELECT user_id, is_admin FROM users WHERE user_email = ?', [encryptedEmail]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: '사용자를 찾을 수 없습니다.' });
@@ -76,7 +76,7 @@ async function getUserHandler(req, res) {
 
     // 사용자 ID 복호화 후 반환
     const decryptedUserId = decrypt(rows[0].user_id);
-    res.status(200).json({ user_id: decryptedUserId });
+    res.status(200).json({ user_id: decryptedUserId, is_admin: rows.is_admin });
   } catch (error) {
     console.error('사용자 조회 오류:', error);
     res.status(500).json({ message: '서버 내부 오류' });

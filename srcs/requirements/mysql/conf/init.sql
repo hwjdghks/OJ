@@ -27,13 +27,12 @@ CREATE TABLE problem (
     keyword TEXT,
     grade_guide TEXT,
     memory_limit INT NOT NULL,  -- MB
-    time_limit INT NOT NULL     -- ms
-
-    -- memory_balance BOOLEAN NOT NULL DEFAULT TRUE,
-    -- time_balance BOOLEAN NOT NULL DEFAULT TRUE,
-    -- is_basic_format NOT NULL DEFAULT TRUE,
-    -- is_delete_white_space BOOLEAN NOT NULL DEFAULT FALSE,
-    -- is_delete_blank_line BOOLEAN NOT NULL DEFAULT FALSE,
+    time_limit INT NOT NULL     -- ms\
+    memory_balance BOOLEAN NOT NULL DEFAULT TRUE,
+    time_balance BOOLEAN NOT NULL DEFAULT TRUE,
+    is_basic_format BOOLEAN NOT NULL DEFAULT TRUE,
+    is_delete_white_space BOOLEAN NOT NULL DEFAULT FALSE,
+    is_delete_blank_line BOOLEAN NOT NULL DEFAULT FALSE
     -- allow_language TEXT NOT NULL DEFAULT 'ALL',
     -- is_partial_grade BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -48,7 +47,8 @@ CREATE TABLE example (
 
 CREATE TABLE users (
     user_email VARCHAR(255) PRIMARY KEY,
-    user_id VARCHAR(255) NOT NULL UNIQUE
+    user_id VARCHAR(255) NOT NULL UNIQUE,
+    is_admin BOOLEAN DEFAULT FALSE
 );
 
 -- code 테이블 생성

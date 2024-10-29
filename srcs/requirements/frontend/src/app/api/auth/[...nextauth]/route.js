@@ -26,12 +26,14 @@ const authOptions = {
       if (user) {
         try {
           // 유저 조회 요청
-          console.log('유저 정보 조회: ', user.email);
+          console.log('유저 정보 조회:', user.email);
           const userResponse = await fetch(`http://backend:5000/users/${user.email}`);
-          console.log('정보 조회 결과: ', userResponse);
+          console.log('정보 조회 결과:', userResponse);
           if (userResponse.ok) {
             const userData = await userResponse.json();
+            console.log('기존 유저 정보:', userData);
             token.user_id = userData.user_id; // 기존 유저의 user_id를 JWT에 저장
+            token.is_admin = userData.is_admin;
           } else if (userResponse.status === 404) {
             // 유저가 없으면 신규 유저 생성
             const newUserResponse = await fetch(`http://backend:5000/users`, {
@@ -43,10 +45,11 @@ const authOptions = {
                 user_email: user.email,
               }),
             });
-
             if (newUserResponse.ok) {
               const newUserData = await newUserResponse.json();
+              console.log('신규 유저 정보:', newUserData);
               token.user_id = newUserData.user_id; // 신규 유저의 user_id를 JWT에 저장
+              token.is_admin = newUserData.is_admin;
             } else {
               console.error('Failed to create new user');
             }
@@ -57,7 +60,6 @@ const authOptions = {
           console.error('Error during user fetch or creation:', error);
         }
       }
-
       return token;
     },
 
