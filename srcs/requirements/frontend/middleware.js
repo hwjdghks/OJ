@@ -7,9 +7,9 @@ export default withAuth(
   },
   {
     callbacks: {
-        authorized({ token }) {
-            if(token && token.is_admin === true) return true
-          }
+      authorized({ token }) {
+        if(token && token.is_admin === true) return true
+      }
     },
   }
 )
