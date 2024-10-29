@@ -38,7 +38,7 @@ async function addUserHandler(req, res) {
     await pool.query('INSERT INTO users (user_email, user_id) VALUES (?, ?)', [encryptedEmail, encryptedUserId]);
     const [rows] = await pool.query('SELECT user_id, is_admin FROM users WHERE user_email = ?', [encryptedEmail]);
     await pool.query('COMMIT');
-    res.status(201).json({ message: '사용자를 성공적으로 추가했습니다.', user_id: rows[0].user_id, is_admin: rows[0].is_admin });
+    res.status(201).json({ message: '사용자를 성공적으로 추가했습니다.', user_id: decrypt(rows[0].user_id), is_admin: Boolean(rows[0].is_admin) });
   } catch (error) {
     console.error('사용자 추가 오류:', error);
 
