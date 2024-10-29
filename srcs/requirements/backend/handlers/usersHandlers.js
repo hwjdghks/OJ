@@ -36,9 +36,9 @@ async function addUserHandler(req, res) {
     // 트랜잭션을 통해 여러 쿼리 실행의 무결성 보장 (추가된 부분)
     await pool.query('START TRANSACTION');
     await pool.query('INSERT INTO users (user_email, user_id) VALUES (?, ?)', [encryptedEmail, encryptedUserId]);
+    const [rows] = await pool.query('SELECT user_id, is_admin FROM users WHERE user_email = ?', [encryptedEmail]);
     await pool.query('COMMIT');
-
-    res.status(201).json({ message: '사용자를 성공적으로 추가했습니다.', user_id });
+    res.status(201).json({ message: '사용자를 성공적으로 추가했습니다.', user_id: rows[0].user_id, is_admin: rows[0].is_admin });
   } catch (error) {
     console.error('사용자 추가 오류:', error);
 
@@ -76,7 +76,7 @@ async function getUserHandler(req, res) {
 
     // 사용자 ID 복호화 후 반환
     const decryptedUserId = decrypt(rows[0].user_id);
-    res.status(200).json({ user_id: decryptedUserId, is_admin: rows.is_admin });
+    res.status(200).json({ user_id: decryptedUserId, is_admin: rows[0].is_admin });
   } catch (error) {
     console.error('사용자 조회 오류:', error);
     res.status(500).json({ message: '서버 내부 오류' });
