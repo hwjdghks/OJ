@@ -7,7 +7,7 @@ export async function middleware(req) {
   const { pathname } = req.nextUrl; // 요청의 경로를 가져옵니다.
 
   // problem_id를 추출하기 위해 정규식을 사용합니다.
-  const problemIdMatch = pathname.match(/^\/problem\/([0-9]+)\/update$/);
+  const problemIdMatch = pathname.match(/^\/problem\/(\d+)\/update$/);
   const problemId = problemIdMatch ? problemIdMatch[1] : null;
 
   console.log("관리자 페이지 접근:", token);
@@ -20,5 +20,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/problem-set/create", "/problem/[0-9]+/update"],
+  matcher: ["/problem-set/create", "/problem/(\\d+)/update"],
 };
