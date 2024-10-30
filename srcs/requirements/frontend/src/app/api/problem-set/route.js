@@ -12,7 +12,9 @@ export async function GET() {
 
     // JSON 응답을 파싱합니다.
     const data = await response.json();
-
+    console.log('@@@@데이터 차이 비교@@@@@@');
+    console.log(typeof(response.json()), "\n", typeof(data));
+    console.log(response.json(), "\n\n", data, "\n");
     // 성공적으로 데이터를 받아왔을 경우
     return new Response(JSON.stringify(data), {
       status: 200,
