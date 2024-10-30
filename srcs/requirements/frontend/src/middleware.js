@@ -1,18 +1,20 @@
-// middleware.js
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
 export async function middleware(req) {
   const token = await getToken({ req });
-  const { pathname } = req.nextUrl; // 요청의 경로를 가져옵니다.
+  const { pathname } = req.nextUrl;
 
-  // problem_id를 추출하기 위해 정규식을 사용합니다.
-  const problemIdMatch = pathname.match(/^\/problem\/(\d+)\/update$/);
+  // 숫자로 된 경로만 허용하도록 체크합니다.
+  const problemIdMatch = pathname.match(/^\/problem\/([^/]+)\/update$/);
   const problemId = problemIdMatch ? problemIdMatch[1] : null;
 
   console.log("관리자 페이지 접근:", token);
-  console.log("problem_id:", problemId); // problem_id 확인용 로그
-  if (!token || !token.is_admin) {
+  console.log("match result:", problemIdMatch);
+  console.log("problem id:", problemId, !problemId);
+
+  // 관리자가 아니거나 숫자 경로 형식이 아닌 경우 404로 이동
+  if (!token || !token.is_admin || (pathname.startsWith("/problem/") && !problemId)) {
     return NextResponse.rewrite(new URL("/404", req.url));
   }
 
@@ -20,5 +22,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/problem-set/create", "/problem/(\\d+)/update"],
+  matcher: ["/problem-set/create", "/problem/:problem_id/update"], // 모든 보호 경로를 지정
 };
