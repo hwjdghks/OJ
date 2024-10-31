@@ -271,6 +271,38 @@ export default function ProblemCreationPage() {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>채점 설정</h2>
           <div style={styles.checkboxSection}>
+            <div style={styles.checkboxSection}>
+              <label style={styles.checkboxContainer}>
+                <input
+                  type="checkbox"
+                  checked={formData.gradingFormatApplied}
+                  onChange={() => handleCheckboxToggle('gradingFormatApplied')}
+                />
+                채점 형식 적용
+              </label>
+            </div>
+
+            <div style={styles.checkboxSection}>
+              <label style={styles.checkboxContainer}>
+                <input
+                  type="checkbox"
+                  checked={formData.whitespaceTrimmed}
+                  onChange={() => handleCheckboxToggle('whitespaceTrimmed')}
+                />
+                공백 제거
+              </label>
+            </div>
+
+            <div style={styles.checkboxSection}>
+              <label style={styles.checkboxContainer}>
+                <input
+                  type="checkbox"
+                  checked={formData.emptyLineTrimmed}
+                  onChange={() => handleCheckboxToggle('emptyLineTrimmed')}
+                />
+                빈 줄 제거
+              </label>
+            </div>
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
