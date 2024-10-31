@@ -20,7 +20,7 @@ re:
 	make down
 	make up
 
-.PHONY update
+.PHONY: update
 update:
 	git reset --hard HEAD
 	git pull
