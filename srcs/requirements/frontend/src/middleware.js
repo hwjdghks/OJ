@@ -9,9 +9,9 @@ export async function middleware(req) {
   const problemIdMatch = pathname.match(/^\/problem\/(\d+)\/update$/);
   const problemId = problemIdMatch ? problemIdMatch[1] : null;
 
-  console.log("관리자 페이지 접근:", token);
+  console.log("관리자 페이지 접근\n토큰 정보:", token);
   console.log("match result:", problemIdMatch);
-  console.log("problem id:", problemId, !problemId);
+  console.log("problem id:", problemId);
 
   // 관리자가 아니거나 숫자 경로 형식이 아닌 경우 404로 이동
   if (!token || !token.is_admin || (pathname.startsWith("/problem/") && !problemId)) {
@@ -22,5 +22,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/problem-set/create", "/problem/:problem_id/update"], // 모든 보호 경로를 지정
+  matcher: ["/problem-set/create", "/problem/:problem_id/update"],
 };
