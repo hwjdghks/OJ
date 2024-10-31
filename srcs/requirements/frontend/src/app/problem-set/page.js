@@ -11,10 +11,8 @@ export default function ProblemsPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // 문제 데이터를 API에서 가져옵니다.
     async function fetchProblems() {
       try {
-        console.log(session, session.user);
         const response = await fetch('/api/problem-set');
         if (!response.ok) {
           const errorData = await response.json();
@@ -32,22 +30,16 @@ export default function ProblemsPage() {
     fetchProblems();
   }, []);
 
+  const handleAddProblemClick = () => {
+    router.push('/problem-set/create');
+  };
+
   if (loading) return <p style={styles.loading}>로딩 중...</p>;
   if (error) return <p style={styles.error}>문제 목록을 가져오는 데 실패했습니다: {error}</p>;
 
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>문제 목록</h2>
-
-      {/* 관리자일 때만 버튼 표시 */}
-      {session?.user?.is_admin && (
-        <div style={styles.buttonContainer}>
-          <Link href="/problem-set/create" style={styles.button}>
-            문제 추가
-          </Link>
-        </div>
-      )}
-
       {problems.length === 0 ? (
         <p style={styles.noProblems}>등록된 문제가 없습니다.</p>
       ) : (
@@ -74,6 +66,13 @@ export default function ProblemsPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+      {session?.user?.is_admin && (
+        <div style={styles.buttonContainer}>
+          <button onClick={handleAddProblemClick} style={styles.button}>
+            문제 추가
+          </button>
         </div>
       )}
     </div>
