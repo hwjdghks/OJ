@@ -14,6 +14,7 @@ export default function ProblemsPage() {
     // 문제 데이터를 API에서 가져옵니다.
     async function fetchProblems() {
       try {
+        console.log(session, session.user);
         const response = await fetch('/api/problem-set');
         if (!response.ok) {
           const errorData = await response.json();
