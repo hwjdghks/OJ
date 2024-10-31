@@ -23,3 +23,61 @@ export async function GET() {
     );
   }
 }
+
+export async function POST(request) {
+  try {
+    // 요청 본문을 JSON으로 파싱
+    const data = await request.json();
+
+    // 받은 데이터 로깅
+    console.log('받은 문제 데이터:', {
+      제목: data.title,
+      설명: data.description,
+      선택된_언어: data.languages,
+      메모리_제한: data.memoryLimit,
+      시간_제한: data.timeLimit,
+      예제_수: data.examples.length,
+      채점_데이터_수: data.gradingData.length,
+      AI_채점_적용: data.aiGradingApplied,
+      하드코딩_감지: data.hardCodingDetected
+    });
+
+    // 상세 데이터 로깅
+    console.log('전체 데이터:', JSON.stringify(data, null, 2));
+
+    // 백엔드로 데이터 전송
+    const backendUrl = 'http://backend:5000/problem-set';
+    const backendResponse = await fetch(backendUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!backendResponse.ok) {
+      throw new Error(`Backend responded with status: ${backendResponse.status}`);
+    }
+
+    const responseData = await backendResponse.json();
+
+    return new Response(JSON.stringify({
+      message: '문제가 성공적으로 생성되었습니다.',
+      data: responseData
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+  } catch (error) {
+    console.error('Error processing problem creation:', error);
+
+    return new Response(JSON.stringify({
+      message: '문제 생성 중 오류가 발생했습니다.',
+      error: error.message
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}

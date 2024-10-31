@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 export default function ProblemCreationPage() {
   const [formData, setFormData] = useState({
@@ -24,6 +25,7 @@ export default function ProblemCreationPage() {
   });
 
   const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -77,6 +79,49 @@ export default function ProblemCreationPage() {
     }));
   };
 
+  const handleSubmit = async () => {
+    // 기본적인 유효성 검사
+    if (!formData.title.trim()) {
+      setSubmitStatus({ type: 'error', message: '제목을 입력해주세요.' });
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      setSubmitStatus({ type: 'error', message: '설명을 입력해주세요.' });
+      return;
+    }
+
+    if (selectedLanguages.length === 0) {
+      setSubmitStatus({ type: 'error', message: '최소 하나의 언어를 선택해주세요.' });
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/problem-set', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          languages: selectedLanguages,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('문제 생성에 실패했습니다.');
+      }
+
+      setSubmitStatus({ type: 'success', message: '문제가 성공적으로 생성되었습니다.' });
+
+      // 폼 초기화 (선택사항)
+      // setFormData({ ... }); // 초기 상태로 리셋
+      // setSelectedLanguages([]);
+
+    } catch (error) {
+      setSubmitStatus({ type: 'error', message: error.message });
+    }
+  };
   return (
     <div style={styles.container}>
       <div style={styles.problemContainer}>
@@ -283,6 +328,28 @@ export default function ProblemCreationPage() {
             </div>
           ))}
           <button onClick={handleGradingDataAdd} style={styles.button}>데이터 추가</button>
+        </div>
+        {submitStatus.message && (
+          <div style={styles.alertContainer}>
+            <Alert variant={submitStatus.type === 'error' ? 'destructive' : 'default'}>
+              <AlertTitle>
+                {submitStatus.type === 'error' ? '오류' : '성공'}
+              </AlertTitle>
+              <AlertDescription>
+                {submitStatus.message}
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <div style={styles.submitSection}>
+          <button
+            onClick={handleSubmit}
+            style={styles.submitButton}
+          >
+            문제 생성하기
+          </button>
         </div>
       </div>
     </div>
