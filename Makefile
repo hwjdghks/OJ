@@ -20,6 +20,12 @@ re:
 	make down
 	make up
 
+.PHONY update
+update:
+	git reset --hard HEAD
+	git pull
+	make up
+
 .PHONY: clean
 clean:
 	make delete_con | make delete_image | make delete_volume
