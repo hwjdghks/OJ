@@ -135,7 +135,7 @@ const styles = {
     fontSize: '1rem',
   },
   textarea: {
-    width: '100%',
+    width: '95%',
     padding: '15px', // Increased padding for a better code editor feel
     border: '1px solid #ddd',
     borderRadius: '4px',

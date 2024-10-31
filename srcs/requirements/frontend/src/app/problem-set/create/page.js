@@ -388,7 +388,7 @@ const styles = {
     color: '#333',
   },
   input: {
-    width: '100%',
+    width: '95%',
     padding: '10px',
     marginBottom: '16px',
     borderRadius: '4px',
@@ -397,7 +397,7 @@ const styles = {
     backgroundColor: '#fff',
   },
   textarea: {
-    width: '100%',
+    width: '95%',
     padding: '10px',
     marginBottom: '16px',
     borderRadius: '4px',
@@ -409,7 +409,7 @@ const styles = {
     fontFamily: 'Arial, sans-serif',
   },
   criteriaTextarea: {
-    width: '100%',
+    width: '95%',
     padding: '10px',
     marginTop: '8px',
     borderRadius: '4px',
@@ -516,7 +516,7 @@ const styles = {
   },
   exampleTextarea: {
     width: '95%',
-    padding: '10px',
+    padding: '5px',
     borderRadius: '4px',
     border: '1px solid #ddd',
     fontSize: '1rem',
@@ -526,7 +526,7 @@ const styles = {
     fontFamily: 'Arial, sans-serif',
   },
   checkboxSection: {
-    marginBottom: '16px',
+    marginBottom: '10px',
   },
   checkboxContainer: {
     display: 'flex',

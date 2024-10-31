@@ -80,7 +80,7 @@ const styles = {
     marginBottom: '20px',
   },
   table: {
-    width: '100%',
+    width: '95%',
     borderCollapse: 'collapse',
     marginTop: '20px',
     tableLayout: 'fixed',

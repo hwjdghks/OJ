@@ -146,7 +146,7 @@ const styles = {
     marginBottom: '16px',
   },
   table: {
-    width: '100%',
+    width: '95%',
     borderCollapse: 'collapse',
     marginBottom: '20px',
   },
