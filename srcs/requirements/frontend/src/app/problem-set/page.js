@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function ProblemsPage() {
+  router = useRouter();
   const { data: session } = useSession();
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,13 @@ export default function ProblemsPage() {
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>문제 목록</h2>
+      {session?.user?.is_admin && (
+        <div style={styles.buttonContainer}>
+          <button onClick={handleAddProblemClick} style={styles.button}>
+            문제 추가
+          </button>
+        </div>
+      )}
       {problems.length === 0 ? (
         <p style={styles.noProblems}>등록된 문제가 없습니다.</p>
       ) : (
@@ -66,13 +75,6 @@ export default function ProblemsPage() {
               ))}
             </tbody>
           </table>
-        </div>
-      )}
-      {session?.user?.is_admin && (
-        <div style={styles.buttonContainer}>
-          <button onClick={handleAddProblemClick} style={styles.button}>
-            문제 추가
-          </button>
         </div>
       )}
     </div>
