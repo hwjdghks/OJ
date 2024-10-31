@@ -72,6 +72,16 @@ export default function ProblemCreationPage() {
     }));
   };
 
+  const handleDeleteExample = (index) => {
+    const updatedExamples = formData.examples.filter((_, i) => i !== index);
+    setFormData({ ...formData, examples: updatedExamples });
+  };
+
+  const handleDeleteGradingData = (index) => {
+    const updatedGradingData = formData.gradingData.filter((_, i) => i !== index);
+    setFormData({ ...formData, gradingData: updatedGradingData });
+  };
+
   const handleCheckboxToggle = (field) => {
     setFormData(prev => ({
       ...prev,
@@ -199,6 +209,7 @@ export default function ProblemCreationPage() {
                     onChange={(e) => handleExampleChange(index, 'output', e.target.value)}
                   />
                 </div>
+                <button onClick={() => handleDeleteExample(index)} style={styles.deleteButton}>삭제</button>
               </div>
             </div>
           ))}
@@ -346,6 +357,7 @@ export default function ProblemCreationPage() {
                     onChange={(e) => handleGradingDataChange(index, 'output', e.target.value)}
                   />
                 </div>
+                <button onClick={() => handleDeleteGradingData(index)} style={styles.deleteButton}>삭제</button>
               </div>
             </div>
           ))}
@@ -457,6 +469,15 @@ const styles = {
     '&:hover': {
       backgroundColor: '#004494',
     },
+  },
+  deleteButton: {
+    backgroundColor: '#ff4d4d', // 삭제 버튼 배경색
+    color: '#fff', // 텍스트 색상
+    border: 'none',
+    borderRadius: '5px',
+    padding: '5px 10px',
+    cursor: 'pointer',
+    marginLeft: '10px', // 여백 추가
   },
   smallButton: {
     padding: '6px 12px',
