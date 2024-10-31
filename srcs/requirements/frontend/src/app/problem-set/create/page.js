@@ -1,8 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function ProblemCreationPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     languages: ['C', 'C++', 'Java', 'Python'],
     title: '',
@@ -111,11 +113,8 @@ export default function ProblemCreationPage() {
         throw new Error('문제 생성에 실패했습니다.');
       }
 
-      setSubmitStatus({ type: 'success', message: '문제가 성공적으로 생성되었습니다.' });
-
-      // 폼 초기화 (선택사항)
-      // setFormData({ ... }); // 초기 상태로 리셋
-      // setSelectedLanguages([]);
+      alert('새 문제를 생성했습니다.');
+      router.push('/problem-set'); // Redirect after successful
 
     } catch (error) {
       setSubmitStatus({ type: 'error', message: error.message });
@@ -271,38 +270,30 @@ export default function ProblemCreationPage() {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>채점 설정</h2>
           <div style={styles.checkboxSection}>
-            <div style={styles.checkboxSection}>
-              <label style={styles.checkboxContainer}>
-                <input
-                  type="checkbox"
-                  checked={formData.gradingFormatApplied}
-                  onChange={() => handleCheckboxToggle('gradingFormatApplied')}
-                />
-                채점 형식 적용
-              </label>
-            </div>
-
-            <div style={styles.checkboxSection}>
-              <label style={styles.checkboxContainer}>
-                <input
-                  type="checkbox"
-                  checked={formData.whitespaceTrimmed}
-                  onChange={() => handleCheckboxToggle('whitespaceTrimmed')}
-                />
-                공백 제거
-              </label>
-            </div>
-
-            <div style={styles.checkboxSection}>
-              <label style={styles.checkboxContainer}>
-                <input
-                  type="checkbox"
-                  checked={formData.emptyLineTrimmed}
-                  onChange={() => handleCheckboxToggle('emptyLineTrimmed')}
-                />
-                빈 줄 제거
-              </label>
-            </div>
+            <label style={styles.checkboxContainer}>
+              <input
+                type="checkbox"
+                checked={formData.gradingFormatApplied}
+                onChange={() => handleCheckboxToggle('gradingFormatApplied')}
+              />
+              채점 형식 적용
+            </label>
+            <label style={styles.checkboxContainer}>
+              <input
+                type="checkbox"
+                checked={formData.whitespaceTrimmed}
+                onChange={() => handleCheckboxToggle('whitespaceTrimmed')}
+              />
+              공백 제거
+            </label>
+            <label style={styles.checkboxContainer}>
+              <input
+                type="checkbox"
+                checked={formData.emptyLineTrimmed}
+                onChange={() => handleCheckboxToggle('emptyLineTrimmed')}
+              />
+              빈 줄 제거
+            </label>
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
