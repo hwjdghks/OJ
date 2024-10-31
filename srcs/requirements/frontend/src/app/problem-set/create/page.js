@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 export default function ProblemCreationPage() {
   const [formData, setFormData] = useState({
@@ -331,14 +330,15 @@ export default function ProblemCreationPage() {
         </div>
         {submitStatus.message && (
           <div style={styles.alertContainer}>
-            <Alert variant={submitStatus.type === 'error' ? 'destructive' : 'default'}>
-              <AlertTitle>
+            <div style={{
+              ...styles.alert,
+              ...(submitStatus.type === 'error' ? styles.errorAlert : styles.successAlert)
+            }}>
+              <strong style={styles.alertTitle}>
                 {submitStatus.type === 'error' ? '오류' : '성공'}
-              </AlertTitle>
-              <AlertDescription>
-                {submitStatus.message}
-              </AlertDescription>
-            </Alert>
+              </strong>
+              <p style={styles.alertMessage}>{submitStatus.message}</p>
+            </div>
           </div>
         )}
 
@@ -543,5 +543,30 @@ const styles = {
     whiteSpace: 'pre-wrap',
     overflowX: 'auto',
     fontSize: '1rem',
+  },
+  alert: {
+    padding: '16px',
+    borderRadius: '6px',
+    marginBottom: '16px',
+  },
+  errorAlert: {
+    backgroundColor: '#fee2e2',
+    border: '1px solid #ef4444',
+    color: '#dc2626',
+  },
+  successAlert: {
+    backgroundColor: '#dcfce7',
+    border: '1px solid #22c55e',
+    color: '#16a34a',
+  },
+  alertTitle: {
+    display: 'block',
+    marginBottom: '8px',
+    fontSize: '1.1rem',
+    fontWeight: '600',
+  },
+  alertMessage: {
+    margin: 0,
+    fontSize: '0.9rem',
   },
 };
