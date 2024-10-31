@@ -131,7 +131,7 @@ const styles = {
   container: {
     padding: '20px',
     fontFamily: 'Arial, sans-serif',
-    maxWidth: '800px',
+    maxWidth: '85%',
     margin: '0 auto',
   },
   heading: {
