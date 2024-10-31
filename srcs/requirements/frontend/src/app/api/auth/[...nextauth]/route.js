@@ -68,6 +68,7 @@ const authOptions = {
     // Session 콜백에서 JWT의 user_id를 세션에 포함
     async session({ session, token }) {
       session.user.user_id = token.user_id; // JWT에서 user_id를 가져와 세션에 저장
+      session.user.is_admin = token.is_admin;
       return session;
     },
   },
