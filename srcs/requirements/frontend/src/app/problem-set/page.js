@@ -2,19 +2,21 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function ProblemsPage() {
+  const { data: session } = useSession();
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch problems data from the API
+    // 문제 데이터를 API에서 가져옵니다.
     async function fetchProblems() {
       try {
-        const response = await fetch('/api/problem-set'); // Ensure this matches the endpoint provided in your route.js
+        const response = await fetch('/api/problem-set');
         if (!response.ok) {
-          const errorData = await response.json(); // 서버의 에러 메시지를 받아옵니다.
+          const errorData = await response.json();
           throw new Error(errorData.message || '제출한 문제 목록을 가져오는 데 실패했습니다.');
         }
         const data = await response.json();
@@ -35,6 +37,16 @@ export default function ProblemsPage() {
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>문제 목록</h2>
+
+      {/* 관리자일 때만 버튼 표시 */}
+      {session?.user?.is_admin && (
+        <div style={styles.buttonContainer}>
+          <Link href="/problem-set/create" style={styles.button}>
+            문제 추가
+          </Link>
+        </div>
+      )}
+
       {problems.length === 0 ? (
         <p style={styles.noProblems}>등록된 문제가 없습니다.</p>
       ) : (
@@ -79,6 +91,18 @@ const styles = {
     fontWeight: 'bold',
     marginBottom: '20px',
   },
+  buttonContainer: {
+    marginBottom: '20px',
+  },
+  button: {
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    textDecoration: 'none',
+    borderRadius: '5px',
+    fontWeight: 'bold',
+    display: 'inline-block',
+  },
   table: {
     width: '95%',
     borderCollapse: 'collapse',
@@ -92,7 +116,7 @@ const styles = {
   },
   tableHeaderCellId: {
     textAlign: 'center',
-    width: '10%', // Width for the ID column
+    width: '10%',
   },
   tableCell: {
     border: '1px solid #ddd',
@@ -130,7 +154,7 @@ const styles = {
   },
   link: {
     textDecoration: 'none',
-    color: '#0056b3', // Slightly muted blue
+    color: '#0056b3',
     fontWeight: 'bold',
   },
 };

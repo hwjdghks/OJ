@@ -321,9 +321,6 @@ export default function ProblemCreationPage() {
                 onChange={(e) => handleInputChange('aiGradingCriteria', e.target.value)}
               />
             )}
-          </div>
-
-          <div style={styles.checkboxSection}>
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
