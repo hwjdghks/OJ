@@ -9,9 +9,9 @@ export default function ProblemCreationPage() {
     description: '',
     inputDescription: '',
     outputDescription: '',
-    examples: [],
-    memoryLimit: 128,
-    timeLimit: 2,
+    examples: [{ input: '', output: '' }],
+    memoryLimit: 256,
+    timeLimit: 1,
     memoryLimitAdjusted: true,
     timeLimitAdjusted: true,
     gradingFormatApplied: true,
@@ -20,12 +20,14 @@ export default function ProblemCreationPage() {
     aiGradingApplied: false,
     aiGradingCriteria: '',
     hardCodingDetected: false,
-    gradingData: [],
+    gradingData: [{ input: '', output: '' }],
   });
 
   const [selectedLanguages, setSelectedLanguages] = useState([]);
-  const [exampleCount, setExampleCount] = useState(1);
-  const [gradingDataCount, setGradingDataCount] = useState(1);
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleLanguageToggle = (language) => {
     setSelectedLanguages((prev) =>
@@ -39,8 +41,16 @@ export default function ProblemCreationPage() {
     setSelectedLanguages(selectAll ? [...formData.languages] : []);
   };
 
-  const handleRadioChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleExampleChange = (index, field, value) => {
+    const newExamples = [...formData.examples];
+    newExamples[index][field] = value;
+    setFormData(prev => ({ ...prev, examples: newExamples }));
+  };
+
+  const handleGradingDataChange = (index, field, value) => {
+    const newGradingData = [...formData.gradingData];
+    newGradingData[index][field] = value;
+    setFormData(prev => ({ ...prev, gradingData: newGradingData }));
   };
 
   const handleExampleAdd = () => {
@@ -49,7 +59,6 @@ export default function ProblemCreationPage() {
         ...prev,
         examples: [...prev.examples, { input: '', output: '' }],
       }));
-      setExampleCount((prev) => prev + 1);
     }
   };
 
@@ -58,141 +67,223 @@ export default function ProblemCreationPage() {
       ...prev,
       gradingData: [...prev.gradingData, { input: '', output: '' }],
     }));
-    setGradingDataCount((prev) => prev + 1);
   };
 
-  const handleAIGradingToggle = () => {
-    setFormData((prev) => ({
+  const handleCheckboxToggle = (field) => {
+    setFormData(prev => ({
       ...prev,
-      aiGradingApplied: !prev.aiGradingApplied,
-      aiGradingCriteria: !prev.aiGradingApplied ? '' : prev.aiGradingCriteria,
+      [field]: !prev[field],
+      [`${field}Criteria`]: prev[field] ? '' : prev[`${field}Criteria`]
     }));
   };
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>문제 생성</h1>
+      <div style={styles.problemContainer}>
+        <h1 style={styles.title}>문제 생성</h1>
 
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>제출 가능한 언어 목록</h2>
-        <div style={styles.languageCheckboxGroup}>
-          <button onClick={() => toggleAllLanguages(true)} style={styles.languageToggleButton}>전체 선택</button>
-          <button onClick={() => toggleAllLanguages(false)} style={styles.languageToggleButton}>전체 해제</button>
-          {formData.languages.map((lang) => (
-            <label key={lang} style={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={selectedLanguages.includes(lang)}
-                onChange={() => handleLanguageToggle(lang)}
-              />
-              {lang}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <input type="text" placeholder="제목" style={styles.input} value={formData.title} />
-
-      <textarea placeholder="설명" style={styles.textarea} value={formData.description} />
-
-      <input type="text" placeholder="입력 설명" style={styles.input} value={formData.inputDescription} />
-
-      <input type="text" placeholder="출력 설명" style={styles.input} value={formData.outputDescription} />
-
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>입출력 예제</h2>
-        {formData.examples.map((example, index) => (
-          <div key={index} style={styles.exampleRow}>
-            <span>{`예제 ${index + 1}`}</span>
-            <input type="text" placeholder="입력" style={styles.exampleInput} />
-            <input type="text" placeholder="출력" style={styles.exampleInput} />
+        <div style={styles.section}>
+          <h2 style={styles.sectionTitle}>제출 가능한 언어 목록</h2>
+          <div style={styles.languageButtonGroup}>
+            <button onClick={() => toggleAllLanguages(true)} style={styles.smallButton}>전체 선택</button>
+            <button onClick={() => toggleAllLanguages(false)} style={styles.smallButton}>전체 해제</button>
           </div>
-        ))}
-        <button onClick={handleExampleAdd} style={styles.addButton}>예제 추가</button>
-      </div>
-
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>메모리 제한 및 시간 제한</h2>
-        <input type="number" placeholder="메모리 제한 (MB)" style={styles.input} value={formData.memoryLimit} />
-        <input type="number" placeholder="시간 제한 (초)" style={styles.input} value={formData.timeLimit} />
-
-        <div style={styles.radioGroup}>
-          <label>
-            메모리 제한 보정
-            <input
-              type="radio"
-              checked={formData.memoryLimitAdjusted}
-              onChange={() => handleRadioChange('memoryLimitAdjusted', true)}
-            />
-            활성화
-            <input
-              type="radio"
-              checked={!formData.memoryLimitAdjusted}
-              onChange={() => handleRadioChange('memoryLimitAdjusted', false)}
-            />
-            비활성화
-          </label>
-
-          <label>
-            시간 제한 보정
-            <input
-              type="radio"
-              checked={formData.timeLimitAdjusted}
-              onChange={() => handleRadioChange('timeLimitAdjusted', true)}
-            />
-            활성화
-            <input
-              type="radio"
-              checked={!formData.timeLimitAdjusted}
-              onChange={() => handleRadioChange('timeLimitAdjusted', false)}
-            />
-            비활성화
-          </label>
-
-          <label>
-            기본 채점 포맷 적용
-            <input
-              type="radio"
-              checked={formData.gradingFormatApplied}
-              onChange={() => handleRadioChange('gradingFormatApplied', true)}
-            />
-            활성화
-            <input
-              type="radio"
-              checked={!formData.gradingFormatApplied}
-              onChange={() => handleRadioChange('gradingFormatApplied', false)}
-            />
-            비활성화
-          </label>
+          <div style={styles.languageCheckboxGroup}>
+            {formData.languages.map((lang) => (
+              <label key={lang} style={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  checked={selectedLanguages.includes(lang)}
+                  onChange={() => handleLanguageToggle(lang)}
+                />
+                {lang}
+              </label>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>AI 채점</h2>
-        <label>
-          AI 채점 적용
-          <input type="checkbox" checked={formData.aiGradingApplied} onChange={handleAIGradingToggle} />
-        </label>
-        {formData.aiGradingApplied && (
+        <div style={styles.section}>
+          <h2 style={styles.sectionTitle}>기본 정보</h2>
           <input
             type="text"
-            placeholder="AI 채점 기준"
+            placeholder="제목"
             style={styles.input}
-            value={formData.aiGradingCriteria}
+            value={formData.title}
+            onChange={(e) => handleInputChange('title', e.target.value)}
           />
-        )}
-      </div>
 
-      <div style={styles.section}>
-        <h2 style={styles.sectionTitle}>채점 데이터</h2>
-        {formData.gradingData.map((data, index) => (
-          <div key={index} style={styles.exampleRow}>
-            <span>{`데이터 ${index + 1}`}</span>
-            <input type="text" placeholder="입력" style={styles.exampleInput} />
-            <input type="text" placeholder="출력" style={styles.exampleInput} />
+          <textarea
+            placeholder="설명"
+            style={styles.textarea}
+            value={formData.description}
+            onChange={(e) => handleInputChange('description', e.target.value)}
+          />
+
+          <textarea
+            placeholder="입력 설명"
+            style={styles.textarea}
+            value={formData.inputDescription}
+            onChange={(e) => handleInputChange('inputDescription', e.target.value)}
+          />
+
+          <textarea
+            placeholder="출력 설명"
+            style={styles.textarea}
+            value={formData.outputDescription}
+            onChange={(e) => handleInputChange('outputDescription', e.target.value)}
+          />
+        </div>
+
+        <div style={styles.section}>
+          <h2 style={styles.sectionTitle}>입출력 예제</h2>
+          {formData.examples.map((example, index) => (
+            <div key={index} style={styles.exampleContainer}>
+              <div style={styles.exampleLabel}>{`예제 ${index + 1}`}</div>
+              <div style={styles.exampleRow}>
+                <div style={styles.exampleColumn}>
+                  <textarea
+                    placeholder="입력"
+                    style={styles.exampleTextarea}
+                    value={example.input}
+                    onChange={(e) => handleExampleChange(index, 'input', e.target.value)}
+                  />
+                </div>
+                <div style={styles.exampleColumn}>
+                  <textarea
+                    placeholder="출력"
+                    style={styles.exampleTextarea}
+                    value={example.output}
+                    onChange={(e) => handleExampleChange(index, 'output', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+          {formData.examples.length < 3 && (
+            <button onClick={handleExampleAdd} style={styles.button}>예제 추가</button>
+          )}
+        </div>
+
+        <div style={styles.section}>
+          <h2 style={styles.sectionTitle}>실행 제한</h2>
+          <div style={styles.limitRow}>
+            <div style={styles.limitField}>
+              <label style={styles.label}>메모리 제한 (MB)</label>
+              <input
+                type="number"
+                style={styles.input}
+                value={formData.memoryLimit}
+                onChange={(e) => handleInputChange('memoryLimit', e.target.value)}
+              />
+              <div style={styles.radioGroup}>
+                <label style={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    checked={formData.memoryLimitAdjusted}
+                    onChange={() => handleInputChange('memoryLimitAdjusted', true)}
+                  />
+                  보정 활성화
+                </label>
+                <label style={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    checked={!formData.memoryLimitAdjusted}
+                    onChange={() => handleInputChange('memoryLimitAdjusted', false)}
+                  />
+                  보정 비활성화
+                </label>
+              </div>
+            </div>
+            <div style={styles.limitField}>
+              <label style={styles.label}>시간 제한 (초)</label>
+              <input
+                type="number"
+                style={styles.input}
+                value={formData.timeLimit}
+                onChange={(e) => handleInputChange('timeLimit', e.target.value)}
+              />
+              <div style={styles.radioGroup}>
+                <label style={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    checked={formData.timeLimitAdjusted}
+                    onChange={() => handleInputChange('timeLimitAdjusted', true)}
+                  />
+                  보정 활성화
+                </label>
+                <label style={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    checked={!formData.timeLimitAdjusted}
+                    onChange={() => handleInputChange('timeLimitAdjusted', false)}
+                  />
+                  보정 비활성화
+                </label>
+              </div>
+            </div>
           </div>
-        ))}
-        <button onClick={handleGradingDataAdd} style={styles.addButton}>데이터 추가</button>
+        </div>
+
+        <div style={styles.section}>
+          <h2 style={styles.sectionTitle}>채점 설정</h2>
+          <div style={styles.checkboxSection}>
+            <label style={styles.checkboxContainer}>
+              <input
+                type="checkbox"
+                checked={formData.aiGradingApplied}
+                onChange={() => handleCheckboxToggle('aiGradingApplied')}
+              />
+              AI 채점 적용
+            </label>
+            {formData.aiGradingApplied && (
+              <textarea
+                placeholder="AI 채점 기준"
+                style={styles.criteriaTextarea}
+                value={formData.aiGradingCriteria}
+                onChange={(e) => handleInputChange('aiGradingCriteria', e.target.value)}
+              />
+            )}
+          </div>
+
+          <div style={styles.checkboxSection}>
+            <label style={styles.checkboxContainer}>
+              <input
+                type="checkbox"
+                checked={formData.hardCodingDetected}
+                onChange={() => handleCheckboxToggle('hardCodingDetected')}
+              />
+              하드코딩 감지 적용
+            </label>
+          </div>
+        </div>
+
+        <div style={styles.section}>
+          <h2 style={styles.sectionTitle}>채점 데이터</h2>
+          {formData.gradingData.map((data, index) => (
+            <div key={index} style={styles.exampleContainer}>
+              <div style={styles.exampleLabel}>{`데이터 ${index + 1}`}</div>
+              <div style={styles.exampleRow}>
+                <div style={styles.exampleColumn}>
+                  <textarea
+                    placeholder="입력"
+                    style={styles.exampleTextarea}
+                    value={data.input}
+                    onChange={(e) => handleGradingDataChange(index, 'input', e.target.value)}
+                  />
+                </div>
+                <div style={styles.exampleColumn}>
+                  <textarea
+                    placeholder="출력"
+                    style={styles.exampleTextarea}
+                    value={data.output}
+                    onChange={(e) => handleGradingDataChange(index, 'output', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+          <button onClick={handleGradingDataAdd} style={styles.button}>데이터 추가</button>
+        </div>
       </div>
     </div>
   );
@@ -214,85 +305,176 @@ const styles = {
   title: {
     fontSize: '2rem',
     fontWeight: '600',
-    marginBottom: '16px',
+    marginBottom: '24px',
+    color: '#333',
   },
   section: {
-    marginBottom: '20px',
+    marginBottom: '32px',
+    padding: '20px',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '8px',
   },
   sectionTitle: {
     fontSize: '1.25rem',
     fontWeight: '600',
-    marginBottom: '8px',
+    marginBottom: '16px',
+    color: '#333',
   },
   input: {
     width: '100%',
-    padding: '8px',
-    marginBottom: '10px',
+    padding: '10px',
+    marginBottom: '16px',
     borderRadius: '4px',
     border: '1px solid #ddd',
     fontSize: '1rem',
+    backgroundColor: '#fff',
   },
   textarea: {
     width: '100%',
-    padding: '8px',
-    marginBottom: '10px',
+    padding: '10px',
+    marginBottom: '16px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    fontSize: '1rem',
+    minHeight: '100px',
+    resize: 'vertical',
+    backgroundColor: '#fff',
+    fontFamily: 'Arial, sans-serif',
+  },
+  criteriaTextarea: {
+    width: '100%',
+    padding: '10px',
+    marginTop: '8px',
     borderRadius: '4px',
     border: '1px solid #ddd',
     fontSize: '1rem',
     minHeight: '80px',
     resize: 'vertical',
+    backgroundColor: '#fff',
+    fontFamily: 'Arial, sans-serif',
   },
   button: {
-    padding: '10px 20px',
+    padding: '8px 16px',
     backgroundColor: '#0056b3',
     color: '#fff',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    width: 'fit-content',
+    fontSize: '0.9rem',
+    fontWeight: '500',
+    marginTop: '8px',
+    transition: 'background-color 0.2s',
+    '&:hover': {
+      backgroundColor: '#004494',
+    },
   },
-  exampleContainer: {
-    marginBottom: '20px',
-  },
-  exampleRow: {
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '1px solid #ddd',
-    padding: '10px 0',
-  },
-  exampleInput: {
-    width: 'calc(50% - 10px)',
-    padding: '8px',
+  smallButton: {
+    padding: '6px 12px',
+    backgroundColor: '#0056b3',
+    color: '#fff',
+    border: 'none',
     borderRadius: '4px',
-    border: '1px solid #ddd',
-    marginRight: '10px',
-    fontSize: '1rem',
+    cursor: 'pointer',
+    fontSize: '0.8rem',
+    fontWeight: '500',
+    marginRight: '8px',
+    transition: 'background-color 0.2s',
+    '&:hover': {
+      backgroundColor: '#004494',
+    },
   },
-  checkboxLabel: {
-    display: 'block',
-    fontSize: '1rem',
-    marginBottom: '8px',
+  languageButtonGroup: {
+    marginBottom: '12px',
   },
   languageCheckboxGroup: {
     display: 'flex',
-    flexDirection: 'column',
-    marginBottom: '10px',
+    flexWrap: 'wrap',
+    gap: '12px',
   },
-  languageToggleButton: {
-    padding: '8px 12px',
-    marginBottom: '5px',
-    backgroundColor: '#0056b3',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
+  checkboxLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    fontSize: '0.9rem',
+    color: '#333',
     cursor: 'pointer',
   },
-  radioGroup: {
+  limitRow: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
+    gap: '24px',
+    marginBottom: '16px',
+  },
+  limitField: {
+    flex: 1,
+  },
+  label: {
+    display: 'block',
+    marginBottom: '8px',
+    fontSize: '0.9rem',
+    color: '#333',
+    fontWeight: '500',
+  },
+  radioGroup: {
+    marginTop: '8px',
+    display: 'flex',
+    gap: '16px',
+  },
+  radioLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    fontSize: '0.9rem',
+    color: '#333',
+    cursor: 'pointer',
+  },
+  exampleContainer: {
     marginBottom: '20px',
+    backgroundColor: '#fff',
+    padding: '16px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+  },
+  exampleLabel: {
+    fontSize: '1rem',
+    fontWeight: '500',
+    marginBottom: '8px',
+    color: '#333',
+  },
+  exampleRow: {
+    display: 'flex',
+    gap: '16px',
+  },
+  exampleColumn: {
+    flex: 1,
+  },
+  exampleTextarea: {
+    width: '100%',
+    padding: '10px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+    fontSize: '1rem',
+    minHeight: '80px',
+    resize: 'vertical',
+    backgroundColor: '#fff',
+    fontFamily: 'Arial, sans-serif',
+  },
+  checkboxSection: {
+    marginBottom: '16px',
+  },
+  checkboxContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontSize: '0.9rem',
+    color: '#333',
+    cursor: 'pointer',
+  },
+  pre: {
+    backgroundColor: '#f5f5f5',
+    padding: '12px',
+    borderRadius: '4px',
+    whiteSpace: 'pre-wrap',
+    overflowX: 'auto',
+    fontSize: '1rem',
   },
 };
