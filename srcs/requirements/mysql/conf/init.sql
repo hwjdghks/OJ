@@ -117,7 +117,7 @@ CREATE TABLE code (
 --      '채점 가이드를 입력하세요',
 --      100, 10);
 
-INSERT INTO problems (title, description, input, output, keyword, grade_guide, memory_limit, time_limit)
+INSERT INTO problem (title, description, input, output, keyword, grade_guide, memory_limit, time_limit)
 VALUES
     ('A+B', 
      '두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.', 
