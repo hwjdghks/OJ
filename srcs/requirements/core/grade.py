@@ -1,5 +1,6 @@
 from config import ENVIRON
 from GradeInfo import GradeInfo
+from problems import create
 import utils
 import dockerutils
 import aiutils
@@ -29,9 +30,7 @@ def grade(ch: BlockingChannel, method: Basic.Deliver, properties, body):
     elif op == 'create':
         problem_id = data.get('problem_id')
         element = data.get('data')
-        print(type(problem_id), type(element))
-        print(problem_id)
-        print(element)
+        create(problem_id, element)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 

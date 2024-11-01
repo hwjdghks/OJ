@@ -20,6 +20,7 @@ COPY utils.py .
 COPY dockerutils.py .
 COPY aiutils.py .
 COPY GradeInfo.py .
+COPY problems.py .
 COPY tools tools
 
 # 애플리케이션 실행
