@@ -123,7 +123,7 @@ async function createProblemHandler(req, res) {
         [problem_id, example.input, example.output]
       );
     }
-    const message = JSON.stringify({'operation': 'create', 'data': gradingData});
+    const message = JSON.stringify({'operation': 'create', 'problem_id': problem_id, 'data': gradingData});
     const channel = await mq.createChannel();
     const queue = config.send_queue;
     await channel.sendToQueue(queue, Buffer.from(message));
