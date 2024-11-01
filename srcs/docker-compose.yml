@@ -29,6 +29,7 @@ services:
       - ./.envfiles/openai.env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./requirements/core/tools/data:/app/tools/data
     networks:
       - main_services
 
