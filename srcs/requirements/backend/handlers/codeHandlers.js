@@ -42,7 +42,7 @@ async function submitCodeHandler(req, res) {
       throw new Error('문제를 찾을 수 없습니다.'); // 문제 데이터가 없을 경우 처리
     }
     const { description, keyword, grade_guide, time_limit, memory_limit } = problemResults[0];
-    const message = JSON.stringify({ problem_id, submit_id, language, code_content, description, keyword, grade_guide, time_limit, memory_limit });
+    const message = JSON.stringify( {'operation': 'grade', 'data': { problem_id, submit_id, language, code_content, description, keyword, grade_guide, time_limit, memory_limit }});
     console.log(message);
     await channel.sendToQueue(queue, Buffer.from(message));
     channel.close();
