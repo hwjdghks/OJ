@@ -35,8 +35,6 @@ async function submitCodeHandler(req, res) {
     // 큐 생성 부분 별도로 실행 필요
     const channel = await rabbitMQConn.createChannel(); // RabbitMQ 채널 생성
     const queue = config.send_queue;
-    await channel.assertQueue(queue, { durable: false });
-
     const [problemResults] = await pool.query(code_query, [problem_id]);
     if (problemResults.length === 0) {
       throw new Error('문제를 찾을 수 없습니다.'); // 문제 데이터가 없을 경우 처리

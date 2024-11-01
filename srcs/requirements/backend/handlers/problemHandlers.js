@@ -1,5 +1,6 @@
 const mysqlConnect = require('../config/db');
-
+const rabbitConnect = require('../config/rabbitmq');
+const { rabbitmq: config } = require('../config/config');
 async function getProblemHandler(req, res) {
   const { problem_id } = req.params;
   if (!problem_id || isNaN(problem_id)) {
@@ -68,6 +69,7 @@ async function getProblemSetHandler(req, res) {
 
 async function createProblemHandler(req, res) {
   const pool = await mysqlConnect();
+  const mq = await rabbitConnect();
 
   try {
     const {
@@ -121,6 +123,11 @@ async function createProblemHandler(req, res) {
         [problem_id, example.input, example.output]
       );
     }
+    const message = JSON.stringify({'operation': 'create', 'data': gradingData});
+    const channel = await mq.createChannel();
+    const queue = config.send_queue;
+    await channel.sendToQueue(queue, Buffer.from(message));
+    channel.close();
     await pool.query('COMMIT');
     // Send response
     res.status(201).json({

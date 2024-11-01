@@ -27,7 +27,9 @@ def grade(ch: BlockingChannel, method: Basic.Deliver, properties, body):
             body=info.response
         )
     elif op == 'create':
-        pass
+        element = data.get('data')
+        print(type(element))
+        print(element)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 

@@ -7,7 +7,6 @@ export async function GET() {
     }
     // JSON 응답을 파싱합니다.
     const data = await response.json();
-    console.log('데이터:', data)
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -27,7 +26,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
-    console.log('전체 데이터:', JSON.stringify(data, null, 2));
+    console.log('데이터:', JSON.stringify(data, null, 2));
 
     const backendUrl = 'http://backend:5000/problem-set';
     const backendResponse = await fetch(backendUrl, {
