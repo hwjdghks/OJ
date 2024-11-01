@@ -125,7 +125,7 @@ async function createProblemHandler(req, res) {
     // Send response
     res.status(201).json({
       message: 'Problem created successfully',
-      problemI_id,
+      problem_id,
     });
   } catch (error) {
     // Rollback the transaction in case of error
