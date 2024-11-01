@@ -277,6 +277,7 @@ export default function ProblemCreationPage() {
               <input
                 type="checkbox"
                 checked={formData.is_basic_format}
+                onChange={(e) => handleInputChange('is_basic_format', e.target.checked)}
               />
               채점 형식 적용
             </label>
@@ -284,6 +285,7 @@ export default function ProblemCreationPage() {
               <input
                 type="checkbox"
                 checked={formData.is_delete_white_space}
+                onChange={(e) => handleInputChange('is_delete_white_space', e.target.checked)}
               />
               공백 제거
             </label>
@@ -291,6 +293,7 @@ export default function ProblemCreationPage() {
               <input
                 type="checkbox"
                 checked={formData.is_delete_blank_line}
+                onChange={(e) => handleInputChange('is_delete_blank_line', e.target.checked)}
               />
               빈 줄 제거
             </label>
@@ -298,6 +301,7 @@ export default function ProblemCreationPage() {
               <input
                 type="checkbox"
                 checked={formData.use_ai_grade}
+                onChange={(e) => handleInputChange('use_ai_grade', e.target.checked)}
               />
               AI 채점 적용
             </label>
@@ -306,12 +310,14 @@ export default function ProblemCreationPage() {
                 placeholder="AI 채점 기준"
                 style={styles.criteriaTextarea}
                 value={formData.grade_guide}
+                onChange={(e) => handleInputChange('grade_guide', e.target.value)}
               />
             )}
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
                 checked={formData.use_detect_hardcode}
+                onChange={(e) => handleInputChange('use_detect_hardcode', e.target.checked)}
               />
               하드코딩 감지 적용
             </label>
