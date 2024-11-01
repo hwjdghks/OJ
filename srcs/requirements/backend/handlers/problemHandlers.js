@@ -75,6 +75,7 @@ async function createProblemHandler(req, res) {
       description,
       input,
       output,
+      examples,
       memory_limit,
       time_limit,
       memory_balance,
