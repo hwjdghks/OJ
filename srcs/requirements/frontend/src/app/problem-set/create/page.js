@@ -9,19 +9,19 @@ export default function ProblemCreationPage() {
     languages: ['C', 'C++', 'Java', 'Python'],
     title: '',
     description: '',
-    inputDescription: '',
-    outputDescription: '',
+    input: '',
+    output: '',
     examples: [{ input: '', output: '' }],
-    memoryLimit: 256,
-    timeLimit: 1,
-    memoryLimitAdjusted: true,
-    timeLimitAdjusted: true,
-    gradingFormatApplied: true,
-    whitespaceTrimmed: false,
-    emptyLineTrimmed: false,
-    aiGradingApplied: false,
-    aiGradingCriteria: '',
-    hardCodingDetected: false,
+    memory_limit: 256,
+    time_limit: 1,
+    memory_balance: true,
+    time_balance: true,
+    is_basic_format: true,
+    is_delete_white_space: false,
+    is_delete_blank_line: false,
+    use_ai_grade: false,
+    grade_guide: '',
+    use_detect_hardcode: false,
     gradingData: [{ input: '', output: '' }],
   });
 
@@ -80,14 +80,6 @@ export default function ProblemCreationPage() {
   const handleDeleteGradingData = (index) => {
     const updatedGradingData = formData.gradingData.filter((_, i) => i !== index);
     setFormData({ ...formData, gradingData: updatedGradingData });
-  };
-
-  const handleCheckboxToggle = (field) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: !prev[field],
-      [`${field}Criteria`]: prev[field] ? '' : prev[`${field}Criteria`]
-    }));
   };
 
   const handleSubmit = async () => {
@@ -175,15 +167,15 @@ export default function ProblemCreationPage() {
           <textarea
             placeholder="입력 설명"
             style={styles.textarea}
-            value={formData.inputDescription}
-            onChange={(e) => handleInputChange('inputDescription', e.target.value)}
+            value={formData.input}
+            onChange={(e) => handleInputChange('input', e.target.value)}
           />
 
           <textarea
             placeholder="출력 설명"
             style={styles.textarea}
-            value={formData.outputDescription}
-            onChange={(e) => handleInputChange('outputDescription', e.target.value)}
+            value={formData.output}
+            onChange={(e) => handleInputChange('output', e.target.value)}
           />
         </div>
 
@@ -226,23 +218,23 @@ export default function ProblemCreationPage() {
               <input
                 type="number"
                 style={styles.input}
-                value={formData.memoryLimit}
-                onChange={(e) => handleInputChange('memoryLimit', e.target.value)}
+                value={formData.memory_limit}
+                onChange={(e) => handleInputChange('memory_limit', e.target.value)}
               />
               <div style={styles.radioGroup}>
                 <label style={styles.radioLabel}>
                   <input
                     type="radio"
-                    checked={formData.memoryLimitAdjusted}
-                    onChange={() => handleInputChange('memoryLimitAdjusted', true)}
+                    checked={formData.memory_balance}
+                    onChange={() => handleInputChange('memory_balance', true)}
                   />
                   보정 활성화
                 </label>
                 <label style={styles.radioLabel}>
                   <input
                     type="radio"
-                    checked={!formData.memoryLimitAdjusted}
-                    onChange={() => handleInputChange('memoryLimitAdjusted', false)}
+                    checked={!formData.memory_balance}
+                    onChange={() => handleInputChange('memory_balance', false)}
                   />
                   보정 비활성화
                 </label>
@@ -253,23 +245,23 @@ export default function ProblemCreationPage() {
               <input
                 type="number"
                 style={styles.input}
-                value={formData.timeLimit}
-                onChange={(e) => handleInputChange('timeLimit', e.target.value)}
+                value={formData.time_limit}
+                onChange={(e) => handleInputChange('time_limit', e.target.value)}
               />
               <div style={styles.radioGroup}>
                 <label style={styles.radioLabel}>
                   <input
                     type="radio"
-                    checked={formData.timeLimitAdjusted}
-                    onChange={() => handleInputChange('timeLimitAdjusted', true)}
+                    checked={formData.time_balance}
+                    onChange={() => handleInputChange('time_balance', true)}
                   />
                   보정 활성화
                 </label>
                 <label style={styles.radioLabel}>
                   <input
                     type="radio"
-                    checked={!formData.timeLimitAdjusted}
-                    onChange={() => handleInputChange('timeLimitAdjusted', false)}
+                    checked={!formData.time_balance}
+                    onChange={() => handleInputChange('time_balance', false)}
                   />
                   보정 비활성화
                 </label>
@@ -284,48 +276,42 @@ export default function ProblemCreationPage() {
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
-                checked={formData.gradingFormatApplied}
-                onChange={() => handleCheckboxToggle('gradingFormatApplied')}
+                checked={formData.is_basic_format}
               />
               채점 형식 적용
             </label>
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
-                checked={formData.whitespaceTrimmed}
-                onChange={() => handleCheckboxToggle('whitespaceTrimmed')}
+                checked={formData.is_delete_white_space}
               />
               공백 제거
             </label>
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
-                checked={formData.emptyLineTrimmed}
-                onChange={() => handleCheckboxToggle('emptyLineTrimmed')}
+                checked={formData.is_delete_blank_line}
               />
               빈 줄 제거
             </label>
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
-                checked={formData.aiGradingApplied}
-                onChange={() => handleCheckboxToggle('aiGradingApplied')}
+                checked={formData.use_ai_grade}
               />
               AI 채점 적용
             </label>
-            {formData.aiGradingApplied && (
+            {formData.use_ai_grade && (
               <textarea
                 placeholder="AI 채점 기준"
                 style={styles.criteriaTextarea}
-                value={formData.aiGradingCriteria}
-                onChange={(e) => handleInputChange('aiGradingCriteria', e.target.value)}
+                value={formData.grade_guide}
               />
             )}
             <label style={styles.checkboxContainer}>
               <input
                 type="checkbox"
-                checked={formData.hardCodingDetected}
-                onChange={() => handleCheckboxToggle('hardCodingDetected')}
+                checked={formData.use_detect_hardcode}
               />
               하드코딩 감지 적용
             </label>
