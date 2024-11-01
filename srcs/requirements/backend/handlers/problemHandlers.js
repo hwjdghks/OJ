@@ -116,7 +116,7 @@ async function createProblemHandler(req, res) {
 
     const problem_id = result.insertId;
     for (const example of examples) {
-      await connection.query(
+      await pool.query(
         `INSERT INTO example (problem_id, input_example, output_example) VALUES (?, ?, ?)`,
         [problem_id, example.input, example.output]
       );
