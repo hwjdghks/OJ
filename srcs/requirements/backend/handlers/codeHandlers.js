@@ -49,7 +49,7 @@ async function submitCodeHandler(req, res) {
 
     await pool.query('COMMIT'); // 트랜잭션 커밋
 
-    res.status(200).json({ message: '코드가 성공적으로 제출되었습니다!' });
+    res.status(201).json({ message: '코드가 성공적으로 제출되었습니다!' });
   } catch (err) {
     console.error('MySQL에 데이터 삽입 중 오류 발생:', err);
     await pool.query('ROLLBACK'); // 오류 발생 시 트랜잭션 롤백

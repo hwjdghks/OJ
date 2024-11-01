@@ -41,7 +41,7 @@ CREATE TABLE problem (
 
 -- CREATE TABLE problems (
 --     problem_id INT AUTO_INCREMENT PRIMARY KEY,               -- 문제 ID
---     title VARCHAR(255) NOT NULL,                             -- 문제 제목
+--     title VARCHAR(255) NOT NULL UNIQUE,                     -- 문제 제목
 --     description TEXT,                                       -- 문제 설명
 --     input_fmt TEXT,                                        -- 입력 형식
 --     output_fmt TEXT,                                       -- 출력 형식

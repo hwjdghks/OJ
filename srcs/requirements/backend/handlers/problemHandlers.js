@@ -66,7 +66,79 @@ async function getProblemSetHandler(req, res) {
   }
 }
 
+async function createProblemHandler(req, res) {
+  const pool = await mysqlConnect();
+
+  try {
+    const {
+      title,
+      description,
+      input,
+      output,
+      memory_limit,
+      time_limit,
+      memory_balance,
+      time_balance,
+      is_basic_format,
+      is_delete_white_space,
+      is_delete_blank_line,
+      grade_guide,
+      use_ai_grade,
+      use_detect_hardcode,
+      gradingData,
+    } = req.body;
+
+    // Insert problem data into the problem table
+    await pool.query('START TRANSACTION');
+    const [result] = await pool.query(
+      `INSERT INTO problem (title, description, input, output, memory_limit, time_limit,
+        memory_balance, time_balance, is_basic_format, is_delete_white_space,
+        is_delete_blank_line, grade_guide, use_ai_grade, use_detect_hardcode)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title,
+        description,
+        input,
+        output,
+        memory_limit,
+        time_limit,
+        memory_balance,
+        time_balance,
+        is_basic_format,
+        is_delete_white_space,
+        is_delete_blank_line,
+        grade_guide,
+        use_ai_grade,
+        use_detect_hardcode,
+      ]
+    );
+
+    const problem_id = result.insertId;
+    for (const example of examples) {
+      await connection.query(
+        `INSERT INTO example (problem_id, input_example, output_example) VALUES (?, ?, ?)`,
+        [problem_id, example.input, example.output]
+      );
+    }
+    await pool.query('COMMIT');
+    // Send response
+    res.status(201).json({
+      message: 'Problem created successfully',
+      problemI_id,
+    });
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await pool.query('ROLLBACK');
+    console.error('Error creating problem:', error);
+    res.status(500).json({
+      message: 'Failed to create problem',
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   getProblemHandler,
-  getProblemSetHandler
+  getProblemSetHandler,
+  createProblemHandler
 };

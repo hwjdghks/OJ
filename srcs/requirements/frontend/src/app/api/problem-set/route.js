@@ -26,26 +26,9 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    // 요청 본문을 JSON으로 파싱
     const data = await request.json();
-
-    // 받은 데이터 로깅
-    console.log('받은 문제 데이터:', {
-      제목: data.title,
-      설명: data.description,
-      선택된_언어: data.languages,
-      메모리_제한: data.memoryLimit,
-      시간_제한: data.timeLimit,
-      예제_수: data.examples.length,
-      채점_데이터_수: data.gradingData.length,
-      AI_채점_적용: data.aiGradingApplied,
-      하드코딩_감지: data.hardCodingDetected
-    });
-
-    // 상세 데이터 로깅
     console.log('전체 데이터:', JSON.stringify(data, null, 2));
 
-    // 백엔드로 데이터 전송
     const backendUrl = 'http://backend:5000/problem-set';
     const backendResponse = await fetch(backendUrl, {
       method: 'POST',
