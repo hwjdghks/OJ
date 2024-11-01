@@ -9,29 +9,35 @@ import json
 from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic
 
-def grade(ch: BlockingChannel, method: Basic.Deliver, properties, body):
-    config = ENVIRON.get('rabbitmq')
+def grade_handler(ch: BlockingChannel, method: Basic.Deliver, properties, body):
     data = json.loads(body)
     op = data.get('operation')
     if op == 'grade':
         element = data.get('data')
-        info = GradeInfo(**element)
-        standard_result = standard_grade(info)
-        if standard_result == 10:
-            ai_result = ai_grade(info)
-        else:
-            ai_result = None
-        info.set_response(standard_result, ai_result)
-        ch.basic_publish(
-            exchange='',
-            routing_key=config['send_queue'],
-            body=info.response
-        )
+        grade(ch, element)
     elif op == 'create':
         problem_id = data.get('problem_id')
         element = data.get('data')
         create(problem_id, element)
+    elif op == 'update':
+        pass
     ch.basic_ack(delivery_tag=method.delivery_tag)
+
+
+def grade(ch: BlockingChannel, element):
+    config = ENVIRON.get('rabbitmq')
+    info = GradeInfo(**element)
+    standard_result = standard_grade(info)
+    if standard_result == 10:
+        ai_result = ai_grade(info)
+    else:
+        ai_result = None
+    info.set_response(standard_result, ai_result)
+    ch.basic_publish(
+        exchange='',
+        routing_key=config['send_queue'],
+        body=info.response
+    )
 
 
 def standard_grade(info: GradeInfo):

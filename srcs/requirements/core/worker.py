@@ -1,6 +1,6 @@
 import pika
 from config import ENVIRON
-from grade import grade
+from grade import grade_handler
 
 def worker(worker_id):
     config = ENVIRON.get('rabbitmq')
@@ -19,7 +19,7 @@ def worker(worker_id):
     channel.queue_declare(queue=config['recv_queue'])
 
     channel.basic_qos(prefetch_count=1)
-    channel.basic_consume(queue=config['recv_queue'], on_message_callback=grade)
+    channel.basic_consume(queue=config['recv_queue'], on_message_callback=grade_handler)
 
     print('[*] Worker {0:d} waiting for messages. To exit press CTRL+C'.format(worker_id))
     channel.start_consuming()
