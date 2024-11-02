@@ -31,15 +31,22 @@ async function fetchProblemData(problem_id) {
       output: results[0].output,
       memory_limit: results[0].memory_limit,
       time_limit: results[0].time_limit,
+      memory_balance: results[0].memory_balance,
+      time_balance: results[0].time_balance,
+      is_basic_format: results[0].is_basic_format,
+      is_delete_white_space: results[0].is_delete_white_space,
+      is_delete_blank_line: results[0].is_delete_blank_line,
+      grade_guide: results[0].grade_guide,
+      use_ai_grade: results[0].use_ai_grade,
+      use_detect_hardcode: results[0].use_detect_hardcode,
       examples: [],
     };
 
     results.forEach(row => {
       if (row.example_id) {
         problem.examples.push({
-          example_id: row.example_id,
-          input_example: row.input_example,
-          output_example: row.output_example,
+          input: row.input_example,
+          output: row.output_example,
         });
       }
     });
