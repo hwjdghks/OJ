@@ -162,7 +162,7 @@ async function createProblemHandler(req, res) {
   }
 }
 
-async function updateProblemHandler(req, res) {
+async function getUpdateProblemHandler(req, res) {
   console.log('업데이트 핸들러 실행');
   const { problem_id } = req.params;
 
@@ -210,9 +210,100 @@ async function updateProblemHandler(req, res) {
   }
 }
 
+async function updateProblemHandler(req, res) {
+  const pool = await mysqlConnect();
+  const { problem_id } = req.params;
+
+  if (!problem_id || isNaN(problem_id)) {
+    return res.status(400).json({ error: '유효한 문제 ID가 필요합니다.' });
+  }
+
+  try {
+    const {
+      title,
+      description,
+      input,
+      output,
+      examples,
+      memory_limit,
+      time_limit,
+      memory_balance,
+      time_balance,
+      is_basic_format,
+      is_delete_white_space,
+      is_delete_blank_line,
+      grade_guide,
+      use_ai_grade,
+      use_detect_hardcode,
+      gradingData,
+    } = req.body;
+
+    // Start transaction
+    await pool.query('START TRANSACTION');
+
+    // Update problem data
+    const [updateResult] = await pool.query(
+      `UPDATE problem 
+       SET title = ?, description = ?, input = ?, output = ?,
+           memory_limit = ?, time_limit = ?, memory_balance = ?,
+           time_balance = ?, is_basic_format = ?, is_delete_white_space = ?,
+           is_delete_blank_line = ?, grade_guide = ?, use_ai_grade = ?,
+           use_detect_hardcode = ?
+       WHERE problem_id = ?`,
+      [
+        title,
+        description,
+        input,
+        output,
+        memory_limit,
+        time_limit,
+        memory_balance,
+        time_balance,
+        is_basic_format,
+        is_delete_white_space,
+        is_delete_blank_line,
+        grade_guide,
+        use_ai_grade,
+        use_detect_hardcode,
+        problem_id
+      ]
+    );
+
+    if (updateResult.affectedRows === 0) {
+      await pool.query('ROLLBACK');
+      return res.status(404).json({ error: '문제를 찾을 수 없습니다.' });
+    }
+
+    // Delete existing examples
+    await pool.query('DELETE FROM example WHERE problem_id = ?', [problem_id]);
+
+    // Insert new examples
+    for (const example of examples) {
+      await pool.query(
+        `INSERT INTO example (problem_id, input_example, output_example) VALUES (?, ?, ?)`,
+        [problem_id, example.input, example.output]
+      );
+    }
+    await pool.query('COMMIT');
+
+    res.status(200).json({
+      message: 'Problem updated successfully',
+      problem_id,
+    });
+  } catch (error) {
+    await pool.query('ROLLBACK');
+    console.error('Error updating problem:', error);
+    res.status(500).json({
+      message: 'Failed to update problem',
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   getProblemHandler,
   getProblemSetHandler,
   createProblemHandler,
+  getUpdateProblemHandler,
   updateProblemHandler
 };
