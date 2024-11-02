@@ -14,6 +14,7 @@ services:
     volumes:
       - ./requirements/npm/data:/data
       - ./requirements/npm/letsencrypt:/etc/letsencrypt
+      - ./requirements/npm/nginx-stream.conf:/etc/nginx/nginx-stream.conf:ro
     networks:
       - main_services
 
