@@ -2,6 +2,8 @@ const mysqlConnect = require('../config/db');
 const rabbitConnect = require('../config/rabbitmq');
 const { rabbitmq: config } = require('../config/config');
 const { v4: uuidv4 } = require('uuid');
+const EventEmitter = require('events');
+const responseEmitter = new EventEmitter();
 
 async function fetchProblemData(problem_id) {
   const query = `
