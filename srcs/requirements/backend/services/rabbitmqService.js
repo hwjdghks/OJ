@@ -1,8 +1,7 @@
 const rabbitConnect = require('../config/rabbitmq');
 const mysqlConnect = require('../config/db');
 const { rabbitmq: config } = require('../config/config');
-const EventEmitter = require('events');
-const responseEmitter = new EventEmitter();
+const responseEmitter = require('../utils/emitter');
 
 async function startConsume() {
   const connection = await rabbitConnect();
