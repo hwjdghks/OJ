@@ -10,8 +10,9 @@ export async function GET(request, { params }) {
     }
 
     const data = await response.json();
-    console.log(data);
-    return NextResponse.json(data);
+    console.log('응답 데이터:', data);
+    console.log('데이터의 데이터:', data.data);
+    return NextResponse.json(data.data);
   } catch (error) {
     return NextResponse.json(
       { message: '문제 정보를 불러오는데 실패했습니다.' },
