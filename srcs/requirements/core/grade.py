@@ -10,8 +10,10 @@ from pika.adapters.blocking_connection import BlockingChannel
 from pika.spec import Basic
 
 def grade_handler(ch: BlockingChannel, method: Basic.Deliver, properties, body):
+    print('핸들러 실행')
     data = json.loads(body)
     op = data.get('operation')
+    print(data)
     if op == 'grade':
         element = data.get('data')
         grade(ch, element)

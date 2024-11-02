@@ -163,12 +163,13 @@ async function createProblemHandler(req, res) {
 }
 
 async function updateProblemHandler(req, res) {
+  console.log('업데이트 핸들러 실행');
   const { problem_id } = req.params;
 
   if (!problem_id || isNaN(problem_id)) {
     return res.status(400).json({ error: '유효한 문제 ID가 필요합니다.' });
   }
-
+  console.log('드가자');
   try {
     // 문제 업데이트 로직 실행 (트랜잭션 시작, 문제 업데이트, 예제 삭제/삽입 등)
 
@@ -180,9 +181,10 @@ async function updateProblemHandler(req, res) {
     const queue = config.send_queue;
     await channel.sendToQueue(queue, Buffer.from(message));
     channel.close();
-
+    console.log('보냈다');
     // 응답을 기다리고 처리
     responseEmitter.once(requestId, async (externalData) => {
+      console.log('받았다');
       try {
         const data = await fetchProblemData(problem_id);
         console.log('data:', data);

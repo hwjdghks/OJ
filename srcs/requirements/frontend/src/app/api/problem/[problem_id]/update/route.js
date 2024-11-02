@@ -3,18 +3,14 @@ import { NextResponse } from 'next/server';
 // GET: 문제 정보 불러오기
 export async function GET(request, { params }) {
   try {
-    const response = await fetch(`http://backend:5000/problem/${params.problem_id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(`http://backend:5000/problem/${params.problem_id}`, { cache: 'no-store' });
 
     if (!response.ok) {
       throw new Error('Failed to fetch problem data');
     }
 
     const data = await response.json();
+    console.log(data);
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
