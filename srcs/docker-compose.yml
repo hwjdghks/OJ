@@ -3,8 +3,6 @@ services:
     image: jc21/nginx-proxy-manager
     container_name: npm
     restart: always
-    depends_on:
-      - frontend
     ports:
       - "80:80"
       - "443:443"

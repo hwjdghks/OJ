@@ -183,7 +183,7 @@ async function getUpdateProblemHandler(req, res) {
     const queue = config.send_queue;
     await channel.sendToQueue(queue, Buffer.from(message));
     channel.close();
-    console.log('보냈다');
+    console.log('보냈다', requestId);
     // 응답을 기다리고 처리
     responseEmitter.once(requestId, async (externalData) => {
       console.log('받았다');
