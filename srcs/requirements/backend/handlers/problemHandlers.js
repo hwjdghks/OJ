@@ -175,6 +175,7 @@ async function updateProblemHandler(req, res) {
     // RabbitMQ 요청을 보내고 응답을 기다림
     const requestId = uuidv4();
     const message = JSON.stringify({ operation: 'update', problem_id, requestId });
+    const mq = await rabbitConnect();
     const channel = await mq.createChannel();
     const queue = config.send_queue;
     await channel.sendToQueue(queue, Buffer.from(message));
