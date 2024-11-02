@@ -11,7 +11,7 @@ export default function ProblemCreationPage() {
     description: '',
     input: '',
     output: '',
-    examples: [{ input: '', output: '' }],
+    examples: [{ input_example: '', output_example: '' }],
     memory_limit: 256,
     time_limit: 1,
     memory_balance: true,
@@ -60,7 +60,7 @@ export default function ProblemCreationPage() {
     if (formData.examples.length < 3) {
       setFormData((prev) => ({
         ...prev,
-        examples: [...prev.examples, { input: '', output: '' }],
+        examples: [...prev.examples, { input_example: '', output_example: '' }],
       }));
     }
   };
@@ -190,7 +190,7 @@ export default function ProblemCreationPage() {
                   <textarea
                     placeholder="입력"
                     style={styles.exampleTextarea}
-                    value={example.input}
+                    value={example.input_example}
                     onChange={(e) => handleExampleChange(index, 'input', e.target.value)}
                   />
                 </div>
@@ -198,7 +198,7 @@ export default function ProblemCreationPage() {
                   <textarea
                     placeholder="출력"
                     style={styles.exampleTextarea}
-                    value={example.output}
+                    value={example.output_example}
                     onChange={(e) => handleExampleChange(index, 'output', e.target.value)}
                   />
                 </div>

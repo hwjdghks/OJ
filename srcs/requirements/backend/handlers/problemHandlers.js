@@ -45,8 +45,8 @@ async function fetchProblemData(problem_id) {
     results.forEach(row => {
       if (row.example_id) {
         problem.examples.push({
-          input: row.input_example,
-          output: row.output_example,
+          input_example: row.input_example,
+          output_example: row.output_example,
         });
       }
     });
@@ -145,7 +145,7 @@ async function createProblemHandler(req, res) {
     for (const example of examples) {
       await pool.query(
         `INSERT INTO example (problem_id, input_example, output_example) VALUES (?, ?, ?)`,
-        [problem_id, example.input, example.output]
+        [problem_id, example.input_example, example.output_example]
       );
     }
     const message = JSON.stringify({'operation': 'create', 'problem_id': problem_id, 'data': gradingData});
@@ -289,7 +289,7 @@ async function updateProblemHandler(req, res) {
     for (const example of examples) {
       await pool.query(
         `INSERT INTO example (problem_id, input_example, output_example) VALUES (?, ?, ?)`,
-        [problem_id, example.input, example.output]
+        [problem_id, example.input_example, example.output_example]
       );
     }
     await pool.query('COMMIT');

@@ -11,7 +11,7 @@ export default function ProblemEditPage({ params }) {
     description: '',
     input: '',
     output: '',
-    examples: [{ input: '', output: '' }],
+    examples: [{ input_example: '', output_example: '' }],
     memory_limit: 256,
     time_limit: 1,
     memory_balance: true,
