@@ -1,6 +1,6 @@
 from config import ENVIRON
 from GradeInfo import GradeInfo
-from problems import create
+from problems import create, get_data
 import utils
 import dockerutils
 import aiutils
@@ -20,7 +20,16 @@ def grade_handler(ch: BlockingChannel, method: Basic.Deliver, properties, body):
         element = data.get('data')
         create(problem_id, element)
     elif op == 'update':
-        pass
+        problem_id = data.get('problem_id')
+        request_id = data.get('requestId')
+        response = get_data(problem_id, request_id)
+        print('make response:', response)
+        config = ENVIRON.get('rabbitmq')
+        ch.basic_publish(
+        exchange='',
+        routing_key=config['send_queue'],
+        body=response
+        )
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 

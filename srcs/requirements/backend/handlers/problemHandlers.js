@@ -1,12 +1,9 @@
 const mysqlConnect = require('../config/db');
 const rabbitConnect = require('../config/rabbitmq');
 const { rabbitmq: config } = require('../config/config');
-async function getProblemHandler(req, res) {
-  const { problem_id } = req.params;
-  if (!problem_id || isNaN(problem_id)) {
-    return res.status(400).json({ error: '유효한 문제 ID가 필요합니다.' });
-  }
+const { v4: uuidv4 } = require('uuid');
 
+async function fetchProblemData(problem_id) {
   const query = `
     SELECT *
     FROM
@@ -19,9 +16,10 @@ async function getProblemHandler(req, res) {
 
   try {
     const pool = await mysqlConnect();
-    const [results] = await pool.query(query, [problem_id]); // need exception
+    const [results] = await pool.query(query, [problem_id]);
+
     if (results.length === 0) {
-      return res.status(404).json({ error: '문제를 찾을 수 없습니다.' });
+      return null;
     }
 
     const problem = {
@@ -32,7 +30,7 @@ async function getProblemHandler(req, res) {
       output: results[0].output,
       memory_limit: results[0].memory_limit,
       time_limit: results[0].time_limit,
-      examples: []
+      examples: [],
     };
 
     results.forEach(row => {
@@ -40,15 +38,34 @@ async function getProblemHandler(req, res) {
         problem.examples.push({
           example_id: row.example_id,
           input_example: row.input_example,
-          output_example: row.output_example
+          output_example: row.output_example,
         });
       }
     });
 
+    return problem;
+  } catch (err) {
+    const customErrorMessage = `데이터베이스 쿼리 오류 - 문제 데이터 조회 실패: ${err.message}`;
+    console.error(customErrorMessage);
+    throw new Error(customErrorMessage);
+  }
+}
+
+async function getProblemHandler(req, res) {
+  const { problem_id } = req.params;
+  if (!problem_id || isNaN(problem_id)) {
+    return res.status(400).json({ error: '유효한 문제 ID가 필요합니다.' });
+  }
+
+  try {
+    const problem = await fetchProblemData(problem_id);
+    if (!problem) {
+      return res.status(404).json({ error: '문제를 찾을 수 없습니다.' });
+    }
+
     res.status(200).json(problem);
   } catch (err) {
-    console.error('데이터베이스 쿼리 오류:', err);
-    res.status(500).json({ error: '데이터베이스 쿼리 오류' });
+    res.status(500).json({ error: err.message });
   }
 }
 
@@ -145,8 +162,54 @@ async function createProblemHandler(req, res) {
   }
 }
 
+async function updateProblemHandler(req, res) {
+  const { problem_id } = req.params;
+
+  if (!problem_id || isNaN(problem_id)) {
+    return res.status(400).json({ error: '유효한 문제 ID가 필요합니다.' });
+  }
+
+  try {
+    // 문제 업데이트 로직 실행 (트랜잭션 시작, 문제 업데이트, 예제 삭제/삽입 등)
+
+    // RabbitMQ 요청을 보내고 응답을 기다림
+    const requestId = uuidv4();
+    const message = JSON.stringify({ operation: 'update', problem_id, requestId });
+    const channel = await mq.createChannel();
+    const queue = config.send_queue;
+    await channel.sendToQueue(queue, Buffer.from(message));
+    channel.close();
+
+    // 응답을 기다리고 처리
+    responseEmitter.once(requestId, async (externalData) => {
+      try {
+        const data = await fetchProblemData(problem_id);
+        console.log('data:', data);
+        console.log('gradedata:', externalData);
+        res.status(200).json({
+          message: 'Problem updated successfully',
+          problem_id,
+          data: {
+            ...data,
+            gradingData: externalData,
+          },
+        });
+      } catch (err) {
+        res.status(500).json({ error: 'Error fetching updated problem data' });
+      }
+    });
+  } catch (error) {
+    console.error('문제 업데이트 오류:', error);
+    res.status(500).json({
+      message: 'Failed to update problem',
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   getProblemHandler,
   getProblemSetHandler,
-  createProblemHandler
+  createProblemHandler,
+  updateProblemHandler
 };

@@ -68,7 +68,11 @@ class GradeInfo:
             'submit_result': standard_result,
             'ai_result': ai_result
         }
-        self.response = json.dumps(_dict_response)
+        response = {
+            'operation': 'grade',
+            'gradingData': _dict_response
+        }
+        self.response = json.dumps(response)
 
     def close(self):
         self.client.close()

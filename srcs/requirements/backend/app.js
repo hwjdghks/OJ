@@ -3,7 +3,7 @@ const cors = require('cors');
 const mysqlConnect = require('./config/db');
 const rabbitConnect = require('./config/rabbitmq');
 const startConsume = require('./services/rabbitmqService');
-const { getProblemHandler, getProblemSetHandler, createProblemHandler } = require('./handlers/problemHandlers');
+const { getProblemHandler, getProblemSetHandler, createProblemHandler, updateProblemHandler } = require('./handlers/problemHandlers');
 const { submitCodeHandler, getCodeHandler } = require('./handlers/codeHandlers');
 const { getResultsHandler } = require('./handlers/resultHandlers');
 const { addUserHandler, getUserHandler } = require('./handlers/usersHandlers');
@@ -27,6 +27,7 @@ app.get('/users/:user_email', getUserHandler);
 app.post('/submit', submitCodeHandler);
 app.post('/users', addUserHandler);
 app.post('/problem-set', createProblemHandler);
+app.post('/problem/:problem_id', updateProblemHandler);
 
 (async () => {
   try {

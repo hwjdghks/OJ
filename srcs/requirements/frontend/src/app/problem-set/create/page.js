@@ -19,9 +19,9 @@ export default function ProblemCreationPage() {
     is_basic_format: true,
     is_delete_white_space: false,
     is_delete_blank_line: false,
-    use_ai_grade: false,
+    use_ai_grade: true,
     grade_guide: '',
-    use_detect_hardcode: false,
+    use_detect_hardcode: true,
     gradingData: [{ input: '', output: '' }],
   });
 
@@ -122,6 +122,7 @@ export default function ProblemCreationPage() {
       setSubmitStatus({ type: 'error', message: error.message });
     }
   };
+
   return (
     <div style={styles.container}>
       <div style={styles.problemContainer}>
