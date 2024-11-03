@@ -20,7 +20,7 @@ export default function LoginPage() {
       ) : (
         <div style={styles.loginContainer}>
           <button onClick={() => signIn()} style={styles.button}>
-            Google로 로그인
+            소셜 로그인
           </button>
         </div>
       )}
