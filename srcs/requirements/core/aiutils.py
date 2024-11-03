@@ -37,7 +37,11 @@ def _chat(client: OpenAI, system_role: str, user_role: str):
 
 
 def _judge_hardcode(client: OpenAI, info: GradeInfo):
-    pass
+    content = f'''
+소스코드:
+{info.code_content}
+'''
+    return _chat(client, ROLES.get('hardcode_role'), json.dumps(content))
 
 
 def _judge_algorithm(client: OpenAI, info: GradeInfo):
@@ -53,12 +57,16 @@ def _judge_algorithm(client: OpenAI, info: GradeInfo):
 
 def judge_ai(info: GradeInfo):
     client = _init_client()
-    # result = _judge_hardcode(client, info)
-    # if (result == 'YES'):
-    #     return result
+    result = _judge_hardcode(client, info)
+    print('하드코딩 탐지 결과:', result)
+    print('')
+    result_dict = json.loads(result)
+    answer = result_dict.get('answer')
+    if (answer == 'HARD CODE'):
+        return result_dict
     result = _judge_algorithm(client, info)
-    print(result)
+    print('알고리즘 검증 결과:', result)
     print("="*100)
     print('')
     # return ai_res.choices[0].message.content
-    return 'test'
+    return result

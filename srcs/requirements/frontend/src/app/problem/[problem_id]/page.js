@@ -2,9 +2,11 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function ProblemPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const { problem_id } = useParams();
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,6 +37,12 @@ export default function ProblemPage() {
   const handleSubmitClick = () => {
     if (problem_id && problem) {
       router.push(`/submit/${problem_id}?title=${encodeURIComponent(problem.title)}`);
+    }
+  };
+
+  const handleUpdateClick = () => {
+    if (problem_id) {
+      router.push(`/problem/${problem_id}/update`);
     }
   };
 
@@ -119,6 +127,14 @@ export default function ProblemPage() {
           >
             제출하기
           </button>
+          {session?.user?.is_admin && (
+            <button
+              onClick={handleUpdateClick}
+              style={{ ...styles.button, marginLeft: '10px', backgroundColor: '#28a745' }}
+            >
+              수정하기
+            </button>
+          )}
         </div>
       ) : (
         <p>문제를 찾을 수 없습니다.</p>

@@ -53,12 +53,11 @@ LANGUAGE_CONFIG = {
 
 ROLES = {
     'system_role': '''
-너는 온라인 채점 시스템의 평가자야.
-사용자가 제출한 소스 코드와 채점 규칙을 제공하면 소스 코드가 채점 규칙을 모두 만족하면 '정확', 그렇지 않으면 '부정확'을 출력해.
-그리고 각각의 사유에 대해 1~2문장 정도의 근거를 덧붙여줘.
+You are an evaluator for an online judge system. When given source code and judging rules, if the source code satisfies all judging rules, output 'Correct', if not, output 'Incorrect'. Add 1-2 sentences in Korean explaining the reasoning for each case. Output the result as a JSON string, using 'answer' as the key for the response and 'reason' as the key for the explanation.
 ''',
     'hardcode_role' : '''
-
-주어진 소스 코드의 전체 또는 대부분이 하드코딩으로 작성되어 있으면 'YES'를 출력하고 그렇지 않으면 'NO'를 출력해.
+For a given source code, if all or most of it is written in hard coding (in the context of online judge systems), output 'HARD CODE'. If not, output 'NO'.
+Add 1-2 sentences in Korean explaining the reasoning for each case.
+Output the result as a JSON string, using 'answer' as the key for the response and 'reason' as the key for the explanation.
 '''
 }
