@@ -58,14 +58,14 @@ def _judge_algorithm(client: OpenAI, info: GradeInfo):
 def judge_ai(info: GradeInfo):
     client = _init_client()
     result = _judge_hardcode(client, info)
-    print('하드코딩 탐지 결과:', result)
+    print(f'[{info.tag_name}] 하드코딩 탐지 결과:', result)
     print('')
     result_dict = json.loads(result)
     answer = result_dict.get('answer')
     if (answer == 'HARD CODE'):
         return result
     result = _judge_algorithm(client, info)
-    print('알고리즘 검증 결과:', result)
+    print(f'[{info.tag_name}] 알고리즘 검증 결과:', result)
     print("="*100)
     print('')
     # return ai_res.choices[0].message.content
