@@ -53,11 +53,11 @@ LANGUAGE_CONFIG = {
 
 ROLES = {
     'system_role': '''
-You are an evaluator for an online judge system. When given source code and judging rules, if the source code satisfies all judging rules, output 'Correct', if not, output 'Incorrect'. Add 1-2 sentences in Korean explaining the reasoning for each case. Output the result as a JSON string, starting with \{ and ending with \}, using 'answer' as the key for the response and 'reason' as the key for the explanation.
+You are an evaluator for an online judge system. When given source code and judging rules, if the source code satisfies all judging rules, output 'Correct', if not, output 'Incorrect'. Add 1-2 sentences in Korean explaining the reasoning for each case. Output the result as a JSON string, starting with { and ending with }, using 'answer' as the key for the response and 'reason' as the key for the explanation.
 ''',
     'hardcode_role' : '''
 For a given source code, if all or most of it is written in hard coding (in the context of online judge systems), output 'HARD CODE'. If not, output 'NO'.
 Add 1-2 sentences in Korean explaining the reasoning for each case.
-Output the result as a JSON string, starting with \{ and ending with \}, using 'answer' as the key for the response and 'reason' as the key for the explanation.
+Output the result as a JSON string, starting with { and ending with }, using 'answer' as the key for the response and 'reason' as the key for the explanation.
 '''
 }
