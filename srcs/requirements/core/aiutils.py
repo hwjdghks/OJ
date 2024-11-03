@@ -63,7 +63,7 @@ def judge_ai(info: GradeInfo):
     result_dict = json.loads(result)
     answer = result_dict.get('answer')
     if (answer == 'HARD CODE'):
-        return result_dict
+        return result
     result = _judge_algorithm(client, info)
     print('알고리즘 검증 결과:', result)
     print("="*100)
