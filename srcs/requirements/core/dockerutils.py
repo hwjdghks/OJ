@@ -84,7 +84,7 @@ def _run_grade_server(info: GradeInfo):
 
 def _process_container(container: Container) -> int:
     try:
-        exit_code = container.wait()
+        exit_code = container.wait(120) # after 2min, container will timeout
         exit_code = exit_code['StatusCode']
         logs = container.logs(stdout=True, stderr=True)
         print(f'{container.name} server logs: {logs.decode("utf-8")}')
