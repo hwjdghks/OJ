@@ -19,9 +19,9 @@ async function startConsume() {
 
     const { operation, data, requestId } = response;
     if (operation === 'grade') {
-      const { code_id, submit_result, ai_result, ai_reason } = data;
-      const query = 'UPDATE code SET submit_result = ?, ai_result = ?, ai_reason = ? WHERE code_id = ?';
-      await pool.query(query, [submit_result, ai_result, ai_reason, code_id]);
+      const { code_id, submit_result, ai_result, error_log, ai_reason } = data;
+      const query = 'UPDATE code SET submit_result = ?, ai_result = ?, error_log = ?, ai_reason = ? WHERE code_id = ?';
+      await pool.query(query, [submit_result, ai_result, error_log, ai_reason, code_id]);
     }
     else if (operation === 'response') {
       // 특정 요청에 대해 EventEmitter로 이벤트 방출

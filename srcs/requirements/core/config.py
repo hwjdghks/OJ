@@ -39,7 +39,7 @@ LANGUAGE_CONFIG = {
         'compile_cmd': 'python3 -c "import py_compile; py_compile.compile(r"Main.py")"',
         'execute_cmd': 'python3 Main.py',
         'memory_factor': [3, 32], # multi, plus (MB)
-        'time_factor': [5, 3] # multi, plus (second)
+        'time_factor': [3, 3] # multi, plus (second)
     },
     'Java': {
         'file_name': 'java',

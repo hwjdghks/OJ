@@ -62,7 +62,7 @@ class GradeInfo:
         self.tag_name = f'{self.submit_id}:{self.util_file}'
         self.server_name = f'grade-{self.submit_id}'
 
-    def set_response(self, standard_result, ai_result):
+    def set_response(self, standard_result, log,ai_result):
         if ai_result is not None:
             result = json.loads(ai_result)
             answer = result.get('answer')
@@ -73,6 +73,7 @@ class GradeInfo:
         _dict_response = {
             'code_id': self.submit_id,
             'submit_result': standard_result,
+            'error_log': log,
             'ai_result': answer,
             'ai_reason': reason
         }

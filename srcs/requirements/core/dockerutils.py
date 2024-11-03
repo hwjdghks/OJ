@@ -101,7 +101,7 @@ def _process_container(container: Container) -> int:
     finally:
         if 'exit_code' not in locals():
             exit_code = 50
-        return exit_code
+        return exit_code, logs
 
 
 def _clean_container(info: GradeInfo):
@@ -126,8 +126,11 @@ def init_base_images() -> None:
 
 
 def major_grade_process(info: GradeInfo):
+    print('채점 서버 환경 구성 시작')
     _build_grade_image(info)
+    print('채점 서버 실행')
     _run_grade_server(info)
-    result = _process_container(info.container)
+    result, log = _process_container(info.container)
+    print('채점 환경 정리')
     _clean_container(info)
-    return result
+    return result, log
