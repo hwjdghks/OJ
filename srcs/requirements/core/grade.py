@@ -14,7 +14,6 @@ def grade_handler(ch: BlockingChannel, method: Basic.Deliver, properties, body):
     data = json.loads(body)
     op = data.get('operation')
     if op == 'grade':
-        print('채점 시퀀스 시작')
         element = data.get('data')
         grade(ch, element)
     elif op == 'create':
