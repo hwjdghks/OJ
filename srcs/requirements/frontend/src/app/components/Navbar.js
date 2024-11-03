@@ -32,7 +32,7 @@ const Navbar = () => {
           </li>
           {session ? (
             <li style={styles.navListItem}>
-              <Link style={styles.navLink} href="/signin">{session.user.user_id}</Link>
+              <Link style={styles.navLink} href="/status">{session.user.user_id}</Link>
             </li>
           ) : (
             <></>
