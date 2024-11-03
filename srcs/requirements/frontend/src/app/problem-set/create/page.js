@@ -191,7 +191,7 @@ export default function ProblemCreationPage() {
                     placeholder="입력"
                     style={styles.exampleTextarea}
                     value={example.input_example}
-                    onChange={(e) => handleExampleChange(index, 'input', e.target.value)}
+                    onChange={(e) => handleExampleChange(index, 'input_example', e.target.value)}
                   />
                 </div>
                 <div style={styles.exampleColumn}>
@@ -199,7 +199,7 @@ export default function ProblemCreationPage() {
                     placeholder="출력"
                     style={styles.exampleTextarea}
                     value={example.output_example}
-                    onChange={(e) => handleExampleChange(index, 'output', e.target.value)}
+                    onChange={(e) => handleExampleChange(index, 'output_example', e.target.value)}
                   />
                 </div>
                 <button onClick={() => handleDeleteExample(index)} style={styles.deleteButton}>삭제</button>

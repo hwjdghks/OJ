@@ -41,7 +41,7 @@ export default function ProblemEditPage({ params }) {
         setFormData(prev => ({
           ...prev,
           ...data,
-          examples: data.examples || [{ input: '', output: '' }],
+          examples: data.examples || [{ input_example: '', output_example: '' }],
           gradingData: data.gradingData || [{ input: '', output: '' }]
         }));
         setSelectedLanguages(data.languages || []);
@@ -87,7 +87,7 @@ export default function ProblemEditPage({ params }) {
     if (formData.examples.length < 3) {
       setFormData((prev) => ({
         ...prev,
-        examples: [...prev.examples, { input: '', output: '' }],
+        examples: [...prev.examples, { input_example: '', output_example: '' }],
       }));
     }
   };
@@ -221,16 +221,16 @@ export default function ProblemEditPage({ params }) {
                   <textarea
                     placeholder="입력"
                     style={styles.exampleTextarea}
-                    value={example.input}
-                    onChange={(e) => handleExampleChange(index, 'input', e.target.value)}
+                    value={example.input_example}
+                    onChange={(e) => handleExampleChange(index, 'input_example', e.target.value)}
                   />
                 </div>
                 <div style={styles.exampleColumn}>
                   <textarea
                     placeholder="출력"
                     style={styles.exampleTextarea}
-                    value={example.output}
-                    onChange={(e) => handleExampleChange(index, 'output', e.target.value)}
+                    value={example.output_example}
+                    onChange={(e) => handleExampleChange(index, 'output_example', e.target.value)}
                   />
                 </div>
                 <button onClick={() => handleDeleteExample(index)} style={styles.deleteButton}>삭제</button>

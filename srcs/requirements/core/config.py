@@ -20,7 +20,7 @@ LANGUAGE_CONFIG = {
     'C': {
         'file_name': 'c',
         'file_ext': 'c',
-        'compile_cmd': 'gcc -o Main Main.c',
+        'compile_cmd': 'gcc -o Main -O2 Main.c',
         'execute_cmd': './Main',
         'memory_factor': [1, 0],
         'time_factor': [1, 0]
@@ -28,7 +28,7 @@ LANGUAGE_CONFIG = {
     'C++': {
         'file_name': 'cpp',
         'file_ext': 'cpp',
-        'compile_cmd': 'g++ -o Main Main.cpp',
+        'compile_cmd': 'g++ -o Main -O2 Main.cpp',
         'execute_cmd': './Main',
         'memory_factor': [1, 0],
         'time_factor': [1, 0]
