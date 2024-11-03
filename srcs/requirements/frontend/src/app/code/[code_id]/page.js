@@ -43,8 +43,8 @@ export default function CodePage() {
             <table style={styles.table}>
               <tbody>
                 <tr style={styles.tableRow}>
-                  <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>언어</th>
-                  <td style={styles.tableCell}>{submission.language}</td>
+                  <th style={{ ...styles.tableCell, ...styles.tableHeaderCell, width: '50px'}}>언어</th>
+                  <td style={{...styles.tableCell, width: '100px'}}>{submission.language}</td>
                 </tr>
                 {/* <tr style={styles.tableRow}>
                   <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>제출 시간</th>
@@ -107,7 +107,7 @@ const styles = {
     marginBottom: '16px',
   },
   table: {
-    width: '95%',
+    width: '150px',
     borderCollapse: 'collapse',
     marginBottom: '20px',
   },
@@ -117,7 +117,7 @@ const styles = {
   tableCell: {
     border: '1px solid #ddd',
     padding: '8px',
-    textAlign: 'left',
+    textAlign: 'center',
   },
   tableHeaderCell: {
     fontWeight: '700',

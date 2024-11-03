@@ -143,7 +143,7 @@ export default function ProblemEditPage({ params }) {
       }
 
       alert('문제가 수정되었습니다.');
-      router.push('/problem-set');
+      router.push(`/problem/${params.problem_id}`);
 
     } catch (error) {
       setSubmitStatus({ type: 'error', message: error.message });

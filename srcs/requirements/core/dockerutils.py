@@ -85,11 +85,10 @@ def _run_grade_server(info: GradeInfo):
 def _process_container(container: Container) -> int:
     try:
         exit_code = container.wait()
-        print(exit_code)
         exit_code = exit_code['StatusCode']
         logs = container.logs(stdout=True, stderr=True)
-        print(f'{container.name} logs: {logs.decode("utf-8")}')
-        print(f'{container.name} exit_code: {exit_code}')
+        print(f'{container.name} server logs: {logs.decode("utf-8")}')
+        print(f'{container.name} server exit_code: {exit_code}')
     except requests.exceptions.ReadTimeout as e: # error in manual when timeout occurs
         print('Docker container timeout error in process_container():', e)
     except requests.exceptions.ConnectionError as e: # real error when timeout occurs
