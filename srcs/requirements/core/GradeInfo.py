@@ -70,7 +70,7 @@ class GradeInfo:
         }
         response = {
             'operation': 'grade',
-            'gradingData': _dict_response
+            'data': _dict_response
         }
         self.response = json.dumps(response)
 
