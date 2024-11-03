@@ -101,7 +101,7 @@ def _process_container(container: Container) -> int:
     finally:
         if 'exit_code' not in locals():
             exit_code = 50
-        return exit_code, logs
+        return exit_code, logs.decode("utf-8")
 
 
 def _clean_container(info: GradeInfo):
