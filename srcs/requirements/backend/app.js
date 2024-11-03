@@ -7,6 +7,7 @@ const { getProblemHandler, getProblemSetHandler, createProblemHandler, getUpdate
 const { submitCodeHandler, getCodeHandler } = require('./handlers/codeHandlers');
 const { getResultsHandler } = require('./handlers/resultHandlers');
 const { addUserHandler, getUserHandler } = require('./handlers/usersHandlers');
+const { getStatusHandler } = require('./handlers/statusHandler');
 const { server: serverConfig } = require('./config/config');
 
 const app = express();
@@ -25,6 +26,7 @@ app.get('/results', getResultsHandler);
 app.get('/code/:code_id', getCodeHandler);
 app.get('/users/:user_email', getUserHandler);
 app.get('/problem/:problem_id/update', getUpdateProblemHandler);
+app.get('/status/:user_id', getStatusHandler);
 app.post('/submit', submitCodeHandler);
 app.post('/users', addUserHandler);
 app.post('/problem-set', createProblemHandler);
