@@ -39,7 +39,7 @@ def _build_base_image(build_path: str, dockerfile_path: str, language: str) -> N
 
 
 def _build_grade_image(info: GradeInfo):
-    print(f'{info.tag_name} grade image build start.')
+    print(f'[{info.tag_name}] grade image build start.')
     try:
         client = info.client
         info.image, _ = client.images.build(
