@@ -75,7 +75,7 @@ export default function CodePage() {
               <h2 style={styles.sectionTitle}>AI 알고리즘 분석 결과</h2>
               <div style={styles.description}>
                 <pre style={{...styles.pre, backgroundColor: '#f8f9fa'}}>
-                  {submission.ai_result}
+                  {submission.ai_result}: 
                   {submission.ai_reason}
                 </pre>
               </div>
