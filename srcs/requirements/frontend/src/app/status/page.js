@@ -24,8 +24,6 @@ export default function StatusPage() {
           throw new Error('제출 기록을 가져오는데 실패했습니다.');
         }
         const data = await response.json();
-        console.log('data from /api/status:', data);
-        console.log('type of data:', typeof(data));
         setSubmissions(Array.isArray(data.results) ? data.results : []); // 배열 형태가 아닌 경우 빈 배열로 설정
       } catch (err) {
         setError(err.message);
@@ -43,7 +41,7 @@ export default function StatusPage() {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>제출 현황</h1>
+      <h1 style={styles.heading}>나의 제출 현황</h1>
       {session ? (
         <div style={styles.loggedInContainer}>
           <div style={styles.userInfo}>
@@ -66,6 +64,8 @@ export default function StatusPage() {
                   <tr style={styles.tableHeader}>
                     <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>제출 번호</th>
                     <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>문제 제목</th>
+                    <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>채점 결과</th>
+                    <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>분석 결과</th>
                     <th style={{ ...styles.tableCell, ...styles.tableHeaderCell }}>언어</th>
                   </tr>
                 </thead>
@@ -77,10 +77,22 @@ export default function StatusPage() {
                           {submission.code_id}
                         </Link>
                       </td>
-                      <td style={{ ...styles.tableCell }}>
+                      <td style={{ ...styles.tableCell, textAlign: 'center',}}>
                         <Link href={`/problem/${submission.problem_id}`} style={styles.link}>
                           {submission.title}
                         </Link>
+                      </td>
+                      <td style={{ ...styles.tableCell, ...styles.tableCellCenter }}>
+                        {submission.submit_result === 0 && <span style={styles.statusPending}>채점 진행 전</span>}
+                        {submission.submit_result === 10 && <span style={styles.statusAccepted}>정답</span>}
+                        {submission.submit_result === 20 && <span style={styles.statusWrong}>틀렸습니다</span>}
+                        {submission.submit_result === 30 && <span style={styles.statusCompileError}>컴파일 에러</span>}
+                        {submission.submit_result === 40 && <span style={styles.statusRuntimeError}>런타임 에러</span>}
+                        {submission.submit_result === 50 && <span style={styles.statusWrong}>시간 초과</span>}
+                        {![0, 10, 20, 30, 40, 50].includes(submission.submit_result) && <span>{submission.submit_result}</span>}
+                      </td>
+                      <td style={{ ...styles.tableCell, ...styles.tableCellCenter }}>
+                        {submission.ai_result}
                       </td>
                       <td style={{ ...styles.tableCell, ...styles.tableCellCenter }}>
                         {submission.language}
@@ -107,7 +119,7 @@ const styles = {
   container: {
     padding: '20px',
     fontFamily: 'Arial, sans-serif',
-    maxWidth: '85%',
+    maxWidth: '70%',
     margin: '0 auto',
   },
   heading: {
@@ -197,5 +209,20 @@ const styles = {
   scrollContainer: {
     overflowX: 'auto',
     marginTop: '20px',
+  },
+  statusPending: {
+    color: 'gray',
+  },
+  statusAccepted: {
+    color: 'green',
+  },
+  statusWrong: {
+    color: 'red',
+  },
+  statusCompileError: {
+    color: 'purple',
+  },
+  statusRuntimeError: {
+    color: 'orange',
   },
 };

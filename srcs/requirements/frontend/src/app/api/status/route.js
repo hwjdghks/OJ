@@ -17,7 +17,6 @@ export async function GET() {
       throw new Error('백엔드 서버 요청 실패');
     }
     const data = await response.json();
-    console.log('data from /api/status:', data);
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
