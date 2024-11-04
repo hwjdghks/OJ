@@ -87,6 +87,7 @@ def _process_container(container: Container) -> int:
         exit_code = container.wait(120) # after 2min, container will timeout
         exit_code = exit_code['StatusCode']
         logs = container.logs(stdout=True, stderr=True)
+        log = logs.decode("utf-8")
         print(f'{container.name} server logs: {logs.decode("utf-8")}')
         print(f'{container.name} server exit_code: {exit_code}')
     except requests.exceptions.ReadTimeout as e: # error in manual when timeout occurs
@@ -100,7 +101,7 @@ def _process_container(container: Container) -> int:
     finally:
         if 'exit_code' not in locals():
             exit_code = 50
-        return exit_code, logs.decode("utf-8")
+        return exit_code, log
 
 
 def _clean_container(info: GradeInfo):
