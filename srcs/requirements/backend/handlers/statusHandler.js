@@ -21,7 +21,7 @@ async function getStatusHandler(req, res) {
 
   try {
     const pool = await mysqlConnect();
-    const [results] = await pool.query(query, [encrypt(user_id)]);
+    const [results] = await pool.query(query, [user_id]);
 
     // user_id가 암호화되어 있는 경우를 위한 복호화 처리
     const decryptedResults = results.map(result => ({
