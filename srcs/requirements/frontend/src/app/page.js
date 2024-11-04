@@ -13,6 +13,9 @@ export default function Home() {
         <Link href="/status" style={styles.link}>
           내 제출 현황
         </Link>
+        <Link href="https://forms.gle/nUVZ9fap5oZxi9Ti7" style={styles.link}>
+          이용 후기 남기기
+        </Link>
       </div>
     </div>
   );
