@@ -11,27 +11,28 @@ export default function StatusPage() {
   const [submissionLoading, setSubmissionLoading] = useState(false);
   const [error, setError] = useState(null);
 
+
   useEffect(() => {
     async function fetchSubmissions() {
       if (!session?.user?.email) return;
-      
+  
       setSubmissionLoading(true);
       setError(null);
-      
+  
       try {
         const response = await fetch('/api/status');
         if (!response.ok) {
           throw new Error('제출 기록을 가져오는데 실패했습니다.');
         }
         const data = await response.json();
-        setSubmissions(data);
+        setSubmissions(Array.isArray(data) ? data : []); // 배열 형태가 아닌 경우 빈 배열로 설정
       } catch (err) {
         setError(err.message);
       } finally {
         setSubmissionLoading(false);
       }
     }
-
+  
     if (session) {
       fetchSubmissions();
     }
