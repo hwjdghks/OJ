@@ -13,8 +13,8 @@ async function getStatusHandler(req, res) {
       c.code_id,
       c.language,
       p.title,
-      p.submit_result
-      p.ai_result
+      c.submit_result,
+      c.ai_result
     FROM code c
     JOIN problem p ON c.problem_id = p.problem_id
     WHERE c.user_id = ?
