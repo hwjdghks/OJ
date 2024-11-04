@@ -189,6 +189,7 @@ const styles = {
   description: {
     color: '#333',
     lineHeight: '1.6',
+    fontSize: '1rem',
   },
   pre: {
     backgroundColor: '#f5f5f5',
