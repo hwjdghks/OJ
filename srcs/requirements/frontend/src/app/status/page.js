@@ -26,7 +26,7 @@ export default function StatusPage() {
         const data = await response.json();
         console.log('data from /api/status:', data);
         console.log('type of data:', typeof(data));
-        setSubmissions(Array.isArray(data) ? data : []); // 배열 형태가 아닌 경우 빈 배열로 설정
+        setSubmissions(Array.isArray(data.results) ? data.results : []); // 배열 형태가 아닌 경우 빈 배열로 설정
       } catch (err) {
         setError(err.message);
       } finally {
