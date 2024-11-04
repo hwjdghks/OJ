@@ -126,23 +126,15 @@ VALUES
      '첫째 줄에 A+B를 출력한다.', 
      '덧셈, 입출력',
      '1. 더하기 연산자 또는 그에 상응하는 기능을 사용했으면 통과',
-     128, 1),
+     256, 2),
 
-    ('별 찍기', 
-     '첫째 줄에는 별 N개, 둘째 줄에는 별 N-1개, ..., N번째 줄에는 별 1개를 찍는 문제', 
+    ('별 찍기 - 반복문', 
+     '첫째 줄에는 별 N개, 둘째 줄에는 별 N-1개, ..., N번째 줄에는 별 1개를 찍는 문제.\n반복문을 사용하여 구현하시오.', 
      '첫째 줄에 N(1 ≤ N ≤ 100)이 주어진다.', 
      '첫째 줄부터 N번째 줄까지 차례대로 별을 출력한다.', 
      '반복문', 
      'If implemented with a loop, it will be marked as correct; if implemented with recursion, it will be marked as incorrect.',
-     128, 1),
-
-    ('제목', 
-     '문제 설명', 
-     '입력 설명', 
-     '출력 설명', 
-     '모든 출력 허용', 
-     '채점 가이드를 입력하세요', 
-     100, 10);
+     256, 2);
 
 INSERT INTO example (problem_id, input_example, output_example)
 VALUES
@@ -157,12 +149,3 @@ VALUES
     (2, 
     '3', 
     '***\n**\n*');
-
--- code 테이블에 샘플 데이터 삽입
-INSERT INTO code (problem_id, language, code_content, submit_result, error_log)
-VALUES
-    (1, 
-    'Python', 
-    'sql test', 
-    0, 
-    '');

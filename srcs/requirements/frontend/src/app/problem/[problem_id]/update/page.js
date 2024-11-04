@@ -13,7 +13,7 @@ export default function ProblemEditPage({ params }) {
     output: '',
     examples: [{ input_example: '', output_example: '' }],
     memory_limit: 256,
-    time_limit: 1,
+    time_limit: 2,
     memory_balance: true,
     time_balance: true,
     is_basic_format: true,
