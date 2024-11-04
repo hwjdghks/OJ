@@ -71,7 +71,7 @@ export default function ProblemPage() {
 
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>문제</h2>
-            <p style={styles.description}>{problem.description}</p>
+            <pre style={styles.description}>{problem.description}</pre>
           </div>
 
           <div style={styles.section}>
