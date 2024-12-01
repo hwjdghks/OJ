@@ -68,12 +68,12 @@ def judge_ai(info: GradeInfo):
         return result
     answers = []
     results = []
-    for _ in range(5):
+    for idx in range(5):
         result = _judge_algorithm(client, info)
         result_dict = json.loads(result)
         answers.append(result_dict.get('answer'))
         results.append(result_dict)
-        print(f'[{info.tag_name}] 알고리즘 검증 결과:', result)
+        print(f'[{info.tag_name}] 알고리즘 검증 결과 {idx}:', result)
         print('')
 
     # Determine the most common answer for the algorithm check
