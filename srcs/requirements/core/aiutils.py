@@ -28,7 +28,9 @@ def _chat(client: OpenAI, system_role: str, user_role: str):
         ],
         model='gpt-4o-mini',
         n=1,
-        max_tokens=1500,
+        best_of=3,
+        temperature=0.2,
+        max_tokens=2000,
         store=True,
         metadata={
             "info": "test"
