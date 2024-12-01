@@ -2,7 +2,6 @@ services:
   npm:
     container_name: npm
     image: jc21/nginx-proxy-manager
-    init: true
     restart: always
     ports:
       - "80:80"
