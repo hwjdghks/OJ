@@ -2,6 +2,7 @@ from openai import OpenAI
 from config import ENVIRON
 from config import ROLES
 from GradeInfo import GradeInfo
+from collections import Counter
 import json
 
 def _init_client():
@@ -64,9 +65,22 @@ def judge_ai(info: GradeInfo):
     answer = result_dict.get('answer')
     if (answer == 'HARD CODE'):
         return result
-    result = _judge_algorithm(client, info)
-    print(f'[{info.tag_name}] 알고리즘 검증 결과:', result)
+    answers = []
+    results = []
+    for _ in range(5):
+        result = _judge_algorithm(client, info)
+        result_dict = json.loads(result)
+        answers.append(result_dict.get('answer'))
+        results.append(result_dict)
+        print(f'[{info.tag_name}] 알고리즘 검증 결과:', result)
+        print('')
+
+    # Determine the most common answer for the algorithm check
+    most_common_answer, _ = Counter(answers).most_common(1)[0]
+
+    # Find one of the results that matches the most common answer
+    final_result = next(res for res in results if res.get('answer') == most_common_answer)
+    print(final_result)
     print("="*100)
     print('')
-    # return ai_res.choices[0].message.content
-    return result
+    return final_result
