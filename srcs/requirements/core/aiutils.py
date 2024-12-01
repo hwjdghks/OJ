@@ -80,7 +80,7 @@ def judge_ai(info: GradeInfo):
 
     # Find one of the results that matches the most common answer
     final_result = next(res for res in results if res.get('answer') == most_common_answer)
-    print(final_result)
+    print(type(final_result), final_result)
     print("="*100)
     print('')
-    return final_result
+    return json.dumps(final_result)
