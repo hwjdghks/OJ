@@ -1,5 +1,8 @@
 # OJ
 
+[구현 웹 사이트](https://gorapaduck.com)
+
+
 ## 2차 TODO LIST
 
 1. 웹 디자인: 완료 (GPT 활용)
