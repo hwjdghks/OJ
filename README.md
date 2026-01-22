@@ -1,6 +1,6 @@
 # OJ
 
-[구현 웹 사이트](https://gorapaduck.com)
+[구현 웹 사이트](https://logiccore.simpo.pro/)
 
 
 ## 2차 TODO LIST
